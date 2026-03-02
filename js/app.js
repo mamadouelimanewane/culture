@@ -52,18 +52,6 @@ const state = {
   loading: true,
 };
 
-// ── Navigation / Routing state ───────────────────────────────────────────────
-const nav = {
-  control:      null,   // L.Routing.Control instance
-  userMarker:   null,   // marker position utilisateur
-  destMarker:   null,   // marker destination
-  active:       false,
-  profile:      'driving',  // 'driving' | 'walking' | 'cycling'
-  destLat:      null,
-  destLon:      null,
-  destName:     '',
-};
-
 // Store pour les données des popups (évite les problèmes d'échappement)
 const _navStore = [];
 function storeNav(lat, lon, name) {
@@ -173,6 +161,57 @@ function createMarkerIcon(color, icon) {
     iconAnchor: [16, 38],
     popupAnchor: [0, -40],
   });
+}
+
+// ── Fullscreen map control ───────────────────────────────────────────────────
+const FS_EXPAND  = '<svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>';
+const FS_COLLAPSE = '<svg viewBox="0 0 24 24"><path d="M4 14h6v6m10-10h-6V4M4 10h6V4m10 10h-6v6"/></svg>';
+
+function createFullscreenControl(containerSelector) {
+  const FullscreenControl = L.Control.extend({
+    options: { position: 'topright' },
+    onAdd(map) {
+      const btn = L.DomUtil.create('button', 'map-fullscreen-btn');
+      btn.title = 'Plein écran';
+      btn.innerHTML = FS_EXPAND;
+      btn.type = 'button';
+      const container = document.querySelector(containerSelector);
+
+      L.DomEvent.disableClickPropagation(btn);
+
+      L.DomEvent.on(btn, 'click', function(e) {
+        L.DomEvent.stop(e);
+        if (!document.fullscreenElement) {
+          container.requestFullscreen().then(() => {
+            btn.innerHTML = FS_COLLAPSE;
+            btn.title = 'Quitter plein écran';
+            setTimeout(() => map.invalidateSize(), 120);
+          }).catch(() => {});
+        } else {
+          document.exitFullscreen().then(() => {
+            btn.innerHTML = FS_EXPAND;
+            btn.title = 'Plein écran';
+            setTimeout(() => map.invalidateSize(), 120);
+          });
+        }
+      });
+
+      // Gérer Escape et sortie externe
+      document.addEventListener('fullscreenchange', () => {
+        if (!document.fullscreenElement) {
+          btn.innerHTML = FS_EXPAND;
+          btn.title = 'Plein écran';
+          setTimeout(() => map.invalidateSize(), 120);
+        }
+      });
+
+      // Masquer si le navigateur ne supporte pas le fullscreen
+      if (!document.fullscreenEnabled) btn.style.display = 'none';
+
+      return btn;
+    }
+  });
+  return new FullscreenControl();
 }
 
 // ── Data loading ─────────────────────────────────────────────────────────────
@@ -558,6 +597,7 @@ function renderPanelMap() {
     }).addTo(state.maps.panel);
     state.clusters.panel = L.markerClusterGroup({ chunkedLoading: true, maxClusterRadius: 50 });
     state.maps.panel.addLayer(state.clusters.panel);
+    createFullscreenControl('.panel-map-wrapper').addTo(state.maps.panel);
   }
 
   // Clear & repopulate
@@ -604,6 +644,7 @@ function initFullMap() {
 
   state.clusters.full = L.markerClusterGroup({ chunkedLoading: true, maxClusterRadius: 60 });
   state.maps.full.addLayer(state.clusters.full);
+  createFullscreenControl('.full-map-section').addTo(state.maps.full);
 
   populateFullMap(state.activeLayer);
   buildFullLegend();
@@ -667,14 +708,13 @@ function buildPopup(record, isFormation, cfg, name, typeKey) {
     <div class="popup-loc">🗺 ${titleCase(record.REGION || '')}</div>
     ${hasCoords ? `
     <button class="popup-nav-btn" onclick="navigateTo(${navId})">
-      🧭 M'y rendre
+      📍 Itinéraire Google Maps
     </button>` : ''}
   </div>`;
 }
 
-// ── Navigation / Routing functions ───────────────────────────────────────────
+// ── Navigation Google Maps ───────────────────────────────────────────────────
 
-// Point d'entrée depuis les popups
 window.navigateTo = function(id) {
   const d = _navStore[id];
   if (!d) return;
@@ -683,283 +723,37 @@ window.navigateTo = function(id) {
   if (state.maps.panel) state.maps.panel.closePopup();
   if (state.maps.full)  state.maps.full.closePopup();
 
-  // Toujours naviguer sur la carte globale
-  if (state.activeTab !== 'carte') {
-    setTab('carte');
-    const waitMap = setInterval(() => {
-      if (state.maps.full) {
-        clearInterval(waitMap);
-        setTimeout(() => startNavigation(d.lat, d.lon, d.name), 150);
-      }
-    }, 80);
+  const dest = `${d.lat},${d.lon}`;
+
+  // Essayer la géolocalisation pour inclure l'origine
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        const origin = `${pos.coords.latitude},${pos.coords.longitude}`;
+        window.open(
+          `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${dest}&travelmode=driving`,
+          '_blank'
+        );
+      },
+      () => {
+        // GPS refusé → Google Maps détectera la position
+        window.open(
+          `https://www.google.com/maps/dir/?api=1&destination=${dest}&travelmode=driving`,
+          '_blank'
+        );
+      },
+      { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
+    );
   } else {
-    startNavigation(d.lat, d.lon, d.name);
+    window.open(
+      `https://www.google.com/maps/dir/?api=1&destination=${dest}&travelmode=driving`,
+      '_blank'
+    );
   }
 };
 
-// Changement de profil (voiture / marche / vélo)
-window.setNavProfile = function(profile) {
-  nav.profile = profile;
-  $$('.route-mode-btn').forEach(b => b.classList.toggle('active', b.dataset.profile === profile));
-  if (nav.active && nav.destLat) {
-    startNavigation(nav.destLat, nav.destLon, nav.destName);
-  }
-};
 
-// Recalculer depuis la position actuelle
-window.recalcRoute = function() {
-  if (nav.destLat) startNavigation(nav.destLat, nav.destLon, nav.destName);
-};
 
-function startNavigation(destLat, destLon, destName) {
-  nav.destLat  = destLat;
-  nav.destLon  = destLon;
-  nav.destName = destName;
-
-  if (!navigator.geolocation) {
-    showToast('error', '⚠️ Géolocalisation non disponible sur cet appareil.');
-    return;
-  }
-
-  showRoutePanel('loading', destName);
-  showToast('loading', '📡 Localisation GPS en cours…');
-
-  navigator.geolocation.getCurrentPosition(
-    pos => {
-      hideToast();
-      drawRoute(pos.coords.latitude, pos.coords.longitude, destLat, destLon, destName);
-    },
-    err => {
-      hideToast();
-      const msgs = {
-        1: '🔒 Accès GPS refusé. Autorisez la localisation dans votre navigateur.',
-        2: '📡 Position introuvable. Activez le GPS.',
-        3: '⏱ Délai GPS dépassé. Réessayez.',
-      };
-      showRoutePanel('error', destName, null, null, msgs[err.code] || 'Erreur de géolocalisation.');
-    },
-    { enableHighAccuracy: true, timeout: 12000, maximumAge: 30000 }
-  );
-}
-
-function drawRoute(userLat, userLon, destLat, destLon, destName) {
-  const map = state.maps.full;
-  if (!map) return;
-
-  // Supprimer l'itinéraire précédent
-  clearRouteControl();
-
-  showRoutePanel('loading', destName);
-
-  const profiles = { driving: 'driving', walking: 'foot', cycling: 'cycling' };
-  const osrmProfile = profiles[nav.profile] || 'driving';
-
-  // Marqueur position utilisateur (pulsant)
-  const userIcon = L.divIcon({
-    className: '',
-    html: `<div class="user-dot-wrap">
-             <div class="user-pulse"></div>
-             <div class="user-dot"></div>
-           </div>`,
-    iconSize: [20, 20],
-    iconAnchor: [10, 10],
-  });
-  nav.userMarker = L.marker([userLat, userLon], { icon: userIcon, zIndexOffset: 1000 })
-    .bindPopup('<b>📍 Votre position</b>').addTo(map);
-
-  // Créer le contrôle d'itinéraire
-  nav.control = L.Routing.control({
-    waypoints: [
-      L.latLng(userLat, userLon),
-      L.latLng(destLat, destLon),
-    ],
-    router: L.Routing.osrmv1({
-      serviceUrl: `https://router.project-osrm.org/route/v1`,
-      profile: osrmProfile,
-    }),
-    routeWhileDragging:   false,
-    addWaypoints:         false,
-    draggableWaypoints:   false,
-    fitSelectedRoutes:    true,
-    showAlternatives:     false,
-    show:                 false,   // masquer le panneau LRM par défaut
-    collapsible:          false,
-    lineOptions: {
-      styles: [
-        { color: '#0f4428', weight: 7, opacity: .45 },
-        { color: '#1a6b3e', weight: 5, opacity: .9 },
-      ],
-      extendToWaypoints: true,
-      missingRouteTolerance: 10,
-    },
-    createMarker: (i, wp) => {
-      if (i === 0) return null; // on gère soi-même le marqueur user
-      // Marqueur destination
-      return L.marker(wp.latLng, {
-        icon: createMarkerIcon('#c0392b', '🏁'),
-        zIndexOffset: 1000,
-      }).bindPopup(`<b>🏁 ${destName}</b>`);
-    },
-  });
-
-  nav.control.on('routesfound', e => {
-    const route   = e.routes[0];
-    const summary = route.summary;
-    const steps   = route.instructions || [];
-    nav.active = true;
-    showRoutePanel('found', destName, summary, steps);
-    showToast('success', '✅ Itinéraire calculé !');
-    setTimeout(hideToast, 2000);
-  });
-
-  nav.control.on('routingerror', err => {
-    const msg = err.error?.message || 'Itinéraire introuvable entre ces deux points.';
-    showRoutePanel('error', destName, null, null, msg);
-    showToast('error', '❌ ' + msg);
-    setTimeout(hideToast, 4000);
-  });
-
-  nav.control.addTo(map);
-
-  // S'assurer que le conteneur LRM est caché
-  setTimeout(() => {
-    document.querySelectorAll('.leaflet-routing-container').forEach(el => {
-      el.style.display = 'none';
-    });
-  }, 200);
-}
-
-function clearRouteControl() {
-  if (nav.control && state.maps.full) {
-    try { state.maps.full.removeControl(nav.control); } catch(e) {}
-    nav.control = null;
-  }
-  if (nav.userMarker && state.maps.full) {
-    try { state.maps.full.removeLayer(nav.userMarker); } catch(e) {}
-    nav.userMarker = null;
-  }
-}
-
-window.clearRoute = function() {
-  clearRouteControl();
-  nav.active   = false;
-  nav.destLat  = null;
-  nav.destLon  = null;
-  nav.destName = '';
-  hideRoutePanel();
-};
-
-// ── Route panel rendering ─────────────────────────────────────────────────────
-function showRoutePanel(status, destName, summary, steps, errorMsg) {
-  const panel = document.getElementById('routePanel');
-  if (!panel) return;
-  panel.classList.remove('hidden');
-
-  const profileIcons = { driving: '🚗', walking: '🚶', cycling: '🚴' };
-
-  const head = `
-    <div class="route-panel-head">
-      <span class="route-panel-title">
-        🧭 Itinéraire vers
-        <strong>${destName}</strong>
-      </span>
-      <button class="route-close-btn" onclick="clearRoute()">✕</button>
-    </div>`;
-
-  if (status === 'loading') {
-    panel.innerHTML = head + `
-      <div class="route-loading">
-        <div class="spinner sm"></div>
-        <span>Calcul de l'itinéraire en cours…</span>
-      </div>`;
-    return;
-  }
-
-  if (status === 'error') {
-    panel.innerHTML = head + `
-      <div style="padding:16px;font-size:13px;color:var(--accent);">${errorMsg}</div>
-      <div class="route-panel-foot">
-        <button class="btn-cancel-route" onclick="clearRoute()">✕ Fermer</button>
-      </div>`;
-    return;
-  }
-
-  // Format distance et durée
-  const dist  = summary.totalDistance;
-  const time  = summary.totalTime;
-  const distStr = dist >= 1000 ? `${(dist / 1000).toFixed(1)} km` : `${Math.round(dist)} m`;
-  const timeStr = time >= 3600
-    ? `${Math.floor(time / 3600)}h ${Math.floor((time % 3600) / 60)} min`
-    : `${Math.floor(time / 60)} min`;
-
-  // Mode de transport
-  const modeBar = `
-    <div class="route-mode-bar">
-      ${['driving','walking','cycling'].map(p => `
-        <button class="route-mode-btn ${nav.profile === p ? 'active' : ''}"
-                data-profile="${p}"
-                onclick="setNavProfile('${p}')">
-          ${profileIcons[p]} ${p === 'driving' ? 'Voiture' : p === 'walking' ? 'À pied' : 'Vélo'}
-        </button>`).join('')}
-    </div>`;
-
-  // Étapes turn-by-turn
-  const stepsHtml = steps.map((step, i) => {
-    const d = step.distance >= 1000
-      ? `${(step.distance / 1000).toFixed(1)} km`
-      : `${Math.round(step.distance)} m`;
-    const isLast = i === steps.length - 1;
-    return `
-      <div class="route-step">
-        <div class="step-num ${isLast ? 'dest' : ''}">${isLast ? '🏁' : i + 1}</div>
-        <div class="step-body">
-          <div class="step-text">${step.text}</div>
-          ${!isLast ? `<div class="step-dist">${d}</div>` : ''}
-        </div>
-      </div>`;
-  }).join('');
-
-  panel.innerHTML = head + `
-    <div class="route-summary">
-      <div class="route-stat">
-        <span class="route-stat-val">${distStr}</span>
-        <span class="route-stat-lbl">Distance</span>
-      </div>
-      <div class="route-stat-sep"></div>
-      <div class="route-stat">
-        <span class="route-stat-val">${timeStr}</span>
-        <span class="route-stat-lbl">Durée estimée</span>
-      </div>
-    </div>
-    ${modeBar}
-    <div class="route-steps">${stepsHtml}</div>
-    <div class="route-panel-foot">
-      <button class="btn-recalc" onclick="recalcRoute()">↺ Recalculer</button>
-      <button class="btn-cancel-route" onclick="clearRoute()">✕ Annuler</button>
-    </div>`;
-}
-
-function hideRoutePanel() {
-  const panel = document.getElementById('routePanel');
-  if (panel) panel.classList.add('hidden');
-}
-
-// ── Toast helpers ─────────────────────────────────────────────────────────────
-let _toastTimer = null;
-
-function showToast(type, msg) {
-  const toast = document.getElementById('routeToast');
-  if (!toast) return;
-  clearTimeout(_toastTimer);
-  toast.className = `route-toast ${type}`;
-  toast.textContent = msg;
-  toast.classList.remove('hidden');
-}
-
-function hideToast() {
-  const toast = document.getElementById('routeToast');
-  if (toast) toast.classList.add('hidden');
-}
 
 // ── Full map search ───────────────────────────────────────────────────────────
 function setupFullMapSearch() {
@@ -1009,12 +803,6 @@ function initFullMapIfVisible() {
 
 // ── Tab switching ─────────────────────────────────────────────────────────────
 function setTab(tab) {
-  // Nettoyer l'itinéraire si on quitte la carte
-  if (state.activeTab === 'carte' && tab !== 'carte') {
-    clearRouteControl();
-    hideRoutePanel();
-  }
-
   state.activeTab = tab;
   state.page = 1;
   state.filters = { search: '', region: '', type: '', milieu: '' };

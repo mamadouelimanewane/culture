@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Backoffice — Culture Sénégal</title>
+  <meta name="theme-color" content="#0f4428" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/admin.css" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════
+       ÉCRAN DE CONNEXION
+  ═══════════════════════════════════ -->
+  <div id="loginScreen">
+    <div class="login-panel">
+      <div class="login-brand">
+        <span class="login-emblem">🌍</span>
+        <div>
+          <h1>Culture Sénégal</h1>
+          <p>Plateforme d'Administration</p>
+        </div>
+      </div>
+
+      <div class="login-card">
+        <h2>Connexion</h2>
+        <p class="login-sub">Accès réservé aux administrateurs et responsables accrédités</p>
+
+        <form id="loginForm" autocomplete="off">
+          <div class="field">
+            <label for="loginEmail">Adresse email</label>
+            <input type="email" id="loginEmail" placeholder="votre@email.com" required />
+          </div>
+          <div class="field">
+            <label for="loginPassword">Mot de passe</label>
+            <div class="pw-wrap">
+              <input type="password" id="loginPassword" placeholder="••••••••" required />
+              <button type="button" class="pw-eye" id="pwEye" aria-label="Afficher">👁</button>
+            </div>
+          </div>
+          <div class="error-msg hidden" id="loginError"></div>
+          <button type="submit" class="btn-login">Se connecter →</button>
+        </form>
+
+        <div class="login-sep"><span>ou</span></div>
+        <button class="btn-register-link" onclick="openRegisterModal()">
+          📝 Demander l'accès (nouveau propriétaire)
+        </button>
+      </div>
+
+      <div class="demo-bar">
+        <span>Comptes démo :</span>
+        <button onclick="fillDemo('admin')" class="demo-btn">👨‍💼 Admin</button>
+        <button onclick="fillDemo('responsable')" class="demo-btn">👩 Responsable</button>
+      </div>
+
+      <a href="../index.html" class="back-link">← Retour au site public</a>
+    </div>
+
+    <div class="login-visual">
+      <div class="visual-content">
+        <h2>Carte Culturelle Nationale</h2>
+        <p>Gérez et valorisez les infrastructures culturelles du Sénégal</p>
+        <div class="visual-stats">
+          <div class="vstats"><span>1 139</span><label>Infrastructures</label></div>
+          <div class="vstats"><span>87</span><label>Centres de formation</label></div>
+          <div class="vstats"><span>14</span><label>Régions</label></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════
+       APPLICATION PRINCIPALE
+  ═══════════════════════════════════ -->
+  <div id="mainApp" class="hidden">
+
+    <!-- Sidebar overlay mobile -->
+    <div class="sb-overlay hidden" id="sbOverlay" onclick="closeSidebar()"></div>
+
+    <!-- ─── SIDEBAR ─── -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sb-head">
+        <a href="../index.html" class="sb-logo">
+          <span>🌍</span>
+          <div>
+            <span class="sb-logo-title">Culture Sénégal</span>
+            <span class="sb-logo-sub">Administration</span>
+          </div>
+        </a>
+        <button class="sb-close" onclick="closeSidebar()" aria-label="Fermer">✕</button>
+      </div>
+
+      <nav class="sb-nav" id="sbNav"></nav>
+
+      <div class="sb-foot" id="sbFoot"></div>
+    </aside>
+
+    <!-- ─── MAIN AREA ─── -->
+    <div class="main-area">
+      <header class="topbar">
+        <button class="topbar-ham" onclick="openSidebar()" aria-label="Menu">☰</button>
+        <h1 class="topbar-title" id="topbarTitle">Tableau de bord</h1>
+        <div class="topbar-right">
+          <div class="notif-wrap" id="notifWrap">
+            <button class="notif-btn" id="notifBtn" onclick="toggleNotifPanel()">🔔</button>
+            <span class="notif-dot hidden" id="notifDot"></span>
+            <div class="notif-panel hidden" id="notifPanel">
+              <div class="notif-panel-head">
+                <span>Notifications</span>
+                <button class="notif-clear-btn" onclick="clearNotifs()">Tout vu</button>
+              </div>
+              <div class="notif-panel-body" id="notifList"></div>
+            </div>
+          </div>
+          <span class="topbar-user" id="topbarUser"></span>
+        </div>
+      </header>
+
+      <main class="page" id="page">
+        <div class="page-loading"><div class="spinner"></div></div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════
+       MODAL INSCRIPTION / DEMANDE ACCÈS
+  ═══════════════════════════════════ -->
+  <div class="modal-overlay hidden" id="registerModal">
+    <div class="modal-box modal-lg">
+      <div class="modal-head">
+        <h3>📝 Demande d'accès — Nouveau propriétaire</h3>
+        <button class="modal-x" onclick="closeRegisterModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="registerForm">
+          <div class="fields-2col">
+            <div class="field"><label>Prénom et Nom *</label>
+              <input type="text" id="rName" required placeholder="Prénom Nom" /></div>
+            <div class="field"><label>Email *</label>
+              <input type="email" id="rEmail" required placeholder="email@example.com" /></div>
+          </div>
+          <div class="fields-2col">
+            <div class="field"><label>Téléphone *</label>
+              <input type="tel" id="rPhone" required placeholder="+221 77 000 00 00" /></div>
+            <div class="field"><label>Mot de passe *</label>
+              <input type="password" id="rPassword" required placeholder="Min. 6 caractères" /></div>
+          </div>
+          <div class="field"><label>Région *</label>
+            <select id="rRegion" required>
+              <option value="">— Sélectionner —</option>
+              <option>DAKAR</option><option>DIOURBEL</option><option>FATICK</option>
+              <option>KAFFRINE</option><option>KAOLACK</option><option>KEDOUGOU</option>
+              <option>KOLDA</option><option>LOUGA</option><option>MATAM</option>
+              <option>SAINT LOUIS</option><option>SEDHIOU</option><option>TAMBACOUNDA</option>
+              <option>THIES</option><option>ZIGUINCHOR</option>
+            </select>
+          </div>
+          <div class="field"><label>Type de demande *</label>
+            <select id="rInfraType" onchange="toggleRegInfraFields()">
+              <option value="">— Sélectionner —</option>
+              <option value="existing">Gérer une infrastructure existante</option>
+              <option value="new">Enregistrer une nouvelle infrastructure</option>
+            </select>
+          </div>
+          <div class="field hidden" id="rExistingField"><label>Nom de l'infrastructure existante</label>
+            <input type="text" id="rInfraName" placeholder="Nom exact de l'infrastructure" /></div>
+          <div class="field"><label>Message / Justification</label>
+            <textarea id="rMessage" rows="3" placeholder="Décrivez votre rôle, vos intentions et votre lien avec l'infrastructure…"></textarea>
+          </div>
+          <div class="error-msg hidden" id="rError"></div>
+        </form>
+      </div>
+      <div class="modal-foot">
+        <button class="btn-ghost" onclick="closeRegisterModal()">Annuler</button>
+        <button class="btn-primary" onclick="submitRegistration()">Envoyer la demande</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════
+       MODAL VALIDATION (admin)
+  ═══════════════════════════════════ -->
+  <div class="modal-overlay hidden" id="valModal">
+    <div class="modal-box modal-lg">
+      <div class="modal-head">
+        <h3 id="valTitle">Révision de la soumission</h3>
+        <button class="modal-x" onclick="closeValModal()">✕</button>
+      </div>
+      <div class="modal-body" id="valBody"></div>
+      <div class="modal-foot" id="valFoot"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════
+       TOAST NOTIFICATION
+  ═══════════════════════════════════ -->
+  <div class="toast hidden" id="toast"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

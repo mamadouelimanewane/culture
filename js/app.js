@@ -882,9 +882,24 @@ function setTab(tab) {
   dom.mnavBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
 
   // Show/hide sections
-  const showMain = tab !== 'carte';
-  dom.appLayout.classList.toggle('hidden', !showMain);
-  dom.fullMapSection.classList.toggle('hidden', showMain);
+  const isMapTab = tab === 'carte';
+  dom.appLayout.classList.toggle('hidden', isMapTab);
+  dom.fullMapSection.classList.toggle('hidden', !isMapTab);
+
+  // Masquer Header et Stats Bar en mode Carte pour maximiser l'espace
+  const header = $('header');
+  const statsBar = $('statsBar');
+  if (header) header.style.display = isMapTab ? 'none' : '';
+  if (statsBar) statsBar.style.display = isMapTab ? 'none' : '';
+
+  // Ajuster la hauteur de la section carte si header/stats sont masqués
+  if (isMapTab) {
+    dom.fullMapSection.style.minHeight = '100vh';
+    dom.fullMapSection.style.height = '100vh';
+  } else {
+    dom.fullMapSection.style.minHeight = '';
+    dom.fullMapSection.style.height = '';
+  }
 
   if (tab === 'carte') {
     initFullMap();

@@ -1117,8 +1117,7 @@ input, select, textarea { font-family: inherit; }
   /* Full map */
   .full-map-bar { flex-direction: column; gap: 10px; }
   .full-map-search-wrap { min-width: unset; width: 100%; }
-  .map-layer-btns { width: 100%; justify-content: space-between; }
-  .layer-btn { flex: 1; text-align: center; font-size: 12px; }
+  .map-layer-btns { display: none; }
 }
 
 /* ── Small mobile (≤ 400px) ─── */

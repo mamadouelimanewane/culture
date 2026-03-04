@@ -854,11 +854,11 @@ function startFullMapIdleTimeout() {
     if (state.maps.full) {
       // Zoom vers la région Dakar/Mbour, qui concentre le plus d'activités
       state.maps.full.flyToBounds([
-        [14.3, -17.55],
-        [14.9, -16.85]
-      ], { duration: 2.5 });
+        [14.4, -17.55],
+        [14.8, -16.95]
+      ], { duration: 1.5 });
     }
-  }, 30000);
+  }, 15000);
 }
 
 function initFullMapIfVisible() {

@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════
-   ADMIN — Culture Sénégal   (vanilla JS, localStorage)
+   ADMIN — Scenews   (vanilla JS, localStorage)
 ═══════════════════════════════════════════════════════════ */
 
 'use strict';
@@ -10,20 +10,20 @@
 const DB = {
   _key: k => 'cultureAdmin_' + k,
 
-  get(k)      { try { return JSON.parse(localStorage.getItem(DB._key(k))); } catch(e){ return null; } },
-  set(k, v)   { localStorage.setItem(DB._key(k), JSON.stringify(v)); },
-  remove(k)   { localStorage.removeItem(DB._key(k)); },
+  get(k) { try { return JSON.parse(localStorage.getItem(DB._key(k))); } catch (e) { return null; } },
+  set(k, v) { localStorage.setItem(DB._key(k), JSON.stringify(v)); },
+  remove(k) { localStorage.removeItem(DB._key(k)); },
 
   /* Collections */
-  getAll(col)           { return DB.get(col) || []; },
-  save(col, arr)        { DB.set(col, arr); },
-  push(col, item)       { const a = DB.getAll(col); a.push(item); DB.save(col, a); return item; },
+  getAll(col) { return DB.get(col) || []; },
+  save(col, arr) { DB.set(col, arr); },
+  push(col, item) { const a = DB.getAll(col); a.push(item); DB.save(col, a); return item; },
   update(col, id, data) {
     const a = DB.getAll(col).map(r => r.id === id ? { ...r, ...data } : r);
     DB.save(col, a);
   },
-  findById(col, id)     { return DB.getAll(col).find(r => r.id === id) || null; },
-  removeById(col, id)   { DB.save(col, DB.getAll(col).filter(r => r.id !== id)); },
+  findById(col, id) { return DB.getAll(col).find(r => r.id === id) || null; },
+  removeById(col, id) { DB.save(col, DB.getAll(col).filter(r => r.id !== id)); },
 
   /* ID generator */
   nextId(col) {
@@ -164,7 +164,7 @@ function checkAuth() {
   const stored = sessionStorage.getItem('adminUser');
   if (stored) {
     try { currentUser = JSON.parse(stored); return true; }
-    catch(e) {}
+    catch (e) { }
   }
   return false;
 }
@@ -250,9 +250,9 @@ function showApp() {
 function initLoginForm() {
   qs('#loginForm').addEventListener('submit', e => {
     e.preventDefault();
-    const email    = qs('#loginEmail').value.trim();
+    const email = qs('#loginEmail').value.trim();
     const password = qs('#loginPassword').value;
-    const errEl    = qs('#loginError');
+    const errEl = qs('#loginError');
     errEl.classList.add('hidden');
 
     const user = login(email, password);
@@ -266,12 +266,12 @@ function initLoginForm() {
   });
 }
 
-window.fillDemo = function(role) {
+window.fillDemo = function (role) {
   if (role === 'admin') {
-    qs('#loginEmail').value    = 'admin@culture.sn';
+    qs('#loginEmail').value = 'admin@culture.sn';
     qs('#loginPassword').value = 'admin123';
   } else {
-    qs('#loginEmail').value    = 'fatou@culture.sn';
+    qs('#loginEmail').value = 'fatou@culture.sn';
     qs('#loginPassword').value = 'resp123';
   }
 };
@@ -280,32 +280,32 @@ window.fillDemo = function(role) {
    SIDEBAR BUILDER
 ───────────────────────────────────────────── */
 function buildSidebar() {
-  const nav  = qs('#sbNav');
+  const nav = qs('#sbNav');
   const foot = qs('#sbFoot');
   const isAdmin = currentUser.role === 'admin';
   const pendingCount = DB.getAll('submissions').filter(s => s.status === 'pending').length
-                     + DB.getAll('registrations').filter(r => r.status === 'pending').length;
+    + DB.getAll('registrations').filter(r => r.status === 'pending').length;
 
   const links = isAdmin
     ? [
-        { section: 'Administration' },
-        { view: 'dashboard',    icon: '📊', label: 'Tableau de bord' },
-        { view: 'pending',      icon: '⏳', label: 'À valider', badge: pendingCount || null },
-        { view: 'users',        icon: '👥', label: 'Utilisateurs' },
-        { view: 'all_subs',     icon: '📋', label: 'Toutes les soumissions' },
-        { section: 'Données' },
-        { view: 'infra_list',   icon: '🏛', label: 'Infrastructures' },
-      ]
+      { section: 'Administration' },
+      { view: 'dashboard', icon: '📊', label: 'Tableau de bord' },
+      { view: 'pending', icon: '⏳', label: 'À valider', badge: pendingCount || null },
+      { view: 'users', icon: '👥', label: 'Utilisateurs' },
+      { view: 'all_subs', icon: '📋', label: 'Toutes les soumissions' },
+      { section: 'Données' },
+      { view: 'infra_list', icon: '🏛', label: 'Infrastructures' },
+    ]
     : [
-        { section: 'Mon espace' },
-        { view: 'dashboard',    icon: '📊', label: 'Tableau de bord' },
-        { section: 'Soumettre' },
-        { view: 'submit_update', icon: '✏️', label: 'Mise à jour infra' },
-        { view: 'submit_event',  icon: '🗓', label: 'Événement / Date' },
-        { view: 'submit_new',    icon: '➕', label: 'Nouvelle infrastructure' },
-        { section: 'Historique' },
-        { view: 'my_subs',      icon: '📋', label: 'Mes soumissions' },
-      ];
+      { section: 'Mon espace' },
+      { view: 'dashboard', icon: '📊', label: 'Tableau de bord' },
+      { section: 'Soumettre' },
+      { view: 'submit_update', icon: '✏️', label: 'Mise à jour infra' },
+      { view: 'submit_event', icon: '🗓', label: 'Événement / Date' },
+      { view: 'submit_new', icon: '➕', label: 'Nouvelle infrastructure' },
+      { section: 'Historique' },
+      { view: 'my_subs', icon: '📋', label: 'Mes soumissions' },
+    ];
 
   nav.innerHTML = links.map(l => {
     if (l.section) return `<div class="sb-section">${l.section}</div>`;
@@ -342,14 +342,14 @@ function buildSidebar() {
 function updateTopbar() {
   qs('#topbarUser').textContent = currentUser.name;
   const pending = DB.getAll('submissions').filter(s => s.status === 'pending').length
-                + DB.getAll('registrations').filter(r => r.status === 'pending').length;
+    + DB.getAll('registrations').filter(r => r.status === 'pending').length;
   qs('#notifDot').classList.toggle('hidden', pending === 0);
 }
 
 /* ─────────────────────────────────────────────
    NOTIFICATION PANEL
 ───────────────────────────────────────────── */
-window.toggleNotifPanel = function() {
+window.toggleNotifPanel = function () {
   const panel = qs('#notifPanel');
   const isOpen = !panel.classList.contains('hidden');
   if (isOpen) { panel.classList.add('hidden'); return; }
@@ -433,7 +433,7 @@ function renderNotifPanel() {
   }
 }
 
-window.clearNotifs = function() {
+window.clearNotifs = function () {
   qs('#notifPanel').classList.add('hidden');
   showToast('Notifications marquées comme lues', 'info');
 };
@@ -447,18 +447,18 @@ function renderView(view) {
 
   // slight delay for spinner to flash (UX)
   setTimeout(() => {
-    switch(view) {
+    switch (view) {
       case 'dashboard':
         currentUser.role === 'admin' ? renderAdminDashboard() : renderRespDashboard();
         break;
-      case 'pending':     renderPending();     break;
-      case 'users':       renderUsers();       break;
-      case 'all_subs':    renderAllSubs();     break;
-      case 'infra_list':  renderInfraList();   break;
+      case 'pending': renderPending(); break;
+      case 'users': renderUsers(); break;
+      case 'all_subs': renderAllSubs(); break;
+      case 'infra_list': renderInfraList(); break;
       case 'submit_update': renderSubmitUpdate(); break;
-      case 'submit_event':  renderSubmitEvent();  break;
-      case 'submit_new':    renderSubmitNew();    break;
-      case 'my_subs':       renderMySubs();       break;
+      case 'submit_event': renderSubmitEvent(); break;
+      case 'submit_new': renderSubmitNew(); break;
+      case 'my_subs': renderMySubs(); break;
       default:
         page.innerHTML = '<p style="padding:24px">Vue introuvable.</p>';
     }
@@ -469,9 +469,9 @@ function renderView(view) {
    ── ADMIN: DASHBOARD ──
 ───────────────────────────────────────────── */
 function renderAdminDashboard() {
-  const page  = qs('#page');
-  const subs  = DB.getAll('submissions');
-  const regs  = DB.getAll('registrations');
+  const page = qs('#page');
+  const subs = DB.getAll('submissions');
+  const regs = DB.getAll('registrations');
   const users = DB.getAll('users');
 
   const pending = subs.filter(s => s.status === 'pending').length + regs.filter(r => r.status === 'pending').length;
@@ -483,7 +483,7 @@ function renderAdminDashboard() {
     <div class="page-head">
       <div class="page-head-left">
         <h2>Bonjour, ${currentUser.name} 👋</h2>
-        <p>Bienvenue sur le backoffice de Culture Sénégal</p>
+        <p>Bienvenue sur le backoffice de Scenews</p>
       </div>
     </div>
 
@@ -602,19 +602,19 @@ function renderRecentRegistrations() {
 function renderActivityChart(subs) {
   /* Group by type and status */
   const types = [
-    { key: 'update',    label: 'Mises à jour',   color: 'green' },
-    { key: 'event',     label: 'Événements',      color: 'gold'  },
-    { key: 'new_infra', label: 'Nouvelles infras', color: 'blue'  },
+    { key: 'update', label: 'Mises à jour', color: 'green' },
+    { key: 'event', label: 'Événements', color: 'gold' },
+    { key: 'new_infra', label: 'Nouvelles infras', color: 'blue' },
   ];
   const max = Math.max(1, ...types.map(t => subs.filter(s => s.type === t.key).length));
 
   const rows = types.map(t => {
-    const all      = subs.filter(s => s.type === t.key);
-    const pending  = all.filter(s => s.status === 'pending').length;
+    const all = subs.filter(s => s.type === t.key);
+    const pending = all.filter(s => s.status === 'pending').length;
     const approved = all.filter(s => s.status === 'approved').length;
     const rejected = all.filter(s => s.status === 'rejected').length;
-    const total    = all.length;
-    const pct      = Math.round((total / max) * 100);
+    const total = all.length;
+    const pct = Math.round((total / max) * 100);
     return `<div class="chart-bar-row">
       <span class="chart-bar-label">${t.label}</span>
       <div class="chart-bar-track">
@@ -679,20 +679,20 @@ function renderPending() {
 
   function tabs() {
     const updateCount = subs.filter(s => s.type === 'update').length;
-    const eventCount  = subs.filter(s => s.type === 'event').length;
-    const newCount    = subs.filter(s => s.type === 'new_infra').length;
-    const regCount    = regs.length;
+    const eventCount = subs.filter(s => s.type === 'event').length;
+    const newCount = subs.filter(s => s.type === 'new_infra').length;
+    const regCount = regs.length;
     return `<div class="vtabs" id="pendingTabs">
-      <button class="vtab ${activeTab==='updates'?'active':''}" data-ptab="updates">
+      <button class="vtab ${activeTab === 'updates' ? 'active' : ''}" data-ptab="updates">
         ✏️ Mises à jour <span class="vtab-count">${updateCount}</span>
       </button>
-      <button class="vtab ${activeTab==='events'?'active':''}" data-ptab="events">
+      <button class="vtab ${activeTab === 'events' ? 'active' : ''}" data-ptab="events">
         🗓 Événements <span class="vtab-count">${eventCount}</span>
       </button>
-      <button class="vtab ${activeTab==='new_infra'?'active':''}" data-ptab="new_infra">
+      <button class="vtab ${activeTab === 'new_infra' ? 'active' : ''}" data-ptab="new_infra">
         ➕ Nouvelles infras <span class="vtab-count">${newCount}</span>
       </button>
-      <button class="vtab ${activeTab==='registrations'?'active':''}" data-ptab="registrations">
+      <button class="vtab ${activeTab === 'registrations' ? 'active' : ''}" data-ptab="registrations">
         📝 Demandes d'accès <span class="vtab-count">${regCount}</span>
       </button>
     </div>`;
@@ -701,8 +701,8 @@ function renderPending() {
   function body() {
     if (activeTab === 'registrations') return renderRegCards(regs);
     const filtered = subs.filter(s => s.type === activeTab || (activeTab === 'updates' && s.type === 'update'));
-    if (activeTab === 'updates')   return renderSubCards(filtered);
-    if (activeTab === 'events')    return renderSubCards(subs.filter(s => s.type === 'event'));
+    if (activeTab === 'updates') return renderSubCards(filtered);
+    if (activeTab === 'events') return renderSubCards(subs.filter(s => s.type === 'event'));
     if (activeTab === 'new_infra') return renderSubCards(subs.filter(s => s.type === 'new_infra'));
     return '';
   }
@@ -725,13 +725,13 @@ function renderPending() {
 function renderSubCards(items) {
   if (!items.length) return '<div class="empty-state"><div class="empty-state-icon">🎉</div><h3>Tout est à jour</h3><p>Aucune soumission en attente dans cette catégorie.</p></div>';
   return `<div class="sub-cards">${items.map(s => {
-    const name  = s.infraName || s.data?.name || '—';
-    const icon  = s.type === 'update' ? '✏️' : s.type === 'event' ? '🗓' : '➕';
+    const name = s.infraName || s.data?.name || '—';
+    const icon = s.type === 'update' ? '✏️' : s.type === 'event' ? '🗓' : '➕';
     const excerpt = s.type === 'update'
       ? (s.data?.description || '').substring(0, 120) + '…'
       : s.type === 'event'
-      ? `${s.data?.title || ''} — ${formatDate(s.data?.dateStart || '')}`
-      : `${s.data?.name || ''} (${s.data?.commune || ''}, ${s.data?.region || ''})`;
+        ? `${s.data?.title || ''} — ${formatDate(s.data?.dateStart || '')}`
+        : `${s.data?.name || ''} (${s.data?.commune || ''}, ${s.data?.region || ''})`;
     return `<div class="sub-card">
       <div class="sub-card-icon">${icon}</div>
       <div class="sub-card-body">
@@ -778,12 +778,12 @@ function renderRegCards(items) {
 ───────────────────────────────────────────── */
 let _valCtx = null;
 
-window.openValModal = function(id, kind) {
+window.openValModal = function (id, kind) {
   _valCtx = { id, kind };
   const modal = qs('#valModal');
   const title = qs('#valTitle');
-  const body  = qs('#valBody');
-  const foot  = qs('#valFoot');
+  const body = qs('#valBody');
+  const foot = qs('#valFoot');
 
   if (kind === 'submission') {
     const s = DB.findById('submissions', id);
@@ -862,12 +862,12 @@ window.openValModal = function(id, kind) {
   modal.classList.remove('hidden');
 };
 
-window.closeValModal = function() {
+window.closeValModal = function () {
   qs('#valModal').classList.add('hidden');
   _valCtx = null;
 };
 
-window.reviewSubmission = function(id, status) {
+window.reviewSubmission = function (id, status) {
   const note = (qs('#valNote') || {}).value || '';
   DB.update('submissions', id, {
     status,
@@ -882,8 +882,8 @@ window.reviewSubmission = function(id, status) {
   renderPending();
 };
 
-window.reviewRegistration = function(id, status) {
-  const reg  = DB.findById('registrations', id);
+window.reviewRegistration = function (id, status) {
+  const reg = DB.findById('registrations', id);
   const note = (qs('#valNote') || {}).value || '';
   DB.update('registrations', id, {
     status,
@@ -918,7 +918,7 @@ function generateTempPassword() {
   return 'tmp' + Math.random().toString(36).slice(2, 8);
 }
 
-window.openImgZoom = function(src) {
+window.openImgZoom = function (src) {
   const ov = document.createElement('div');
   ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:zoom-out;';
   const img = document.createElement('img');
@@ -983,17 +983,17 @@ function userRow(u) {
   </tr>`;
 }
 
-window.filterUsersTable = function(q) {
+window.filterUsersTable = function (q) {
   const rows = document.querySelectorAll('#usersTable tbody tr');
   const lq = q.toLowerCase();
   rows.forEach(row => {
-    const name  = row.dataset.userName || '';
+    const name = row.dataset.userName || '';
     const email = row.dataset.userEmail || '';
     row.style.display = (name.includes(lq) || email.includes(lq)) ? '' : 'none';
   });
 };
 
-window.toggleUserStatus = function(id) {
+window.toggleUserStatus = function (id) {
   const u = DB.findById('users', id);
   if (!u) return;
   const newStatus = u.status === 'active' ? 'inactive' : 'active';
@@ -1102,15 +1102,15 @@ function drawInfraTable(items) {
   </div>`;
 }
 
-window.filterInfraTable = function(q) {
+window.filterInfraTable = function (q) {
   if (!window._infraData) return;
   const lq = q.toLowerCase();
   const filtered = lq
     ? window._infraData.filter(i =>
-        (i.DESIGNATION || '').toLowerCase().includes(lq) ||
-        (i.COMMUNE || '').toLowerCase().includes(lq) ||
-        (i.REGION || '').toLowerCase().includes(lq) ||
-        (i.DESCRIPTIF || '').toLowerCase().includes(lq))
+      (i.DESIGNATION || '').toLowerCase().includes(lq) ||
+      (i.COMMUNE || '').toLowerCase().includes(lq) ||
+      (i.REGION || '').toLowerCase().includes(lq) ||
+      (i.DESCRIPTIF || '').toLowerCase().includes(lq))
     : window._infraData.slice(0, 80);
   drawInfraTable(filtered.slice(0, 200));
 };
@@ -1121,7 +1121,7 @@ window.filterInfraTable = function(q) {
 function renderRespDashboard() {
   setTitle('Mon tableau de bord');
   const mySubs = DB.getAll('submissions').filter(s => s.userId === currentUser.id);
-  const pending  = mySubs.filter(s => s.status === 'pending').length;
+  const pending = mySubs.filter(s => s.status === 'pending').length;
   const approved = mySubs.filter(s => s.status === 'approved').length;
   const rejected = mySubs.filter(s => s.status === 'rejected').length;
   const fullUser = DB.findById('users', currentUser.id);
@@ -1232,16 +1232,16 @@ function renderSubmitUpdate() {
   initImgUpload('updImgInput', 'updImgPreview', 'updImgZone', 3);
 }
 
-window.submitUpdate = function() {
+window.submitUpdate = function () {
   const infraName = qs('#updInfraName').value.trim();
   if (!infraName) { showFormError('updError', 'Veuillez indiquer le nom de l\'infrastructure.'); return; }
 
   const data = {
     description: qs('#updDesc').value.trim(),
-    capacity:    qs('#updCapacity').value.trim(),
+    capacity: qs('#updCapacity').value.trim(),
     openingHours: qs('#updHours').value.trim(),
-    phone:   qs('#updPhone').value.trim(),
-    email:   qs('#updEmail').value.trim(),
+    phone: qs('#updPhone').value.trim(),
+    email: qs('#updEmail').value.trim(),
     website: qs('#updWeb').value.trim(),
   };
 
@@ -1310,11 +1310,11 @@ function renderSubmitEvent() {
   initImgUpload('evtImgInput', 'evtImgPreview', 'evtImgZone', 3);
 }
 
-window.submitEvent = function() {
-  const infraName  = qs('#evtInfraName').value.trim();
-  const title      = qs('#evtTitle').value.trim();
-  const dateStart  = qs('#evtDateStart').value;
-  const dateEnd    = qs('#evtDateEnd').value;
+window.submitEvent = function () {
+  const infraName = qs('#evtInfraName').value.trim();
+  const title = qs('#evtTitle').value.trim();
+  const dateStart = qs('#evtDateStart').value;
+  const dateEnd = qs('#evtDateEnd').value;
   const description = qs('#evtDesc').value.trim();
 
   if (!infraName || !title || !dateStart || !dateEnd || !description) {
@@ -1388,7 +1388,7 @@ function renderSubmitNew() {
           <div class="field"><label>Région *</label>
             <select id="newRegion" required>
               <option value="">—</option>
-              ${['DAKAR','DIOURBEL','FATICK','KAFFRINE','KAOLACK','KEDOUGOU','KOLDA','LOUGA','MATAM','SAINT LOUIS','SEDHIOU','TAMBACOUNDA','THIES','ZIGUINCHOR'].map(r => `<option>${r}</option>`).join('')}
+              ${['DAKAR', 'DIOURBEL', 'FATICK', 'KAFFRINE', 'KAOLACK', 'KEDOUGOU', 'KOLDA', 'LOUGA', 'MATAM', 'SAINT LOUIS', 'SEDHIOU', 'TAMBACOUNDA', 'THIES', 'ZIGUINCHOR'].map(r => `<option>${r}</option>`).join('')}
             </select></div>
           <div class="field"><label>Département</label>
             <input type="text" id="newDept" placeholder="Département" /></div>
@@ -1449,14 +1449,14 @@ function initMapPicker() {
   });
 }
 
-window.submitNewInfra = function() {
-  const name    = qs('#newName').value.trim();
-  const type    = qs('#newType').value;
-  const milieu  = qs('#newMilieu').value;
-  const region  = qs('#newRegion').value;
+window.submitNewInfra = function () {
+  const name = qs('#newName').value.trim();
+  const type = qs('#newType').value;
+  const milieu = qs('#newMilieu').value;
+  const region = qs('#newRegion').value;
   const commune = qs('#newCommune').value.trim();
-  const lat     = parseFloat(qs('#newLat').value);
-  const lon     = parseFloat(qs('#newLon').value);
+  const lat = parseFloat(qs('#newLat').value);
+  const lon = parseFloat(qs('#newLon').value);
 
   if (!name || !type || !milieu || !region || !commune) {
     showFormError('newError', 'Veuillez remplir tous les champs obligatoires (*).');
@@ -1500,23 +1500,23 @@ window.submitNewInfra = function() {
 function renderMySubs() {
   setTitle('Mes soumissions');
   const items = DB.getAll('submissions').filter(s => s.userId === currentUser.id)
-                  .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 
   qs('#page').innerHTML = `
     <div class="page-head"><div class="page-head-left"><h2>Mes soumissions</h2><p>${items.length} soumission(s) envoyée(s)</p></div></div>
     <div class="panel">
       <div class="panel-body" style="padding:16px;">
         ${items.length === 0
-          ? `<div class="empty-state"><div class="empty-state-icon">📭</div><h3>Aucune soumission</h3><p>Vous n'avez encore rien soumis.</p></div>`
-          : `<div class="sub-history-cards">${items.map(s => {
-              const icon = s.type === 'update' ? '✏️' : s.type === 'event' ? '🗓' : '➕';
-              const name = s.infraName || s.data?.name || '—';
-              const subTitle = s.type === 'event'
-                ? (s.data?.title || '')
-                : s.type === 'new_infra'
-                ? `${s.data?.type || ''} — ${s.data?.commune || ''}`
-                : `${Object.values(s.data || {}).filter(Boolean).length} champ(s) modifié(s)`;
-              return `<div class="sub-hist-card">
+      ? `<div class="empty-state"><div class="empty-state-icon">📭</div><h3>Aucune soumission</h3><p>Vous n'avez encore rien soumis.</p></div>`
+      : `<div class="sub-history-cards">${items.map(s => {
+        const icon = s.type === 'update' ? '✏️' : s.type === 'event' ? '🗓' : '➕';
+        const name = s.infraName || s.data?.name || '—';
+        const subTitle = s.type === 'event'
+          ? (s.data?.title || '')
+          : s.type === 'new_infra'
+            ? `${s.data?.type || ''} — ${s.data?.commune || ''}`
+            : `${Object.values(s.data || {}).filter(Boolean).length} champ(s) modifié(s)`;
+        return `<div class="sub-hist-card">
                 <div class="shc-icon">${icon}</div>
                 <div class="shc-body">
                   <div class="shc-title">${name}</div>
@@ -1525,8 +1525,8 @@ function renderMySubs() {
                   ${s.adminNote ? `<div class="shc-note">💬 Note admin: ${s.adminNote}</div>` : ''}
                 </div>
               </div>`;
-            }).join('')}</div>`
-        }
+      }).join('')}</div>`
+    }
       </div>
     </div>`;
 }
@@ -1534,29 +1534,29 @@ function renderMySubs() {
 /* ─────────────────────────────────────────────
    ── REGISTER MODAL ──
 ───────────────────────────────────────────── */
-window.openRegisterModal = function() {
+window.openRegisterModal = function () {
   qs('#registerModal').classList.remove('hidden');
 };
-window.closeRegisterModal = function() {
+window.closeRegisterModal = function () {
   qs('#registerModal').classList.add('hidden');
   qs('#registerForm').reset();
   qs('#rError').classList.add('hidden');
   qs('#rExistingField').classList.add('hidden');
 };
-window.toggleRegInfraFields = function() {
+window.toggleRegInfraFields = function () {
   const val = qs('#rInfraType').value;
   qs('#rExistingField').classList.toggle('hidden', val !== 'existing');
 };
 
-window.submitRegistration = function() {
-  const name      = qs('#rName').value.trim();
-  const email     = qs('#rEmail').value.trim();
-  const phone     = qs('#rPhone').value.trim();
-  const password  = qs('#rPassword').value;
-  const region    = qs('#rRegion').value;
+window.submitRegistration = function () {
+  const name = qs('#rName').value.trim();
+  const email = qs('#rEmail').value.trim();
+  const phone = qs('#rPhone').value.trim();
+  const password = qs('#rPassword').value;
+  const region = qs('#rRegion').value;
   const infraType = qs('#rInfraType').value;
-  const message   = qs('#rMessage').value.trim();
-  const errEl     = qs('#rError');
+  const message = qs('#rMessage').value.trim();
+  const errEl = qs('#rError');
   errEl.classList.add('hidden');
 
   if (!name || !email || !phone || !password || !region || !infraType) {
@@ -1595,9 +1595,9 @@ window.submitRegistration = function() {
    ── IMAGE UPLOAD HELPER ──
 ───────────────────────────────────────────── */
 function initImgUpload(inputId, previewId, zoneId, maxCount) {
-  const input   = qs('#' + inputId);
+  const input = qs('#' + inputId);
   const preview = qs('#' + previewId);
-  const zone    = qs('#' + zoneId);
+  const zone = qs('#' + zoneId);
   if (!input) return;
 
   input.addEventListener('change', () => handleFiles(input.files));
@@ -1652,15 +1652,15 @@ function showFormError(id, msg) {
 ───────────────────────────────────────────── */
 function subTypeLabel(type) {
   return {
-    update:    '✏️ Mise à jour',
-    event:     '🗓 Événement',
+    update: '✏️ Mise à jour',
+    event: '🗓 Événement',
     new_infra: '➕ Nouvelle infra',
   }[type] || type;
 }
 
 function statusBadge(status) {
   const map = {
-    pending:  '<span class="badge badge-pending">En attente</span>',
+    pending: '<span class="badge badge-pending">En attente</span>',
     approved: '<span class="badge badge-approved">Approuvée</span>',
     rejected: '<span class="badge badge-rejected">Rejetée</span>',
   };
@@ -1671,7 +1671,7 @@ function formatDate(dateStr) {
   if (!dateStr) return '—';
   try {
     return new Date(dateStr).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
-  } catch(e) { return dateStr; }
+  } catch (e) { return dateStr; }
 }
 
 /* ─────────────────────────────────────────────

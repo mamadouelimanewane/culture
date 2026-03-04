@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════
-   CULTURE SÉNÉGAL — Application principale
+   SCENEWS — Application principale
    ═══════════════════════════════════════════════════ */
 
 'use strict';

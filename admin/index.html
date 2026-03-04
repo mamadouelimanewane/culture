@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Backoffice — Culture Sénégal</title>
+  <title>Backoffice — Scenews</title>
   <meta name="theme-color" content="#0f4428" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
   <link rel="stylesheet" href="css/admin.css" />
 </head>
+
 <body>
 
   <!-- ═══════════════════════════════════
@@ -18,9 +21,9 @@
   <div id="loginScreen">
     <div class="login-panel">
       <div class="login-brand">
-        <span class="login-emblem">🌍</span>
+        <img src="../img/scenews-logo.jpg" alt="Scenews" style="height: 48px; border-radius: 6px;" />
         <div>
-          <h1>Culture Sénégal</h1>
+          <h1 style="display: none;">Scenews</h1>
           <p>Plateforme d'Administration</p>
         </div>
       </div>
@@ -85,9 +88,9 @@
     <aside class="sidebar" id="sidebar">
       <div class="sb-head">
         <a href="../index.html" class="sb-logo">
-          <span>🌍</span>
+          <img src="../img/scenews-logo.jpg" alt="Scenews" style="height: 32px; border-radius: 4px;" />
           <div>
-            <span class="sb-logo-title">Culture Sénégal</span>
+            <span class="sb-logo-title" style="display: none;">Scenews</span>
             <span class="sb-logo-sub">Administration</span>
           </div>
         </a>
@@ -121,7 +124,9 @@
       </header>
 
       <main class="page" id="page">
-        <div class="page-loading"><div class="spinner"></div></div>
+        <div class="page-loading">
+          <div class="spinner"></div>
+        </div>
       </main>
     </div>
   </div>
@@ -139,24 +144,37 @@
         <form id="registerForm">
           <div class="fields-2col">
             <div class="field"><label>Prénom et Nom *</label>
-              <input type="text" id="rName" required placeholder="Prénom Nom" /></div>
+              <input type="text" id="rName" required placeholder="Prénom Nom" />
+            </div>
             <div class="field"><label>Email *</label>
-              <input type="email" id="rEmail" required placeholder="email@example.com" /></div>
+              <input type="email" id="rEmail" required placeholder="email@example.com" />
+            </div>
           </div>
           <div class="fields-2col">
             <div class="field"><label>Téléphone *</label>
-              <input type="tel" id="rPhone" required placeholder="+221 77 000 00 00" /></div>
+              <input type="tel" id="rPhone" required placeholder="+221 77 000 00 00" />
+            </div>
             <div class="field"><label>Mot de passe *</label>
-              <input type="password" id="rPassword" required placeholder="Min. 6 caractères" /></div>
+              <input type="password" id="rPassword" required placeholder="Min. 6 caractères" />
+            </div>
           </div>
           <div class="field"><label>Région *</label>
             <select id="rRegion" required>
               <option value="">— Sélectionner —</option>
-              <option>DAKAR</option><option>DIOURBEL</option><option>FATICK</option>
-              <option>KAFFRINE</option><option>KAOLACK</option><option>KEDOUGOU</option>
-              <option>KOLDA</option><option>LOUGA</option><option>MATAM</option>
-              <option>SAINT LOUIS</option><option>SEDHIOU</option><option>TAMBACOUNDA</option>
-              <option>THIES</option><option>ZIGUINCHOR</option>
+              <option>DAKAR</option>
+              <option>DIOURBEL</option>
+              <option>FATICK</option>
+              <option>KAFFRINE</option>
+              <option>KAOLACK</option>
+              <option>KEDOUGOU</option>
+              <option>KOLDA</option>
+              <option>LOUGA</option>
+              <option>MATAM</option>
+              <option>SAINT LOUIS</option>
+              <option>SEDHIOU</option>
+              <option>TAMBACOUNDA</option>
+              <option>THIES</option>
+              <option>ZIGUINCHOR</option>
             </select>
           </div>
           <div class="field"><label>Type de demande *</label>
@@ -167,9 +185,11 @@
             </select>
           </div>
           <div class="field hidden" id="rExistingField"><label>Nom de l'infrastructure existante</label>
-            <input type="text" id="rInfraName" placeholder="Nom exact de l'infrastructure" /></div>
+            <input type="text" id="rInfraName" placeholder="Nom exact de l'infrastructure" />
+          </div>
           <div class="field"><label>Message / Justification</label>
-            <textarea id="rMessage" rows="3" placeholder="Décrivez votre rôle, vos intentions et votre lien avec l'infrastructure…"></textarea>
+            <textarea id="rMessage" rows="3"
+              placeholder="Décrivez votre rôle, vos intentions et votre lien avec l'infrastructure…"></textarea>
           </div>
           <div class="error-msg hidden" id="rError"></div>
         </form>
@@ -203,4 +223,5 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="js/admin.js"></script>
 </body>
+
 </html>

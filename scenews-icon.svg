@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <radialGradient id="bg2" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#1e7a46"/>
+      <stop offset="100%" stop-color="#0f4428"/>
+    </radialGradient>
+    <linearGradient id="gold2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f0c040"/>
+      <stop offset="100%" stop-color="#d4950a"/>
+    </linearGradient>
+    <filter id="sh2">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+    <clipPath id="rr">
+      <rect x="0" y="0" width="200" height="200" rx="44" ry="44"/>
+    </clipPath>
+  </defs>
+
+  <!-- Fond arrondi (app icon shape) -->
+  <rect x="0" y="0" width="200" height="200" rx="44" fill="#0a2e19" filter="url(#sh2)"/>
+  <rect x="0" y="0" width="200" height="200" rx="44" fill="url(#bg2)"/>
+
+  <!-- Motif fond -->
+  <g clip-path="url(#rr)" opacity="0.07">
+    <path d="M0 100 L100 0 L200 100 L100 200 Z" fill="none" stroke="#f0c040" stroke-width="1.5"/>
+    <path d="M25 100 L100 25 L175 100 L100 175 Z" fill="none" stroke="#f0c040" stroke-width="1"/>
+  </g>
+
+  <!-- Baobab compact -->
+  <g transform="translate(100, 100)">
+    <!-- Tronc -->
+    <rect x="-8" y="2" width="16" height="34" rx="5" fill="url(#gold2)"/>
+    <!-- Racines -->
+    <path d="M-8 32 Q-18 38 -24 35" fill="none" stroke="url(#gold2)" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M8 32 Q18 38 24 35" fill="none" stroke="url(#gold2)" stroke-width="3.5" stroke-linecap="round"/>
+
+    <!-- Couronne -->
+    <ellipse cx="0" cy="-8" rx="44" ry="32" fill="#1e7a46"/>
+    <ellipse cx="-22" cy="-16" rx="18" ry="14" fill="#259052" opacity="0.7"/>
+    <ellipse cx="22" cy="-16" rx="18" ry="14" fill="#259052" opacity="0.7"/>
+    <ellipse cx="0" cy="-28" rx="14" ry="11" fill="#259052" opacity="0.8"/>
+    <ellipse cx="-33" cy="-4" rx="12" ry="10" fill="#1d6e42" opacity="0.6"/>
+    <ellipse cx="33" cy="-4" rx="12" ry="10" fill="#1d6e42" opacity="0.6"/>
+
+    <!-- Étoile -->
+    <polygon points="0,-9 2,-3 8,-3 4,1 6,7 0,3 -6,7 -4,1 -8,-3 -2,-3"
+             fill="url(#gold2)"/>
+  </g>
+
+  <!-- Bande drapeau bas -->
+  <g clip-path="url(#rr)">
+    <rect x="0" y="162" width="67" height="10" fill="#1e7a46" opacity="0.75"/>
+    <rect x="67" y="162" width="66" height="10" fill="#f0c040" opacity="0.75"/>
+    <rect x="133" y="162" width="67" height="10" fill="#e8352a" opacity="0.75"/>
+  </g>
+
+  <!-- Texte SC -->
+  <text x="100" y="158" text-anchor="middle"
+        font-family="'Trebuchet MS', sans-serif"
+        font-size="22" font-weight="900" letter-spacing="2"
+        fill="url(#gold2)">SC</text>
+
+  <!-- Bordure -->
+  <rect x="2" y="2" width="196" height="196" rx="43" fill="none" stroke="url(#gold2)" stroke-width="2" opacity="0.4"/>
+</svg>

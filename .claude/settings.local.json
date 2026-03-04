@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"import sys; print\\(sys.version\\); import xlrd; print\\(''xlrd version:'', xlrd.__version__\\)\")",
+      "Bash(python -c \"import pandas as pd; print\\(''pandas version:'', pd.__version__\\)\")",
+      "Bash(pip install xlrd pandas openpyxl)",
+      "Bash(pip install xlrd --timeout 60)",
+      "Bash(python -c \":*)",
+      "WebFetch(domain:evenements-senegal.vercel.app)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(python -m http.server 3030)",
+      "Bash(git init)",
+      "Bash(git branch -M main)",
+      "Bash(git add index.html css/style.css js/app.js infrastructures_culturelles.json centre_formation_arts.json admin/index.html admin/css/admin.css admin/js/admin.js)",
+      "Bash(git commit:*)",
+      "Bash(git remote add origin https://github.com/mamadouelimanewane/culture.git)",
+      "Bash(git push -u origin main)",
+      "Bash(where vercel)",
+      "Bash(vercel --yes --prod)",
+      "Bash(git add index.html css/style.css js/app.js)",
+      "Bash(git push origin main)",
+      "WebFetch(domain:www.girlganghairgh.com)",
+      "Bash(git add .)",
+      "Bash(git remote add origin https://github.com/mamadouelimanewane/sonia.git)",
+      "WebFetch(domain:github.com)",
+      "Bash(for f in /c/gravity/naatpay/js/app.js /c/gravity/ligueyDekk/js/app.js /c/gravity/jeflekk/js/app.js /c/gravity/werseg/js/app.js)",
+      "Bash(do)",
+      "Bash(node --check \"$f\")",
+      "Bash(echo \"✅ $f\")",
+      "Bash(echo \"❌ ERREUR: $f\")",
+      "Bash(done)",
+      "Bash(node --check C:/gravity/naatpay/js/app.js)",
+      "Bash(node --check C:/gravity/ligueyDekk/js/app.js)",
+      "Bash(node --check C:/gravity/jeflekk/js/app.js)",
+      "Bash(node --check C:/gravity/werseg/js/app.js)"
+    ]
+  }
+}

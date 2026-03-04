@@ -6,35 +6,35 @@
 
 // ── Type configurations ──────────────────────────────────────────────────────
 const INFRA_TYPES = {
-  'Centre culturel':    { color: '#1a6b3e', bg: '#e8f5ee', icon: '🏛️' },
+  'Centre culturel': { color: '#1a6b3e', bg: '#e8f5ee', icon: '🏛️' },
   "Centre d'animation": { color: '#0369a1', bg: '#e0f2fe', icon: '🎭' },
-  'Cinéma':             { color: '#dc2626', bg: '#fee2e2', icon: '🎬' },
-  'Foyer des femmes':   { color: '#9333ea', bg: '#f3e8ff', icon: '👩' },
-  'Foyer des jeunes':   { color: '#2563eb', bg: '#dbeafe', icon: '🏠' },
-  'Galerie':            { color: '#0891b2', bg: '#cffafe', icon: '🖼️' },
-  'Musée':              { color: '#7c3aed', bg: '#ede9fe', icon: '🏺' },
-  'Salle des fêtes':    { color: '#db2777', bg: '#fce7f3', icon: '🎉' },
-  'Village artisanal':  { color: '#d97706', bg: '#fef3c7', icon: '🧵' },
-  '_default':           { color: '#6b7280', bg: '#f3f4f6', icon: '🏢' },
+  'Cinéma': { color: '#dc2626', bg: '#fee2e2', icon: '🎬' },
+  'Foyer des femmes': { color: '#9333ea', bg: '#f3e8ff', icon: '👩' },
+  'Foyer des jeunes': { color: '#2563eb', bg: '#dbeafe', icon: '🏠' },
+  'Galerie': { color: '#0891b2', bg: '#cffafe', icon: '🖼️' },
+  'Musée': { color: '#7c3aed', bg: '#ede9fe', icon: '🏺' },
+  'Salle des fêtes': { color: '#db2777', bg: '#fce7f3', icon: '🎉' },
+  'Village artisanal': { color: '#d97706', bg: '#fef3c7', icon: '🧵' },
+  '_default': { color: '#6b7280', bg: '#f3f4f6', icon: '🏢' },
 };
 
 const FORMATION_TYPES = {
-  'ARTS':                    { color: '#9333ea', bg: '#f3e8ff', icon: '🎨' },
-  'ARTS - AUDIOVISUEL':      { color: '#9333ea', bg: '#f3e8ff', icon: '🎨' },
-  'ARTS- INFOGRAPHIE':       { color: '#9333ea', bg: '#f3e8ff', icon: '🎨' },
-  'AUDIOVISUEL':             { color: '#dc2626', bg: '#fee2e2', icon: '📹' },
-  'INFOGRAPHIE':             { color: '#0891b2', bg: '#cffafe', icon: '💻' },
-  'INFOGRAPHIE - AUDIOVISUEL':{ color: '#0891b2', bg: '#cffafe', icon: '💻' },
-  'INFOGRAPHIE - SERIGRAPHIE':{ color: '#0891b2', bg: '#cffafe', icon: '🖨️' },
-  'PEINTURE':                { color: '#16a34a', bg: '#dcfce7', icon: '🖌️' },
-  'SERIGRAPHIE':             { color: '#d97706', bg: '#fef3c7', icon: '🖨️' },
-  '_default':                { color: '#6b7280', bg: '#f3f4f6', icon: '🎓' },
+  'ARTS': { color: '#9333ea', bg: '#f3e8ff', icon: '🎨' },
+  'ARTS - AUDIOVISUEL': { color: '#9333ea', bg: '#f3e8ff', icon: '🎨' },
+  'ARTS- INFOGRAPHIE': { color: '#9333ea', bg: '#f3e8ff', icon: '🎨' },
+  'AUDIOVISUEL': { color: '#dc2626', bg: '#fee2e2', icon: '📹' },
+  'INFOGRAPHIE': { color: '#0891b2', bg: '#cffafe', icon: '💻' },
+  'INFOGRAPHIE - AUDIOVISUEL': { color: '#0891b2', bg: '#cffafe', icon: '💻' },
+  'INFOGRAPHIE - SERIGRAPHIE': { color: '#0891b2', bg: '#cffafe', icon: '🖨️' },
+  'PEINTURE': { color: '#16a34a', bg: '#dcfce7', icon: '🖌️' },
+  'SERIGRAPHIE': { color: '#d97706', bg: '#fef3c7', icon: '🖨️' },
+  '_default': { color: '#6b7280', bg: '#f3f4f6', icon: '🎓' },
 };
 
 const REGIONS = [
-  'DAKAR','DIOURBEL','FATICK','KAFFRINE','KAOLACK',
-  'KEDOUGOU','KOLDA','LOUGA','MATAM','SAINT LOUIS',
-  'SEDHIOU','TAMBACOUNDA','THIES','ZIGUINCHOR'
+  'DAKAR', 'DIOURBEL', 'FATICK', 'KAFFRINE', 'KAOLACK',
+  'KEDOUGOU', 'KOLDA', 'LOUGA', 'MATAM', 'SAINT LOUIS',
+  'SEDHIOU', 'TAMBACOUNDA', 'THIES', 'ZIGUINCHOR'
 ];
 
 // ── Application state ────────────────────────────────────────────────────────
@@ -66,60 +66,60 @@ const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
 
 const dom = {
   // Header
-  navTabs:       $$('.nav-tab'),
-  mnavBtns:      $$('.mnav-btn'),
-  hamburger:     $('hamburger'),
+  navTabs: $$('.nav-tab'),
+  mnavBtns: $$('.mnav-btn'),
+  hamburger: $('hamburger'),
   headerSearchBtn: $('headerSearchBtn'),
 
   // Layout
-  appLayout:     $('appLayout'),
+  appLayout: $('appLayout'),
   fullMapSection: $('fullMapSection'),
 
   // Sidebar
-  searchInput:   $('searchInput'),
-  searchClear:   $('searchClear'),
-  regionSelect:  $('regionSelect'),
-  typeBlock:     $('typeBlock'),
-  brancheBlock:  $('brancheBlock'),
-  milieuBlock:   $('milieuBlock'),
-  typeChips:     $('typeChips'),
-  brancheChips:  $('brancheChips'),
-  milieuGroup:   $('milieuGroup'),
-  clearAll:      $('clearAll'),
-  sideViewGrid:  $('sideViewGrid'),
-  sideViewMap:   $('sideViewMap'),
+  searchInput: $('searchInput'),
+  searchClear: $('searchClear'),
+  regionSelect: $('regionSelect'),
+  typeBlock: $('typeBlock'),
+  brancheBlock: $('brancheBlock'),
+  milieuBlock: $('milieuBlock'),
+  typeChips: $('typeChips'),
+  brancheChips: $('brancheChips'),
+  milieuGroup: $('milieuGroup'),
+  clearAll: $('clearAll'),
+  sideViewGrid: $('sideViewGrid'),
+  sideViewMap: $('sideViewMap'),
 
   // Toolbar
-  resultsTxt:    $('resultsTxt'),
+  resultsTxt: $('resultsTxt'),
   filterOpenBtn: $('filterOpenBtn'),
-  toolViewGrid:  $('toolViewGrid'),
-  toolViewMap:   $('toolViewMap'),
+  toolViewGrid: $('toolViewGrid'),
+  toolViewMap: $('toolViewMap'),
 
   // Content
-  cardsWrapper:  $('cardsWrapper'),
-  cardsGrid:     $('cardsGrid'),
-  loadingState:  $('loadingState'),
-  pagination:    $('pagination'),
+  cardsWrapper: $('cardsWrapper'),
+  cardsGrid: $('cardsGrid'),
+  loadingState: $('loadingState'),
+  pagination: $('pagination'),
   panelMapWrapper: $('panelMapWrapper'),
 
   // Full map
-  layerBtns:     $$('.layer-btn'),
+  layerBtns: $$('.layer-btn'),
   fullMapSearch: $('fullMapSearch'),
-  fullLegend:    $('fullLegend'),
-  panelLegend:   $('panelLegend'),
+  fullLegend: $('fullLegend'),
+  panelLegend: $('panelLegend'),
 
   // Drawer
   drawerOverlay: $('drawerOverlay'),
-  filterDrawer:  $('filterDrawer'),
-  drawerBody:    $('drawerBody'),
-  drawerClose:   $('drawerClose'),
+  filterDrawer: $('filterDrawer'),
+  drawerBody: $('drawerBody'),
+  drawerClose: $('drawerClose'),
   applyDrawerFilters: $('applyDrawerFilters'),
 
   // Modal
-  modalOverlay:  $('modalOverlay'),
-  modalBox:      $('modalBox'),
-  modalBody:     $('modalBody'),
-  modalClose:    $('modalClose'),
+  modalOverlay: $('modalOverlay'),
+  modalBox: $('modalBox'),
+  modalBody: $('modalBody'),
+  modalClose: $('modalClose'),
 };
 
 // ── Utility helpers ──────────────────────────────────────────────────────────
@@ -147,25 +147,26 @@ function createMarkerIcon(color, icon) {
   return L.divIcon({
     className: '',
     html: `<div style="
-      width:32px;height:38px;position:relative;
+      width: 32px;
+      height: 32px;
+      background-color: ${color};
+      border: 2.5px solid #ffffff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.25);
     ">
-      <svg viewBox="0 0 32 38" xmlns="http://www.w3.org/2000/svg" style="width:32px;height:38px;position:absolute;">
-        <path d="M16 0C7.16 0 0 7.16 0 16c0 10.5 16 22 16 22S32 26.5 32 16C32 7.16 24.84 0 16 0z"
-              fill="${color}" stroke="#fff" stroke-width="1.5"/>
-      </svg>
-      <span style="
-        position:absolute;top:5px;left:50%;transform:translateX(-50%);
-        font-size:14px;line-height:1;z-index:1;
-      ">${icon}</span>
+      <span style="font-size: 15px; line-height: 1;">${icon}</span>
     </div>`,
-    iconSize: [32, 38],
-    iconAnchor: [16, 38],
-    popupAnchor: [0, -40],
+    iconSize: [32, 32],
+    iconAnchor: [16, 16],
+    popupAnchor: [0, -16],
   });
 }
 
 // ── Fullscreen map control ───────────────────────────────────────────────────
-const FS_EXPAND  = '<svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>';
+const FS_EXPAND = '<svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>';
 const FS_COLLAPSE = '<svg viewBox="0 0 24 24"><path d="M4 14h6v6m10-10h-6V4M4 10h6V4m10 10h-6v6"/></svg>';
 
 function createFullscreenControl(containerSelector) {
@@ -180,14 +181,14 @@ function createFullscreenControl(containerSelector) {
 
       L.DomEvent.disableClickPropagation(btn);
 
-      L.DomEvent.on(btn, 'click', function(e) {
+      L.DomEvent.on(btn, 'click', function (e) {
         L.DomEvent.stop(e);
         if (!document.fullscreenElement) {
           container.requestFullscreen().then(() => {
             btn.innerHTML = FS_COLLAPSE;
             btn.title = 'Quitter plein écran';
             setTimeout(() => map.invalidateSize(), 120);
-          }).catch(() => {});
+          }).catch(() => { });
         } else {
           document.exitFullscreen().then(() => {
             btn.innerHTML = FS_EXPAND;
@@ -230,7 +231,7 @@ async function loadData() {
     ]);
 
     state.data.infrastructures = infraJson.sheets['INFRASTRUCTURES_CULTURELLES'].records;
-    state.data.formations       = formJson.sheets['CENTRE_FORMATION_CULTURE'].records;
+    state.data.formations = formJson.sheets['CENTRE_FORMATION_CULTURE'].records;
 
     state.loading = false;
     onDataReady();
@@ -249,13 +250,13 @@ async function loadData() {
 // ── Once data is ready ───────────────────────────────────────────────────────
 function onDataReady() {
   const infraCount = state.data.infrastructures.length;
-  const formCount  = state.data.formations.length;
+  const formCount = state.data.formations.length;
 
   // Update stat badges
   $('sInfra').textContent = formatNum(infraCount);
-  $('sForm').textContent  = formatNum(formCount);
+  $('sForm').textContent = formatNum(formCount);
   $('infraBadge').textContent = formatNum(infraCount);
-  $('formBadge').textContent  = formatNum(formCount);
+  $('formBadge').textContent = formatNum(formCount);
 
   // Build filter UIs
   buildRegionOptions();
@@ -431,11 +432,11 @@ function renderCards() {
 
 function buildCard(record, isFormation, idx) {
   const typeKey = isFormation ? record.BRANCHE : record.DESCRIPTIF;
-  const cfg     = typeConfig(isFormation ? 'formations' : 'infrastructures', typeKey);
-  const name    = isFormation ? record.NOM_ETABLISSEMENT : record.DESIGNATION;
+  const cfg = typeConfig(isFormation ? 'formations' : 'infrastructures', typeKey);
+  const name = isFormation ? record.NOM_ETABLISSEMENT : record.DESIGNATION;
   const commune = record.COMMUNE || '—';
-  const region  = record.REGION  || '—';
-  const locale  = isFormation ? record.LOCALITE : record.LOCALITES;
+  const region = record.REGION || '—';
+  const locale = isFormation ? record.LOCALITE : record.LOCALITES;
 
   return `
   <article class="card" onclick="openModal(${idx})"
@@ -460,13 +461,13 @@ function buildCard(record, isFormation, idx) {
     </div>
     <div class="card-footer">
       ${isFormation
-        ? `<span class="region-tag">${titleCase(record.DEPARTEMENT || '')}</span>`
-        : `<span class="card-milieu ${record.MILIEU === 'URBAIN' ? 'milieu-urbain' : 'milieu-rural'}">
+      ? `<span class="region-tag">${titleCase(record.DEPARTEMENT || '')}</span>`
+      : `<span class="card-milieu ${record.MILIEU === 'URBAIN' ? 'milieu-urbain' : 'milieu-rural'}">
              ${record.MILIEU === 'URBAIN' ? '🏙' : '🌾'} ${capitalize(record.MILIEU || '')}
            </span>`}
       ${(record.LATITUDE && record.LONGITUDE)
-        ? `<span class="card-map-btn">📍 Voir sur carte</span>`
-        : ''}
+      ? `<span class="card-map-btn">📍 Voir sur carte</span>`
+      : ''}
     </div>
   </article>`;
 }
@@ -498,7 +499,7 @@ function renderPagination() {
 }
 
 function getPageRange(cur, total) {
-  if (total <= 7) return Array.from({length: total}, (_, i) => i + 1);
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
   const pages = [];
   if (cur <= 4) {
     pages.push(1, 2, 3, 4, 5, '...', total);
@@ -510,7 +511,7 @@ function getPageRange(cur, total) {
   return pages;
 }
 
-window.goPage = function(page) {
+window.goPage = function (page) {
   const totalPages = Math.ceil(state.filtered.length / state.perPage);
   if (page < 1 || page > totalPages) return;
   state.page = page;
@@ -519,33 +520,33 @@ window.goPage = function(page) {
 };
 
 // ── Modal ────────────────────────────────────────────────────────────────────
-window.openModal = function(idx) {
-  const start   = (state.page - 1) * state.perPage;
-  const record  = state.filtered[start + idx];
+window.openModal = function (idx) {
+  const start = (state.page - 1) * state.perPage;
+  const record = state.filtered[start + idx];
   if (!record) return;
 
   const isFormation = state.activeTab === 'formations';
   const typeKey = isFormation ? record.BRANCHE : record.DESCRIPTIF;
-  const cfg     = typeConfig(isFormation ? 'formations' : 'infrastructures', typeKey);
-  const name    = isFormation ? record.NOM_ETABLISSEMENT : record.DESIGNATION;
+  const cfg = typeConfig(isFormation ? 'formations' : 'infrastructures', typeKey);
+  const name = isFormation ? record.NOM_ETABLISSEMENT : record.DESIGNATION;
 
   const details = isFormation
     ? [
-        { label: 'Branche',     val: record.BRANCHE },
-        { label: 'Région',      val: titleCase(record.REGION) },
-        { label: 'Département', val: titleCase(record.DEPARTEMENT) },
-        { label: 'Commune',     val: titleCase(record.COMMUNE) },
-        { label: 'Localité',    val: titleCase(record.LOCALITE) },
-      ]
+      { label: 'Branche', val: record.BRANCHE },
+      { label: 'Région', val: titleCase(record.REGION) },
+      { label: 'Département', val: titleCase(record.DEPARTEMENT) },
+      { label: 'Commune', val: titleCase(record.COMMUNE) },
+      { label: 'Localité', val: titleCase(record.LOCALITE) },
+    ]
     : [
-        { label: 'Type',        val: record.DESCRIPTIF },
-        { label: 'Région',      val: titleCase(record.REGION) },
-        { label: 'Département', val: titleCase(record.DEPARTEMENT) },
-        { label: 'Commune',     val: titleCase(record.COMMUNE) },
-        { label: 'Localité',    val: titleCase(record.LOCALITES) },
-        { label: 'Milieu',      val: capitalize(record.MILIEU) },
-        { label: 'Type de lieu',val: capitalize(record.TYPE_LOCALITE) },
-      ];
+      { label: 'Type', val: record.DESCRIPTIF },
+      { label: 'Région', val: titleCase(record.REGION) },
+      { label: 'Département', val: titleCase(record.DEPARTEMENT) },
+      { label: 'Commune', val: titleCase(record.COMMUNE) },
+      { label: 'Localité', val: titleCase(record.LOCALITES) },
+      { label: 'Milieu', val: capitalize(record.MILIEU) },
+      { label: 'Type de lieu', val: capitalize(record.TYPE_LOCALITE) },
+    ];
 
   const lat = record.LATITUDE;
   const lon = record.LONGITUDE;
@@ -612,8 +613,8 @@ function renderPanelMap() {
     if (!lat || !lon || isNaN(lat) || isNaN(lon)) return;
 
     const typeKey = isFormation ? record.BRANCHE : record.DESCRIPTIF;
-    const cfg     = typeConfig(isFormation ? 'formations' : 'infrastructures', typeKey);
-    const name    = isFormation ? record.NOM_ETABLISSEMENT : record.DESIGNATION;
+    const cfg = typeConfig(isFormation ? 'formations' : 'infrastructures', typeKey);
+    const name = isFormation ? record.NOM_ETABLISSEMENT : record.DESIGNATION;
 
     const marker = L.marker([lat, lon], { icon: createMarkerIcon(cfg.color, cfg.icon) });
     marker.bindPopup(buildPopup(record, isFormation, cfg, name, typeKey));
@@ -664,8 +665,8 @@ function populateFullMap(layer) {
       const typeKey = isFormation ? record.BRANCHE : record.DESCRIPTIF;
       if (state.fullMapFilter && state.fullMapFilter !== typeKey) return;
 
-      const cfg     = typeConfig(isFormation ? 'formations' : 'infrastructures', typeKey);
-      const name    = isFormation ? record.NOM_ETABLISSEMENT : record.DESIGNATION;
+      const cfg = typeConfig(isFormation ? 'formations' : 'infrastructures', typeKey);
+      const name = isFormation ? record.NOM_ETABLISSEMENT : record.DESIGNATION;
 
       const marker = L.marker([lat, lon], { icon: createMarkerIcon(cfg.color, cfg.icon) });
       marker.bindPopup(buildPopup(record, isFormation, cfg, name, typeKey));
@@ -708,25 +709,25 @@ function buildLegend(container, typesObj, context = 'panel') {
     item.addEventListener('click', () => {
       const type = item.getAttribute('data-type');
       const ctx = item.getAttribute('data-context');
-      
+
       if (ctx === 'panel') {
-         if (state.filters.type === type) {
-            state.filters.type = ''; // désélectionner
-         } else {
-            state.filters.type = type;
-         }
-         buildTypeChips();
-         buildBrancheChips();
-         buildDrawerContent();
-         applyFiltersAndRender(true);
+        if (state.filters.type === type) {
+          state.filters.type = ''; // désélectionner
+        } else {
+          state.filters.type = type;
+        }
+        buildTypeChips();
+        buildBrancheChips();
+        buildDrawerContent();
+        applyFiltersAndRender(true);
       } else if (ctx === 'full') {
-         if (state.fullMapFilter === type) {
-            state.fullMapFilter = ''; // désélectionner
-         } else {
-             state.fullMapFilter = type; 
-         }
-         dom.fullMapSearch.dispatchEvent(new Event('input'));
-         buildFullLegend();
+        if (state.fullMapFilter === type) {
+          state.fullMapFilter = ''; // désélectionner
+        } else {
+          state.fullMapFilter = type;
+        }
+        dom.fullMapSearch.dispatchEvent(new Event('input'));
+        buildFullLegend();
       }
     });
   });
@@ -752,13 +753,13 @@ function buildPopup(record, isFormation, cfg, name, typeKey) {
 
 // ── Navigation Google Maps ───────────────────────────────────────────────────
 
-window.navigateTo = function(id) {
+window.navigateTo = function (id) {
   const d = _navStore[id];
   if (!d) return;
 
   // Fermer les popups ouverts
   if (state.maps.panel) state.maps.panel.closePopup();
-  if (state.maps.full)  state.maps.full.closePopup();
+  if (state.maps.full) state.maps.full.closePopup();
 
   const dest = `${d.lat},${d.lon}`;
 
@@ -820,9 +821,9 @@ function setupFullMapSearch() {
 
           const typeKey = isFormation ? record.BRANCHE : record.DESCRIPTIF;
           if (state.fullMapFilter && state.fullMapFilter !== typeKey) return;
-          const cfg     = typeConfig(isFormation ? 'formations' : 'infrastructures', typeKey);
-          const name    = isFormation ? record.NOM_ETABLISSEMENT : record.DESIGNATION;
-          const marker  = L.marker([lat, lon], { icon: createMarkerIcon(cfg.color, cfg.icon) });
+          const cfg = typeConfig(isFormation ? 'formations' : 'infrastructures', typeKey);
+          const name = isFormation ? record.NOM_ETABLISSEMENT : record.DESIGNATION;
+          const marker = L.marker([lat, lon], { icon: createMarkerIcon(cfg.color, cfg.icon) });
           marker.bindPopup(buildPopup(record, isFormation, cfg, name, typeKey));
           state.clusters.full.addLayer(marker);
         });
@@ -830,7 +831,7 @@ function setupFullMapSearch() {
 
       const layer = state.activeLayer;
       if (layer === 'all' || layer === 'infrastructures') addFiltered(state.data.infrastructures, false);
-      if (layer === 'all' || layer === 'formations')       addFiltered(state.data.formations, true);
+      if (layer === 'all' || layer === 'formations') addFiltered(state.data.formations, true);
     }, 300);
   });
 }
@@ -861,9 +862,9 @@ function setTab(tab) {
     setTimeout(() => state.maps.full && state.maps.full.invalidateSize(), 100);
   } else {
     // Toggle sidebar filter blocks
-    dom.typeBlock.classList.toggle('hidden',    tab === 'formations');
+    dom.typeBlock.classList.toggle('hidden', tab === 'formations');
     dom.brancheBlock.classList.toggle('hidden', tab === 'infrastructures');
-    dom.milieuBlock.classList.toggle('hidden',  tab === 'formations');
+    dom.milieuBlock.classList.toggle('hidden', tab === 'formations');
 
     // Rebuild region options & chips
     buildRegionOptions();

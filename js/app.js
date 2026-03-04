@@ -858,7 +858,7 @@ function startFullMapIdleTimeout() {
         [14.8, -16.95]
       ], { duration: 1.5 });
     }
-  }, 15000);
+  }, 5000);
 }
 
 function initFullMapIfVisible() {

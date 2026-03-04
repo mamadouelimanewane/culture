@@ -50,6 +50,7 @@ const state = {
   maps: { panel: null, full: null },
   clusters: { panel: null, full: null },
   loading: true,
+  fullMapFilter: '',
 };
 
 // Store pour les données des popups (évite les problèmes d'échappement)
@@ -625,7 +626,7 @@ function renderPanelMap() {
   }
 
   // Build legend
-  buildLegend(dom.panelLegend, isFormation ? FORMATION_TYPES : INFRA_TYPES);
+  buildLegend(dom.panelLegend, isFormation ? FORMATION_TYPES : INFRA_TYPES, 'panel');
 }
 
 // ── Full Map Tab ─────────────────────────────────────────────────────────────
@@ -661,6 +662,8 @@ function populateFullMap(layer) {
       if (!lat || !lon || isNaN(lat) || isNaN(lon)) return;
 
       const typeKey = isFormation ? record.BRANCHE : record.DESCRIPTIF;
+      if (state.fullMapFilter && state.fullMapFilter !== typeKey) return;
+
       const cfg     = typeConfig(isFormation ? 'formations' : 'infrastructures', typeKey);
       const name    = isFormation ? record.NOM_ETABLISSEMENT : record.DESIGNATION;
 
@@ -679,20 +682,54 @@ function populateFullMap(layer) {
 }
 
 function buildFullLegend() {
-  buildLegend(dom.fullLegend, { ...INFRA_TYPES, ...FORMATION_TYPES });
+  buildLegend(dom.fullLegend, { ...INFRA_TYPES, ...FORMATION_TYPES }, 'full');
 }
 
-function buildLegend(container, typesObj) {
+function buildLegend(container, typesObj, context = 'panel') {
   if (!container) return;
   const items = Object.entries(typesObj)
     .filter(([k]) => k !== '_default')
-    .map(([key, cfg]) => `
-      <div class="legend-item">
+    .map(([key, cfg]) => {
+      const isActive = context === 'panel' ? state.filters.type === key : state.fullMapFilter === key;
+      const hasActive = context === 'panel' ? !!state.filters.type : !!state.fullMapFilter;
+      const opacity = (hasActive && !isActive) ? '0.4' : '1';
+      return `
+      <div class="legend-item" data-type="${key}" data-context="${context}" style="cursor:pointer; opacity:${opacity}; transition: opacity 0.2s; user-select:none;" title="Filtrer par ${key}">
         <span class="legend-dot" style="background:${cfg.color}"></span>
         <span>${cfg.icon} ${key}</span>
       </div>
-    `).join('');
+    `;
+    }).join('');
   container.innerHTML = items;
+
+  // Add click events
+  const legendItems = container.querySelectorAll('.legend-item');
+  legendItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const type = item.getAttribute('data-type');
+      const ctx = item.getAttribute('data-context');
+      
+      if (ctx === 'panel') {
+         if (state.filters.type === type) {
+            state.filters.type = ''; // désélectionner
+         } else {
+            state.filters.type = type;
+         }
+         buildTypeChips();
+         buildBrancheChips();
+         buildDrawerContent();
+         applyFiltersAndRender(true);
+      } else if (ctx === 'full') {
+         if (state.fullMapFilter === type) {
+            state.fullMapFilter = ''; // désélectionner
+         } else {
+             state.fullMapFilter = type; 
+         }
+         dom.fullMapSearch.dispatchEvent(new Event('input'));
+         buildFullLegend();
+      }
+    });
+  });
 }
 
 function buildPopup(record, isFormation, cfg, name, typeKey) {
@@ -782,6 +819,7 @@ function setupFullMapSearch() {
           }
 
           const typeKey = isFormation ? record.BRANCHE : record.DESCRIPTIF;
+          if (state.fullMapFilter && state.fullMapFilter !== typeKey) return;
           const cfg     = typeConfig(isFormation ? 'formations' : 'infrastructures', typeKey);
           const name    = isFormation ? record.NOM_ETABLISSEMENT : record.DESIGNATION;
           const marker  = L.marker([lat, lon], { icon: createMarkerIcon(cfg.color, cfg.icon) });

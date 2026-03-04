@@ -691,6 +691,7 @@ textarea {
   margin-top: 4px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   transition: color 0.25s ease;
@@ -1284,15 +1285,28 @@ textarea {
 
   /* Stats */
   .stat-num {
-    font-size: 18px;
+    font-size: 16px;
   }
 
   .stat-lbl {
-    font-size: 10px;
+    font-size: 9px;
   }
 
   .stats-inner {
-    padding: 0 12px;
+    padding: 0 8px;
+    height: auto;
+    min-height: var(--stats-h);
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .stat-card {
+    padding: 8px;
+    min-width: 50%;
+  }
+
+  .stat-sep {
+    display: none;
   }
 
   /* Layout */
@@ -1322,6 +1336,7 @@ textarea {
   /* Modal */
   .modal-box {
     border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    max-height: 92vh;
   }
 
   .modal-overlay {
@@ -1331,12 +1346,18 @@ textarea {
 
   .modal-detail-grid {
     grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .modal-body {
+    padding: 24px 20px 40px;
   }
 
   /* Full map */
   .full-map-bar {
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
+    padding: 12px;
   }
 
   .full-map-search-wrap {
@@ -1345,7 +1366,16 @@ textarea {
   }
 
   .map-layer-btns {
-    display: none;
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    display: flex;
+    /* Re-enable but scrollable */
+  }
+
+  .layer-btn {
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 }
 

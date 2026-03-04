@@ -1932,12 +1932,29 @@ tbody tr:hover {
     align-items: flex-start;
   }
 
-  .vtabs {
-    gap: 6px;
-  }
-
   .sub-card {
     flex-direction: column;
+    gap: 16px;
+  }
+
+  /* Login screen refinement */
+  .login-panel {
+    padding: 30px 20px;
+    width: 100%;
+  }
+
+  .login-brand img {
+    height: 40px;
+  }
+
+  .demo-bar {
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
+  }
+
+  .demo-btn {
+    text-align: center;
   }
 
   .modal-overlay {

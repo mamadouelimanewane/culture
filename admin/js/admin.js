@@ -1435,7 +1435,13 @@ function renderSubmitNew() {
 function initMapPicker() {
   if (_mapPicker) { _mapPicker.remove(); _mapPicker = null; _mapPickerMarker = null; }
 
-  _mapPicker = L.map('mapPicker', { center: [14.6, -14.5], zoom: 6 });
+  _mapPicker = L.map('mapPicker', {
+    center: [14.6, -14.5],
+    zoom: 6,
+    minZoom: 6,
+    maxBounds: [[12.0, -18.0], [17.5, -11.0]],
+    maxBoundsViscosity: 1.0
+  });
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap',
   }).addTo(_mapPicker);

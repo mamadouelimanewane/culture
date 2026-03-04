@@ -591,6 +591,9 @@ function renderPanelMap() {
     state.maps.panel = L.map('panelMap', {
       center: [14.5, -14.5],
       zoom: 7,
+      minZoom: 6,
+      maxBounds: [[12.0, -18.0], [17.5, -11.0]],
+      maxBoundsViscosity: 1.0,
       attributionControl: true,
     });
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -637,6 +640,9 @@ function initFullMap() {
   state.maps.full = L.map('fullMap', {
     center: [14.5, -14.5],
     zoom: 7,
+    minZoom: 6,
+    maxBounds: [[12.0, -18.0], [17.5, -11.0]],
+    maxBoundsViscosity: 1.0,
   });
 
   // Track map interactions to cancel idle timeout

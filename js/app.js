@@ -639,6 +639,11 @@ function initFullMap() {
     zoom: 7,
   });
 
+  // Track map interactions to cancel idle timeout
+  state.maps.full.on('movestart zoomstart click dragstart', () => {
+    clearFullMapIdleTimeout();
+  });
+
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     maxZoom: 18,
@@ -836,6 +841,26 @@ function setupFullMapSearch() {
   });
 }
 
+// ── Full map idle zoom logic ─────────────────────────────────────────────────
+let fullMapIdleTimeout = null;
+
+function clearFullMapIdleTimeout() {
+  if (fullMapIdleTimeout) clearTimeout(fullMapIdleTimeout);
+}
+
+function startFullMapIdleTimeout() {
+  clearFullMapIdleTimeout();
+  fullMapIdleTimeout = setTimeout(() => {
+    if (state.maps.full) {
+      // Zoom vers la région Dakar/Mbour, qui concentre le plus d'activités
+      state.maps.full.flyToBounds([
+        [14.3, -17.55],
+        [14.9, -16.85]
+      ], { duration: 2.5 });
+    }
+  }, 30000);
+}
+
 function initFullMapIfVisible() {
   if (state.activeTab === 'carte') initFullMap();
 }
@@ -859,8 +884,16 @@ function setTab(tab) {
     initFullMap();
     setupFullMapSearch();
     // Force map to resize
-    setTimeout(() => state.maps.full && state.maps.full.invalidateSize(), 100);
+    setTimeout(() => {
+      if (state.maps.full) {
+        state.maps.full.invalidateSize();
+        // Reset au panorama du Sénégal complet
+        state.maps.full.setView([14.5, -14.5], 7);
+        startFullMapIdleTimeout();
+      }
+    }, 100);
   } else {
+    clearFullMapIdleTimeout();
     // Toggle sidebar filter blocks
     dom.typeBlock.classList.toggle('hidden', tab === 'formations');
     dom.brancheBlock.classList.toggle('hidden', tab === 'infrastructures');

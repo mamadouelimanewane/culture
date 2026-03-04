@@ -3,12 +3,12 @@
    Variables + Reset
 ═══════════════════════════════════════════════ */
 :root {
-  --green: #0f4428;
-  --green-mid: #1a6b3e;
-  --green-lt: #2d9e5f;
-  --green-pale: #e8f5ee;
-  --gold: #d4950a;
-  --gold-lt: #fef3cd;
+  --green: #0e1620;
+  --green-mid: #172331;
+  --green-lt: #2b3b4f;
+  --green-pale: #e6ebf1;
+  --gold: #f26a21;
+  --gold-lt: #fdebea;
   --red: #c0392b;
   --red-lt: #fdecea;
   --blue: #2563eb;
@@ -353,7 +353,7 @@ img {
 /* Visual side */
 .login-visual {
   flex: 1;
-  background: linear-gradient(135deg, var(--green) 0%, #2d9e5f 50%, #196b3c 100%);
+  background: linear-gradient(135deg, var(--green) 0%, var(--green-lt) 50%, var(--green-mid) 100%);
   display: flex;
   align-items: center;
   justify-content: center;

@@ -1053,6 +1053,15 @@ function bindEvents() {
     if (e.target === dom.modalOverlay) closeModal();
   });
 
+  // Toggle legend expansion (full map drawer)
+  if (dom.fullLegend) {
+    dom.fullLegend.addEventListener('click', (e) => {
+      // Don't toggle if clicking a specific item (which triggers filtering)
+      if (e.target.closest('.legend-item')) return;
+      dom.fullLegend.classList.toggle('expanded');
+    });
+  }
+
   // Keyboard shortcuts
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {

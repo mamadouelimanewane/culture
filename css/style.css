@@ -920,31 +920,46 @@ textarea {
   box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.08);
 }
 
+.legend-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  width: 100%;
+}
+
+.legend-handle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+}
+
+.legend-handle::after {
+  content: '';
+  width: 40px;
+  height: 5px;
+  background: var(--border-dk);
+  opacity: 0.4;
+  border-radius: 99px;
+}
+
 /* Version tiroir sur mobile/plein écran */
 .full-map-section .full-legend {
-  max-height: 82px;
-  /* ~2 lignes */
+  max-height: 98px;
+  /* Un peu plus grand pour assurer les 2 lignes */
   overflow: hidden;
-  padding-top: 24px;
+  padding-top: 32px;
   cursor: pointer;
 }
 
 .full-map-section .full-legend.expanded {
-  max-height: 60vh;
+  max-height: 70vh;
   overflow-y: auto;
-}
-
-.full-map-section .full-legend::before {
-  content: '';
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 36px;
-  height: 4px;
-  background: var(--border);
-  border-radius: 4px;
-  display: block;
 }
 
 .legend-item {

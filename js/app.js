@@ -106,6 +106,8 @@ const dom = {
   layerBtns: $$('.layer-btn'),
   fullMapSearch: $('fullMapSearch'),
   fullLegend: $('fullLegend'),
+  fullLegendList: $('fullLegendList'),
+  fullLegendHandle: $('fullLegendHandle'),
   panelLegend: $('panelLegend'),
 
   // Drawer
@@ -694,7 +696,7 @@ function populateFullMap(layer) {
 }
 
 function buildFullLegend() {
-  buildLegend(dom.fullLegend, { ...INFRA_TYPES, ...FORMATION_TYPES }, 'full');
+  buildLegend(dom.fullLegendList || dom.fullLegend, { ...INFRA_TYPES, ...FORMATION_TYPES }, 'full');
 }
 
 function buildLegend(container, typesObj, context = 'panel') {
@@ -1056,12 +1058,23 @@ function bindEvents() {
   });
 
   // Toggle legend expansion (full map drawer)
+  const toggleFullLegend = (e) => {
+    if (e.target.closest('.legend-item')) return;
+    if (dom.fullLegend) dom.fullLegend.classList.toggle('expanded');
+  };
+
   if (dom.fullLegend) {
-    dom.fullLegend.addEventListener('click', (e) => {
-      // Don't toggle if clicking a specific item (which triggers filtering)
-      if (e.target.closest('.legend-item')) return;
-      dom.fullLegend.classList.toggle('expanded');
-    });
+    dom.fullLegend.addEventListener('click', toggleFullLegend);
+    // On mobile, sometimes a direct touch on the handle is more responsive
+    if (dom.fullLegendHandle) {
+      const handleToggle = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dom.fullLegend.classList.toggle('expanded');
+      };
+      dom.fullLegendHandle.addEventListener('click', handleToggle);
+      dom.fullLegendHandle.addEventListener('touchstart', handleToggle, { passive: false });
+    }
   }
 
   // Keyboard shortcuts

@@ -147,21 +147,21 @@ function createMarkerIcon(color, icon) {
   return L.divIcon({
     className: '',
     html: `<div style="
-      width: 32px;
-      height: 32px;
+      width: 40px;
+      height: 40px;
       background-color: ${color};
-      border: 2.5px solid #ffffff;
+      border: 3px solid #ffffff;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.25);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.35);
     ">
-      <span style="font-size: 15px; line-height: 1;">${icon}</span>
+      <span style="font-size: 20px; line-height: 1;">${icon}</span>
     </div>`,
-    iconSize: [32, 32],
-    iconAnchor: [16, 16],
-    popupAnchor: [0, -16],
+    iconSize: [40, 40],
+    iconAnchor: [20, 20],
+    popupAnchor: [0, -20],
   });
 }
 

@@ -739,6 +739,8 @@ function buildLegend(container, typesObj, context = 'panel') {
         }
         dom.fullMapSearch.dispatchEvent(new Event('input'));
         buildFullLegend();
+        // Redescendre le tiroir après le choix
+        if (dom.fullLegend) dom.fullLegend.classList.remove('expanded');
       }
     });
   });

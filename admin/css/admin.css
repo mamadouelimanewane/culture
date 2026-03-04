@@ -3,14 +3,14 @@
    Variables + Reset
 ═══════════════════════════════════════════════ */
 :root {
-  --green: #023e8a;
-  --green-mid: #0077b6;
-  --green-lt: #0096c7;
-  --green-pale: #e0f2fe;
-  --gold: #f26a21;
-  --gold-lt: #ffedd5;
-  --red: #c0392b;
-  --red-lt: #fdecea;
+  --green: #0088cc;
+  --green-mid: #00aaff;
+  --green-lt: #33bbff;
+  --green-pale: #f0f9ff;
+  --gold: #ff9900;
+  --gold-lt: #fff7ed;
+  --red: #ff4444;
+  --red-lt: #fff1f2;
   --blue: #2563eb;
   --blue-lt: #eff6ff;
   --bg: #f4f6f9;

@@ -6,29 +6,29 @@
 
 // ── Type configurations ──────────────────────────────────────────────────────
 const INFRA_TYPES = {
-  'Centre culturel': { color: '#172331', bg: '#e2e8f0', icon: '🏛️' },
-  "Centre d'animation": { color: '#f26a21', bg: '#ffedd5', icon: '🎭' },
-  'Cinéma': { color: '#e11d48', bg: '#ffe4e6', icon: '🎬' },
-  'Foyer des femmes': { color: '#9333ea', bg: '#f3e8ff', icon: '👩' },
-  'Foyer des jeunes': { color: '#2563eb', bg: '#dbeafe', icon: '🏠' },
-  'Galerie': { color: '#0891b2', bg: '#cffafe', icon: '🖼️' },
-  'Musée': { color: '#7c3aed', bg: '#ede9fe', icon: '🏺' },
-  'Salle des fêtes': { color: '#db2777', bg: '#fce7f3', icon: '🎉' },
-  'Village artisanal': { color: '#d97706', bg: '#fef3c7', icon: '🧵' },
-  '_default': { color: '#64748b', bg: '#f1f5f9', icon: '🏢' },
+  'Centre culturel': { color: '#0088cc', bg: '#e0f2fe', icon: '🏛️' },
+  "Centre d'animation": { color: '#f59e0b', bg: '#fef3c7', icon: '🎭' },
+  'Cinéma': { color: '#ef4444', bg: '#fee2e2', icon: '🎬' },
+  'Foyer des femmes': { color: '#d946ef', bg: '#fdf4ff', icon: '👩' },
+  'Foyer des jeunes': { color: '#3b82f6', bg: '#eff6ff', icon: '🏠' },
+  'Galerie': { color: '#06b6d4', bg: '#ecfeff', icon: '🖼️' },
+  'Musée': { color: '#8b5cf6', bg: '#f5f3ff', icon: '🏺' },
+  'Salle des fêtes': { color: '#ec4899', bg: '#fdf2f8', icon: '🎉' },
+  'Village artisanal': { color: '#f97316', bg: '#fff7ed', icon: '🧵' },
+  '_default': { color: '#94a3b8', bg: '#f8fafc', icon: '🏢' },
 };
 
 const FORMATION_TYPES = {
-  'ARTS': { color: '#8b5cf6', bg: '#ede9fe', icon: '🎨' },
-  'ARTS - AUDIOVISUEL': { color: '#8b5cf6', bg: '#ede9fe', icon: '🎨' },
-  'ARTS- INFOGRAPHIE': { color: '#8b5cf6', bg: '#ede9fe', icon: '🎨' },
-  'AUDIOVISUEL': { color: '#e11d48', bg: '#ffe4e6', icon: '📹' },
+  'ARTS': { color: '#a855f7', bg: '#f3e8ff', icon: '🎨' },
+  'ARTS - AUDIOVISUEL': { color: '#a855f7', bg: '#f3e8ff', icon: '🎨' },
+  'ARTS- INFOGRAPHIE': { color: '#a855f7', bg: '#f3e8ff', icon: '🎨' },
+  'AUDIOVISUEL': { color: '#ef4444', bg: '#fee2e2', icon: '📹' },
   'INFOGRAPHIE': { color: '#0ea5e9', bg: '#e0f2fe', icon: '💻' },
   'INFOGRAPHIE - AUDIOVISUEL': { color: '#0ea5e9', bg: '#e0f2fe', icon: '💻' },
   'INFOGRAPHIE - SERIGRAPHIE': { color: '#0ea5e9', bg: '#e0f2fe', icon: '🖨️' },
   'PEINTURE': { color: '#10b981', bg: '#d1fae5', icon: '🖌️' },
   'SERIGRAPHIE': { color: '#f59e0b', bg: '#fef3c7', icon: '🖨️' },
-  '_default': { color: '#64748b', bg: '#f1f5f9', icon: '🎓' },
+  '_default': { color: '#94a3b8', bg: '#f8fafc', icon: '🎓' },
 };
 
 const REGIONS = [
@@ -591,8 +591,8 @@ function renderPanelMap() {
     state.maps.panel = L.map('panelMap', {
       center: [14.5, -14.5],
       zoom: 7,
-      minZoom: 6,
-      maxBounds: [[12.0, -18.0], [17.5, -11.0]],
+      minZoom: 7,
+      maxBounds: [[12.2, -17.8], [16.8, -11.2]],
       maxBoundsViscosity: 1.0,
       attributionControl: true,
     });
@@ -640,8 +640,8 @@ function initFullMap() {
   state.maps.full = L.map('fullMap', {
     center: [14.5, -14.5],
     zoom: 7,
-    minZoom: 6,
-    maxBounds: [[12.0, -18.0], [17.5, -11.0]],
+    minZoom: 7,
+    maxBounds: [[12.2, -17.8], [16.8, -11.2]],
     maxBoundsViscosity: 1.0,
   });
 

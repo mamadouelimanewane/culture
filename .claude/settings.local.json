@@ -32,7 +32,15 @@
       "Bash(node --check C:/gravity/naatpay/js/app.js)",
       "Bash(node --check C:/gravity/ligueyDekk/js/app.js)",
       "Bash(node --check C:/gravity/jeflekk/js/app.js)",
-      "Bash(node --check C:/gravity/werseg/js/app.js)"
+      "Bash(node --check C:/gravity/werseg/js/app.js)",
+      "Bash(node --check C:gravitywersegjsapp.js)",
+      "Bash(node --check C:gravitynaatpayjsapp.js)",
+      "Bash(node --check C:gravityjeflekkjsapp.js)",
+      "Bash(node --check C:gravityligueyDekkjsapp.js)",
+      "Bash(node --check \"/c/gravity/werseg/js/app.js\")",
+      "Bash(node --check \"/c/gravity/naatpay/js/app.js\")",
+      "Bash(node --check \"/c/gravity/jeflekk/js/app.js\")",
+      "Bash(node --check \"/c/gravity/ligueyDekk/js/app.js\")"
     ]
   }
 }

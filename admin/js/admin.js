@@ -1437,9 +1437,9 @@ function initMapPicker() {
 
   _mapPicker = L.map('mapPicker', {
     center: [14.6, -14.5],
-    zoom: 6,
-    minZoom: 6,
-    maxBounds: [[12.0, -18.0], [17.5, -11.0]],
+    zoom: 7,
+    minZoom: 7,
+    maxBounds: [[12.2, -17.8], [16.8, -11.2]],
     maxBoundsViscosity: 1.0
   });
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

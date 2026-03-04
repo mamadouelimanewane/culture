@@ -52,11 +52,11 @@ html {
 }
 
 body {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Outfit', system-ui, sans-serif;
   background: var(--bg);
   color: var(--text);
   font-size: 15px;
-  line-height: 1.55;
+  line-height: 1.6;
   min-height: 100vh;
 }
 
@@ -94,8 +94,11 @@ textarea {
   position: sticky;
   top: 0;
   z-index: 200;
-  background: var(--primary-dk);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, .25);
+  background: rgba(14, 22, 32, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, .15);
 }
 
 .header-inner {
@@ -242,16 +245,17 @@ textarea {
 }
 
 .mnav-btn.active {
-  color: #fff;
+  color: var(--secondary);
   border-bottom-color: var(--secondary);
 }
 
 /* ── STATS BAR ────────────────────────────────────── */
 .stats-bar {
-  background: var(--primary);
+  background: linear-gradient(90deg, var(--primary-dk) 0%, var(--primary) 50%, var(--primary-lt) 100%);
   color: #fff;
   padding: 0;
-  border-bottom: 1px solid rgba(255, 255, 255, .1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 -4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .stats-inner {
@@ -265,22 +269,32 @@ textarea {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   flex: 1;
-  padding: 0 12px;
+  padding: 0 16px;
+  transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
 }
 
 .stat-num {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 800;
   color: var(--secondary-lt);
   line-height: 1.1;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .stat-lbl {
-  font-size: 11px;
-  color: rgba(255, 255, 255, .7);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.75);
   text-align: center;
   line-height: 1.3;
+  margin-top: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .stat-sep {
@@ -364,7 +378,7 @@ textarea {
 .search-input:focus {
   outline: none;
   border-color: var(--primary-lt);
-  box-shadow: 0 0 0 3px rgba(26, 107, 62, .12);
+  box-shadow: 0 0 0 3px rgba(43, 59, 79, 0.15);
 }
 
 .search-clear {
@@ -387,7 +401,7 @@ textarea {
   padding: 10px 14px;
   border: 1.5px solid var(--border);
   border-radius: var(--radius-sm);
-  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%236b7c6e' stroke-width='2'%3E%3Cpath d='M1 1l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 12px center;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%23334155' stroke-width='2'%3E%3Cpath d='M1 1l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 12px center;
   appearance: none;
   font-size: 14px;
   color: var(--text);
@@ -398,7 +412,7 @@ textarea {
 .filter-select:focus {
   outline: none;
   border-color: var(--primary-lt);
-  box-shadow: 0 0 0 3px rgba(26, 107, 62, .12);
+  box-shadow: 0 0 0 3px rgba(43, 59, 79, 0.15);
 }
 
 /* Chips */
@@ -608,40 +622,48 @@ textarea {
 /* ── CARD ─────────────────────────────────────────── */
 .card {
   background: var(--bg-card);
-  border-radius: var(--radius);
-  border: 1px solid var(--border-lt);
-  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   cursor: pointer;
-  transition: transform var(--transition), box-shadow var(--transition);
+  transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+  position: relative;
+  z-index: 1;
 }
 
 .card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
   border-color: var(--primary-lt);
+  z-index: 2;
 }
 
 .card-header {
-  padding: 14px 16px 10px;
+  padding: 18px 20px 12px;
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: 14px;
 }
 
 .card-icon {
-  font-size: 28px;
+  font-size: 26px;
   line-height: 1;
   flex-shrink: 0;
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--type-bg, #e8f5ee);
+  background: var(--type-bg, #f1f5f9);
+  transition: transform 0.3s ease;
+}
+
+.card:hover .card-icon {
+  transform: scale(1.08);
 }
 
 .card-meta {
@@ -665,39 +687,48 @@ textarea {
 }
 
 .card-name {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 700;
   color: var(--text);
   line-height: 1.35;
-  overflow: hidden;
+  margin-top: 4px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color 0.25s ease;
+}
+
+.card:hover .card-name {
+  color: var(--secondary);
 }
 
 .card-body {
-  padding: 0 16px 14px;
+  padding: 4px 20px 16px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   flex: 1;
 }
 
 .card-loc {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  color: var(--text-md);
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--text-sm);
+  font-weight: 500;
 }
 
 .card-loc-icon {
-  font-size: 14px;
+  font-size: 16px;
   flex-shrink: 0;
+  opacity: 0.8;
 }
 
 .card-footer {
-  padding: 10px 16px;
+  padding: 14px 20px;
+  background: #f8fafc;
   border-top: 1px solid var(--border-lt);
   display: flex;
   align-items: center;
@@ -706,34 +737,39 @@ textarea {
 }
 
 .card-milieu {
-  font-size: 11px;
-  font-weight: 500;
-  padding: 3px 8px;
-  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 8px;
 }
 
 .milieu-urbain {
   background: #dbeafe;
-  color: #1d4ed8;
+  color: #1e40af;
 }
 
 .milieu-rural {
   background: #dcfce7;
-  color: #15803d;
+  color: #166534;
 }
 
 .card-map-btn {
   display: flex;
   align-items: center;
-  gap: 5px;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--primary-lt);
-  transition: var(--transition);
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+  background: rgba(23, 35, 49, 0.06);
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: all 0.25s ease;
 }
 
 .card-map-btn:hover {
-  color: var(--primary);
+  background: var(--primary);
+  color: #ffffff;
+  transform: translateX(2px);
 }
 
 /* ── PAGINATION ───────────────────────────────────── */

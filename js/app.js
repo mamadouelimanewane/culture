@@ -6,29 +6,29 @@
 
 // ── Type configurations ──────────────────────────────────────────────────────
 const INFRA_TYPES = {
-  'Centre culturel': { color: '#1a6b3e', bg: '#e8f5ee', icon: '🏛️' },
-  "Centre d'animation": { color: '#0369a1', bg: '#e0f2fe', icon: '🎭' },
-  'Cinéma': { color: '#dc2626', bg: '#fee2e2', icon: '🎬' },
+  'Centre culturel': { color: '#172331', bg: '#e2e8f0', icon: '🏛️' },
+  "Centre d'animation": { color: '#f26a21', bg: '#ffedd5', icon: '🎭' },
+  'Cinéma': { color: '#e11d48', bg: '#ffe4e6', icon: '🎬' },
   'Foyer des femmes': { color: '#9333ea', bg: '#f3e8ff', icon: '👩' },
   'Foyer des jeunes': { color: '#2563eb', bg: '#dbeafe', icon: '🏠' },
   'Galerie': { color: '#0891b2', bg: '#cffafe', icon: '🖼️' },
   'Musée': { color: '#7c3aed', bg: '#ede9fe', icon: '🏺' },
   'Salle des fêtes': { color: '#db2777', bg: '#fce7f3', icon: '🎉' },
   'Village artisanal': { color: '#d97706', bg: '#fef3c7', icon: '🧵' },
-  '_default': { color: '#6b7280', bg: '#f3f4f6', icon: '🏢' },
+  '_default': { color: '#64748b', bg: '#f1f5f9', icon: '🏢' },
 };
 
 const FORMATION_TYPES = {
-  'ARTS': { color: '#9333ea', bg: '#f3e8ff', icon: '🎨' },
-  'ARTS - AUDIOVISUEL': { color: '#9333ea', bg: '#f3e8ff', icon: '🎨' },
-  'ARTS- INFOGRAPHIE': { color: '#9333ea', bg: '#f3e8ff', icon: '🎨' },
-  'AUDIOVISUEL': { color: '#dc2626', bg: '#fee2e2', icon: '📹' },
-  'INFOGRAPHIE': { color: '#0891b2', bg: '#cffafe', icon: '💻' },
-  'INFOGRAPHIE - AUDIOVISUEL': { color: '#0891b2', bg: '#cffafe', icon: '💻' },
-  'INFOGRAPHIE - SERIGRAPHIE': { color: '#0891b2', bg: '#cffafe', icon: '🖨️' },
-  'PEINTURE': { color: '#16a34a', bg: '#dcfce7', icon: '🖌️' },
-  'SERIGRAPHIE': { color: '#d97706', bg: '#fef3c7', icon: '🖨️' },
-  '_default': { color: '#6b7280', bg: '#f3f4f6', icon: '🎓' },
+  'ARTS': { color: '#8b5cf6', bg: '#ede9fe', icon: '🎨' },
+  'ARTS - AUDIOVISUEL': { color: '#8b5cf6', bg: '#ede9fe', icon: '🎨' },
+  'ARTS- INFOGRAPHIE': { color: '#8b5cf6', bg: '#ede9fe', icon: '🎨' },
+  'AUDIOVISUEL': { color: '#e11d48', bg: '#ffe4e6', icon: '📹' },
+  'INFOGRAPHIE': { color: '#0ea5e9', bg: '#e0f2fe', icon: '💻' },
+  'INFOGRAPHIE - AUDIOVISUEL': { color: '#0ea5e9', bg: '#e0f2fe', icon: '💻' },
+  'INFOGRAPHIE - SERIGRAPHIE': { color: '#0ea5e9', bg: '#e0f2fe', icon: '🖨️' },
+  'PEINTURE': { color: '#10b981', bg: '#d1fae5', icon: '🖌️' },
+  'SERIGRAPHIE': { color: '#f59e0b', bg: '#fef3c7', icon: '🖨️' },
+  '_default': { color: '#64748b', bg: '#f1f5f9', icon: '🎓' },
 };
 
 const REGIONS = [

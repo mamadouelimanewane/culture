@@ -68,7 +68,7 @@ L'application est construite en HTML/JS pur ("Vanilla"), ce qui facilite son dé
 - **Frontend** : HTML5, CSS3, JavaScript (ES6+).
 - **Cartographie** : [Leaflet.js](https://leafletjs.com/) (OpenStreetMap).
 - **Optimisation** : [Leaflet.markercluster](https://github.com/Leaflet/Leaflet.markercluster) pour la performance d'affichage.
-- **Design** : CSS personnalisé avec une palette de couleurs inspirée des couleurs nationales (Vert #1a6b3e).
+- **Design** : CSS personnalisé avec une palette de couleurs inspirée des couleurs nationales (Bleu Marine #172331).
 
 ---
 

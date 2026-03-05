@@ -256,6 +256,31 @@ textarea {
   font-size: 24px;
   width: 48px;
   height: 48px;
+  background: var(--secondary);
+  /* orange vif */
+  color: #000;
+  box-shadow: 0 0 0 3px rgba(255, 153, 0, .30);
+  animation: carte-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes carte-pulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 3px rgba(255, 153, 0, .30);
+  }
+
+  50% {
+    box-shadow: 0 0 0 7px rgba(255, 153, 0, .08);
+  }
+}
+
+/* Override active state for carte — on renforce encore */
+.mnav-btn[data-tab="carte"].active span:first-child {
+  background: var(--secondary-lt);
+  /* jaune encore plus lumineux */
+  box-shadow: 0 0 0 4px rgba(255, 204, 0, .40);
+  animation: none;
 }
 
 .mnav-btn.active {

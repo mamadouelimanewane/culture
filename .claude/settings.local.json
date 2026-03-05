@@ -41,7 +41,16 @@
       "Bash(node --check \"/c/gravity/naatpay/js/app.js\")",
       "Bash(node --check \"/c/gravity/jeflekk/js/app.js\")",
       "Bash(node --check \"/c/gravity/ligueyDekk/js/app.js\")",
-      "Bash(netstat -ano)"
+      "Bash(netstat -ano)",
+      "Bash(gh auth status)",
+      "Bash(gh api user --jq '.login')",
+      "Bash(git --version)",
+      "Bash(git config --global user.name)",
+      "Bash(git config --global user.email)",
+      "Bash(git credential-manager version)",
+      "Bash(git credential-store --help)",
+      "Bash(printf \"protocol=https\\\\nhost=github.com\\\\n\")",
+      "Bash(git credential-manager get)"
     ]
   }
 }

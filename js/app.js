@@ -568,9 +568,10 @@ window.openModal = function (idx) {
     ${lat && lon ? `
       <div class="modal-coords">📍 ${lat.toFixed(5)}, ${lon.toFixed(5)}</div>
       <a class="modal-map-link"
-         href="https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}&zoom=15"
+         href="https://www.google.com/maps/search/?api=1&query=${lat},${lon}"
          target="_blank" rel="noopener">
-        🗺 Voir sur OpenStreetMap
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+        Voir sur Google Maps
       </a>
     ` : ''}
   `;

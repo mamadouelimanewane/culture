@@ -30,6 +30,21 @@ const DB = {
     const a = DB.getAll(col);
     return a.length ? Math.max(...a.map(r => r.id || 0)) + 1 : 1;
   },
+
+  /* Activity Log */
+  log(action, details) {
+    const logs = DB.getAll('activity_log');
+    logs.unshift({
+      id: Date.now(),
+      userId: currentUser?.id || 0,
+      userName: currentUser?.name || 'Système',
+      role: currentUser?.role || '',
+      action,
+      details,
+      timestamp: new Date().toISOString()
+    });
+    DB.save('activity_log', logs.slice(0, 100)); // Keep last 100
+  }
 };
 
 /* ─────────────────────────────────────────────
@@ -141,6 +156,11 @@ function seedData() {
     },
   ]);
 
+  DB.save('activity_log', [
+    { id: 1, userId: 1, userName: 'Admin Principal', role: 'admin', action: 'Initialisation', details: 'Système configuré avec succès.', timestamp: new Date().toISOString() },
+    { id: 2, userId: 2, userName: 'Fatou Diallo', role: 'responsable', action: 'Connexion', details: 'Sesssion ouverte depuis Dakar.', timestamp: new Date().toISOString() }
+  ]);
+
   DB.set('seeded', true);
 }
 
@@ -173,7 +193,22 @@ function setSession(user) {
   const safe = { id: user.id, name: user.name, email: user.email, role: user.role, region: user.region };
   sessionStorage.setItem('adminUser', JSON.stringify(safe));
   currentUser = safe;
+  DB.log('Connexion', `L'utilisateur ${user.name} s'est connecté.`);
 }
+
+/* ─────────────────────────────────────────────
+   SECURITY & PERMISSIONS
+   ───────────────────────────────────────────── */
+function canEditRegion(recordRegion) {
+  if (currentUser.role === 'admin') return true;
+  return currentUser.region === recordRegion;
+}
+
+function filterByRegion(dataset) {
+  if (currentUser.role === 'admin') return dataset;
+  return dataset.filter(r => (r.region || r.REGION) === currentUser.region);
+}
+
 
 /* ─────────────────────────────────────────────
    NAVIGATION
@@ -291,10 +326,12 @@ function buildSidebar() {
       { section: 'Administration' },
       { view: 'dashboard', icon: '📊', label: 'Tableau de bord' },
       { view: 'pending', icon: '⏳', label: 'À valider', badge: pendingCount || null },
+      { view: 'activity_log', icon: '📜', label: 'Journal d\'activité' },
       { view: 'users', icon: '👥', label: 'Utilisateurs' },
       { view: 'all_subs', icon: '📋', label: 'Toutes les soumissions' },
       { section: 'Données' },
       { view: 'infra_list', icon: '🏛', label: 'Infrastructures' },
+      { view: 'gallery', icon: '🖼', label: 'Photothèque' },
     ]
     : [
       { section: 'Mon espace' },
@@ -459,6 +496,8 @@ function renderView(view) {
       case 'submit_event': renderSubmitEvent(); break;
       case 'submit_new': renderSubmitNew(); break;
       case 'my_subs': renderMySubs(); break;
+      case 'activity_log': renderActivityLog(); break;
+      case 'gallery': renderGallery(); break;
       default:
         page.innerHTML = '<p style="padding:24px">Vue introuvable.</p>';
     }
@@ -520,6 +559,24 @@ function renderAdminDashboard() {
 
     ${renderActivityChart(subs)}
 
+    <div class="stats-advanced">
+       <div class="panel">
+          <div class="panel-head"><span class="panel-title">🎯 Taux de validation</span></div>
+          <div class="panel-body" style="display:flex; flex-direction:column; align-items:center; padding:20px; gap:16px;">
+             ${renderDonutChart(approved, pending, rejected)}
+             <div style="font-size:0.8rem; color:var(--text-mid); text-align:center;">
+                Ratio global des soumissions traitées par rapport aux attentes.
+             </div>
+          </div>
+       </div>
+       <div class="panel">
+          <div class="panel-head"><span class="panel-title">⚡ Activité récente</span></div>
+          <div class="panel-body" style="padding:16px;">
+             ${renderMiniActivityLog()}
+          </div>
+       </div>
+    </div>
+
     <div class="panel">
       <div class="panel-head">
         <span class="panel-title">⏳ Soumissions récentes en attente</span>
@@ -529,18 +586,103 @@ function renderAdminDashboard() {
         ${renderRecentPending()}
       </div>
     </div>
+  `;
+}
 
-    <div class="panel">
-      <div class="panel-head">
-        <span class="panel-title">📝 Demandes d'accès en attente</span>
-        <button class="btn-ghost btn-sm" onclick="navigate('pending')">Voir tout →</button>
-      </div>
-      <div class="panel-body">
-        ${renderRecentRegistrations()}
-      </div>
+function renderDonutChart(app, pend, rej) {
+  const total = app + pend + rej || 1;
+  const pApp = Math.round((app / total) * 100);
+  const pPend = Math.round((pend / total) * 100);
+  const pRej = 100 - pApp - pPend;
+
+  const gradient = `conic-gradient(var(--green) 0% ${pApp}%, var(--gold) ${pApp}% ${pApp + pPend}%, var(--red) ${pApp + pPend}% 100%)`;
+
+  return `
+    <div class="donut-chart" style="background:${gradient}">
+       <div class="donut-label">${pApp}%</div>
+    </div>
+    <div style="display:flex; gap:12px; font-size:0.75rem;">
+       <span style="display:flex; align-items:center; gap:4px;"><i style="width:10px; height:10px; background:var(--green); border-radius:3px;"></i> Approuvées</span>
+       <span style="display:flex; align-items:center; gap:4px;"><i style="width:10px; height:10px; background:var(--gold); border-radius:3px;"></i> Attente</span>
+       <span style="display:flex; align-items:center; gap:4px;"><i style="width:10px; height:10px; background:var(--red); border-radius:3px;"></i> Rejetées</span>
     </div>
   `;
 }
+
+function renderMiniActivityLog() {
+  const logs = DB.getAll('activity_log').slice(0, 4);
+  if (!logs.length) return '<div class="panel-empty">Aucune activité récente</div>';
+  return `<div class="activity-list">
+     ${logs.map(l => `
+       <div class="activity-item">
+          <div class="activity-icon">${l.action === 'Connexion' ? '🔑' : '📝'}</div>
+          <div class="activity-content">
+             <div><strong>${l.userName}</strong> · ${l.action}</div>
+             <div class="activity-time">${formatDate(l.timestamp)} · ${new Date(l.timestamp).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</div>
+          </div>
+       </div>
+     `).join('')}
+  </div>`;
+}
+
+function renderActivityLog() {
+  setTitle('Journal d\'activité système');
+  const logs = DB.getAll('activity_log');
+  qs('#page').innerHTML = `
+    <div class="page-head">
+      <div class="page-head-left"><h2>Journal d'activité</h2><p>Historique des 100 dernières actions effectuées.</p></div>
+    </div>
+    <div class="panel">
+       <div class="panel-body" style="padding:16px;">
+          <div class="activity-list">
+             ${logs.map(l => `
+               <div class="activity-item">
+                  <div class="activity-icon">⚡</div>
+                  <div class="activity-content">
+                     <div><strong>${l.userName}</strong> (${l.role}) a effectué : <span style="color:var(--green);font-weight:600;">${l.action}</span></div>
+                     <div style="font-size:0.8rem; margin:4px 0;">${l.details}</div>
+                     <div class="activity-time">${formatDate(l.timestamp)} à ${new Date(l.timestamp).toLocaleTimeString('fr-FR')}</div>
+                  </div>
+               </div>
+             `).join('')}
+          </div>
+       </div>
+    </div>
+  `;
+}
+
+function renderGallery() {
+  setTitle('Photothèque culturelle');
+  const subs = DB.getAll('submissions').filter(s => s.status === 'approved' && s.images && s.images.length);
+  const allImgs = [];
+  subs.forEach(s => {
+    s.images.forEach(img => allImgs.push({ url: img, infra: s.infraName || s.data?.name, date: s.reviewedAt }));
+  });
+
+  qs('#page').innerHTML = `
+    <div class="page-head">
+      <div class="page-head-left"><h2>Photothèque</h2><p>${allImgs.length} photo(s) issue(s) des soumissions approuvées</p></div>
+    </div>
+    <div class="panel">
+       <div class="panel-body" style="padding:16px;">
+          ${allImgs.length ? `
+            <div class="gallery-grid">
+               ${allImgs.map(img => `
+                 <div class="gallery-item" onclick="openImgZoom('${img.url}')">
+                    <img src="${img.url}" alt="" />
+                    <div class="gallery-info">
+                       <strong>${img.infra}</strong><br/>
+                       ${formatDate(img.date)}
+                    </div>
+                 </div>
+               `).join('')}
+            </div>
+          ` : '<div class="panel-empty">Aucune image disponible. Approuvez des soumissions avec photos pour alimenter la galerie.</div>'}
+       </div>
+    </div>
+  `;
+}
+
 
 function renderRecentPending() {
   const items = DB.getAll('submissions').filter(s => s.status === 'pending').slice(0, 4);
@@ -1062,9 +1204,12 @@ function renderInfraList() {
     <div class="panel">
       <div class="panel-head">
         <span class="panel-title">🏛 Liste</span>
-        <div class="tbl-search">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-          <input id="infraSearch" placeholder="Rechercher…" oninput="filterInfraTable(this.value)" />
+        <div style="display:flex; gap:10px; align-items:center;">
+          <button class="btn-export" onclick="exportInfrasToCSV()">📥 Exporter CSV</button>
+          <div class="tbl-search">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input id="infraSearch" placeholder="Rechercher…" oninput="filterInfraTable(this.value)" />
+          </div>
         </div>
       </div>
       <div class="panel-body" id="infraBody">
@@ -1075,8 +1220,10 @@ function renderInfraList() {
   fetch('../infrastructures_culturelles.json')
     .then(r => r.json())
     .then(data => {
-      window._infraData = data;
-      drawInfraTable(data.slice(0, 80));
+      // Filtrage par région pour les responsables
+      const filteredData = filterByRegion(data);
+      window._infraData = filteredData;
+      drawInfraTable(filteredData.slice(0, 80));
     })
     .catch(() => {
       qs('#infraBody').innerHTML = '<div class="panel-empty">Impossible de charger le fichier JSON.</div>';
@@ -1084,35 +1231,104 @@ function renderInfraList() {
 }
 
 function drawInfraTable(items) {
+  const isAdmin = currentUser.role === 'admin';
   qs('#infraBody').innerHTML = `<div class="table-wrap"><table>
-    <thead><tr><th>Désignation</th><th>Type</th><th>Commune</th><th>Région</th><th>Milieu</th></tr></thead>
+    <thead><tr><th>Désignation</th><th>Type</th><th>Commune</th><th>Région</th><th>Milieu</th>${isAdmin ? '<th>Action</th>' : ''}</tr></thead>
     <tbody>
-      ${items.map(i => `<tr>
-        <td class="td-name">${i.DESIGNATION || '—'}</td>
-        <td><span class="tag">${i.DESCRIPTIF || '—'}</span></td>
-        <td>${i.COMMUNE || '—'}</td>
-        <td>${i.REGION || '—'}</td>
-        <td>${i.MILIEU || '—'}</td>
-      </tr>`).join('')}
+      ${items.map((i, idx) => `
+        <tr class="${isAdmin ? 'editable-row' : ''}" onclick="${isAdmin ? `openInfraEdit(${idx})` : ''}">
+          <td class="td-name">${i.DESIGNATION || '—'}</td>
+          <td><span class="tag">${i.DESCRIPTIF || '—'}</span></td>
+          <td>${i.COMMUNE || '—'}</td>
+          <td>${i.REGION || '—'}</td>
+          <td>${i.MILIEU || '—'}</td>
+          ${isAdmin ? `<td><button class="btn-ghost btn-sm">Modifier</button></td>` : ''}
+        </tr>`).join('')}
     </tbody>
   </table>
   <div style="padding:10px 16px;font-size:.78rem;color:var(--text-lt)">
-    Affichage des 80 premiers enregistrements. Utilisez la recherche pour filtrer.
+    Affichage des ${items.length} enregistrements. ${isAdmin ? 'Cliquez sur une ligne pour modifier.' : ''}
   </div>
   </div>`;
 }
 
+window.exportInfrasToCSV = function () {
+  const data = window._infraFiltered || window._infraData;
+  if (!data) return;
+  const headers = ['DESIGNATION', 'DESCRIPTIF', 'COMMUNE', 'REGION', 'MILIEU', 'LATITUDE', 'LONGITUDE'];
+  const csv = [
+    headers.join(','),
+    ...data.map(row => headers.map(h => `"${(row[h] || '').toString().replace(/"/g, '""')}"`).join(','))
+  ].join('\n');
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.setAttribute('download', 'scenews_infras_export.csv');
+  link.click();
+  DB.log('Export de données', `Export CSV de ${data.length} infrastructures.`);
+};
+
+window.openInfraEdit = function (idx) {
+  const list = window._infraFiltered || window._infraData;
+  const item = list[idx];
+  if (!item) return;
+
+  const modal = qs('#valModal');
+  const title = qs('#valTitle');
+  const body = qs('#valBody');
+  const foot = qs('#valFoot');
+
+  title.textContent = '✏️ Édition — ' + (item.DESIGNATION || 'Infrastructure');
+
+  body.innerHTML = `
+    <div class="fields-grid-3">
+       <div class="field"><label>Désignation *</label><input type="text" id="edName" value="${item.DESIGNATION || ''}" /></div>
+       <div class="field"><label>Type *</label><input type="text" id="edType" value="${item.DESCRIPTIF || ''}" /></div>
+       <div class="field"><label>Milieu</label><input type="text" id="edMilieu" value="${item.MILIEU || ''}" /></div>
+    </div>
+    <div class="fields-grid-3">
+       <div class="field"><label>Région</label><input type="text" id="edRegion" value="${item.REGION || ''}" /></div>
+       <div class="field"><label>Département</label><input type="text" id="edDept" value="${item.DEPARTEMENT || ''}" /></div>
+       <div class="field"><label>Commune</label><input type="text" id="edCommune" value="${item.COMMUNE || ''}" /></div>
+    </div>
+    <div class="fields-grid-3">
+       <div class="field"><label>Latitude</label><input type="number" id="edLat" step="any" value="${item.LATITUDE || ''}" /></div>
+       <div class="field"><label>Longitude</label><input type="number" id="edLon" step="any" value="${item.LONGITUDE || ''}" /></div>
+    </div>
+    <div class="field"><label>Description technique</label><textarea id="edDesc" rows="3">${item.OBSERVATIONS || ''}</textarea></div>
+  `;
+
+  foot.innerHTML = `
+    <button class="btn-ghost" onclick="closeValModal()">Annuler</button>
+    <button class="btn-primary" onclick="saveInfraEdit('${item.DESIGNATION}')">💾 Enregistrer les modifications</button>
+  `;
+
+  modal.classList.remove('hidden');
+};
+
+window.saveInfraEdit = function (oldName) {
+  // En mode démo, on simule l'enregistrement en loggant l'action.
+  // Dans une vraie app, on ferait un fetch POST/PUT.
+  const newName = qs('#edName').value;
+  DB.log('Édition Directe', `Modification de l'infrastructure "${oldName}" pour "${newName}"`);
+  showToast('Modifications enregistrées (Simulation) ✅');
+  closeValModal();
+};
+
+
 window.filterInfraTable = function (q) {
   if (!window._infraData) return;
   const lq = q.toLowerCase();
-  const filtered = lq
+  window._infraFiltered = lq
     ? window._infraData.filter(i =>
       (i.DESIGNATION || '').toLowerCase().includes(lq) ||
       (i.COMMUNE || '').toLowerCase().includes(lq) ||
       (i.REGION || '').toLowerCase().includes(lq) ||
       (i.DESCRIPTIF || '').toLowerCase().includes(lq))
-    : window._infraData.slice(0, 80);
-  drawInfraTable(filtered.slice(0, 200));
+    : null;
+  const displayList = window._infraFiltered || window._infraData.slice(0, 80);
+  drawInfraTable(displayList.slice(0, 200));
 };
 
 /* ─────────────────────────────────────────────
@@ -1195,6 +1411,10 @@ function renderSubmitUpdate() {
         <div class="field">
           <label>Infrastructure concernée *</label>
           <input type="text" id="updInfraName" value="${fullUser?.infraName || ''}" placeholder="Nom exact de l'infrastructure" required />
+        </div>
+        <div class="field">
+          <label>Région (Verrouillée)</label>
+          <input type="text" value="${currentUser.region}" readonly style="background:var(--bg); color:var(--text-lt);" />
         </div>
         <div class="field">
           <label>Description / Présentation</label>
@@ -1385,11 +1605,10 @@ function renderSubmitNew() {
             </select></div>
         </div>
         <div class="fields-3col">
-          <div class="field"><label>Région *</label>
-            <select id="newRegion" required>
-              <option value="">—</option>
-              ${['DAKAR', 'DIOURBEL', 'FATICK', 'KAFFRINE', 'KAOLACK', 'KEDOUGOU', 'KOLDA', 'LOUGA', 'MATAM', 'SAINT LOUIS', 'SEDHIOU', 'TAMBACOUNDA', 'THIES', 'ZIGUINCHOR'].map(r => `<option>${r}</option>`).join('')}
-            </select></div>
+          <div class="field">
+            <label>Région (Verrouillée) *</label>
+            <input type="text" id="newRegion" value="${currentUser.region}" readonly style="background:var(--bg);" />
+          </div>
           <div class="field"><label>Département</label>
             <input type="text" id="newDept" placeholder="Département" /></div>
           <div class="field"><label>Commune *</label>

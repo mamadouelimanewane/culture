@@ -40,7 +40,8 @@
       "Bash(node --check \"/c/gravity/werseg/js/app.js\")",
       "Bash(node --check \"/c/gravity/naatpay/js/app.js\")",
       "Bash(node --check \"/c/gravity/jeflekk/js/app.js\")",
-      "Bash(node --check \"/c/gravity/ligueyDekk/js/app.js\")"
+      "Bash(node --check \"/c/gravity/ligueyDekk/js/app.js\")",
+      "Bash(netstat -ano)"
     ]
   }
 }

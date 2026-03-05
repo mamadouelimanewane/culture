@@ -1058,23 +1058,42 @@ function bindEvents() {
     if (e.target === dom.modalOverlay) closeModal();
   });
 
-  // Toggle legend expansion (full map drawer)
-  const toggleFullLegend = (e) => {
-    if (e.target.closest('.legend-item')) return;
-    if (dom.fullLegend) dom.fullLegend.classList.toggle('expanded');
-  };
-
+  // Swipe gesture for full map legend drawer
   if (dom.fullLegend) {
-    dom.fullLegend.addEventListener('click', toggleFullLegend);
-    // On mobile, sometimes a direct touch on the handle is more responsive
+    let _touchStartY = 0;
+    let _touchStartX = 0;
+
+    dom.fullLegend.addEventListener('touchstart', (e) => {
+      _touchStartY = e.touches[0].clientY;
+      _touchStartX = e.touches[0].clientX;
+    }, { passive: true });
+
+    dom.fullLegend.addEventListener('touchend', (e) => {
+      const dy = _touchStartY - e.changedTouches[0].clientY; // positive = swipe up
+      const dx = Math.abs(_touchStartX - e.changedTouches[0].clientX);
+      // Ignore horizontal swipes
+      if (dx > Math.abs(dy)) return;
+      const THRESHOLD = 30;
+      if (dy > THRESHOLD) {
+        // Swipe UP → expand
+        dom.fullLegend.classList.add('expanded');
+      } else if (dy < -THRESHOLD) {
+        // Swipe DOWN → collapse
+        dom.fullLegend.classList.remove('expanded');
+      } else if (Math.abs(dy) < 8) {
+        // Tap on handle area → toggle
+        if (!e.target.closest('.legend-item')) {
+          dom.fullLegend.classList.toggle('expanded');
+        }
+      }
+    }, { passive: true });
+
+    // Also handle the dedicated handle via click (desktop fallback)
     if (dom.fullLegendHandle) {
-      const handleToggle = (e) => {
-        e.preventDefault();
+      dom.fullLegendHandle.addEventListener('click', (e) => {
         e.stopPropagation();
         dom.fullLegend.classList.toggle('expanded');
-      };
-      dom.fullLegendHandle.addEventListener('click', handleToggle);
-      dom.fullLegendHandle.addEventListener('touchstart', handleToggle, { passive: false });
+      });
     }
   }
 

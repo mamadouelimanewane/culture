@@ -1063,11 +1063,27 @@ function setupFullMapSearch() {
     timeout = setTimeout(doSearch, 320);
   });
 
+  // Fermer le clavier mobile après validation (touche Entrée / bouton Rechercher)
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      clearTimeout(timeout);
+      doSearch();
+      input.blur(); // Ferme le clavier virtuel
+    }
+  });
+
+  // L'événement 'search' est déclenché sur type="search" quand on appuie Entrée ou ✕
+  input.addEventListener('search', () => {
+    clearTimeout(timeout);
+    doSearch();
+    setTimeout(() => input.blur(), 50);
+  });
+
   if (clearBtn) {
     clearBtn.addEventListener('click', () => {
       input.value = '';
       doSearch();
-      input.focus();
+      input.blur(); // Ferme le clavier après effacement aussi
     });
   }
 }

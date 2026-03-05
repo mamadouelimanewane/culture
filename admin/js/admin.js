@@ -51,7 +51,11 @@ const DB = {
    SEED DEMO DATA (runs once)
 ───────────────────────────────────────────── */
 function seedData() {
-  if (DB.get('seeded')) return;
+  // Bumping version key clears stale cached credentials from previous deployments
+  if (DB.get('seeded_v3')) return;
+  // Clear old seed flags
+  DB.remove('seeded');
+  DB.remove('seeded_v2');
 
   /* Users */
   DB.save('users', [
@@ -161,7 +165,7 @@ function seedData() {
     { id: 2, userId: 2, userName: 'Fatou Diallo', role: 'responsable', action: 'Connexion', details: 'Sesssion ouverte depuis Dakar.', timestamp: new Date().toISOString() }
   ]);
 
-  DB.set('seeded', true);
+  DB.set('seeded_v3', true);
 }
 
 /* ─────────────────────────────────────────────

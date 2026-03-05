@@ -331,11 +331,15 @@ function buildSidebar() {
       { view: 'all_subs', icon: '📋', label: 'Toutes les soumissions' },
       { section: 'Données' },
       { view: 'infra_list', icon: '🏛', label: 'Infrastructures' },
+      { view: 'agenda', icon: '📅', label: 'Agenda cultural' },
       { view: 'gallery', icon: '🖼', label: 'Photothèque' },
+      { view: 'reports', icon: '🚨', label: 'Signalements' },
+      { view: 'profile', icon: '👤', label: 'Mon profil' },
     ]
     : [
       { section: 'Mon espace' },
       { view: 'dashboard', icon: '📊', label: 'Tableau de bord' },
+      { view: 'profile', icon: '👤', label: 'Mon profil' },
       { section: 'Soumettre' },
       { view: 'submit_update', icon: '✏️', label: 'Mise à jour infra' },
       { view: 'submit_event', icon: '🗓', label: 'Événement / Date' },
@@ -498,6 +502,9 @@ function renderView(view) {
       case 'my_subs': renderMySubs(); break;
       case 'activity_log': renderActivityLog(); break;
       case 'gallery': renderGallery(); break;
+      case 'agenda': renderAgenda(); break;
+      case 'reports': renderReports(); break;
+      case 'profile': renderProfile(); break;
       default:
         page.innerHTML = '<p style="padding:24px">Vue introuvable.</p>';
     }
@@ -1898,6 +1905,274 @@ function formatDate(dateStr) {
     return new Date(dateStr).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
   } catch (e) { return dateStr; }
 }
+
+/* ─────────────────────────────────────────────
+   ── AGENDA CULTUREL ──
+───────────────────────────────────────────── */
+function renderAgenda() {
+  setTitle('Agenda culturel');
+  const events = DB.getAll('submissions').filter(s => s.type === 'event' && s.status === 'approved');
+  const pending = DB.getAll('submissions').filter(s => s.type === 'event' && s.status === 'pending');
+
+  qs('#page').innerHTML = `
+    <div class="page-head">
+      <div class="page-head-left"><h2>📅 Agenda culturel</h2><p>${events.length} événement(s) approuvé(s) · ${pending.length} en attente</p></div>
+      ${currentUser.role === 'responsable' ? `<div class="page-head-right"><button class="btn-primary" onclick="navigate('submit_event')">+ Ajouter un événement</button></div>` : ''}
+    </div>
+
+    <div class="vtabs" id="agendaTabs">
+      <button class="vtab active" data-atab="upcoming">📅 À venir</button>
+      <button class="vtab" data-atab="past">📆 Passés</button>
+      ${currentUser.role === 'admin' ? `<button class="vtab" data-atab="pending">⏳ En attente</button>` : ''}
+    </div>
+
+    <div id="agendaBody"></div>
+  `;
+
+  const today = new Date().toISOString().slice(0, 10);
+  let activeTab = 'upcoming';
+
+  function drawAgenda() {
+    let items;
+    if (activeTab === 'upcoming') items = events.filter(s => (s.data?.dateEnd || '') >= today);
+    else if (activeTab === 'past') items = events.filter(s => (s.data?.dateEnd || '') < today);
+    else items = pending;
+
+    if (!items.length) {
+      qs('#agendaBody').innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><h3>Aucun événement</h3></div>';
+      return;
+    }
+
+    qs('#agendaBody').innerHTML = `<div class="sub-cards">${items.map(s => {
+      const d = s.data || {};
+      const isUpcoming = (d.dateEnd || '') >= today;
+      return `<div class="sub-card">
+        <div class="sub-card-icon">${isUpcoming ? '📅' : '📆'}</div>
+        <div class="sub-card-body">
+          <div class="sub-card-title">${d.title || '—'}</div>
+          <div class="sub-card-meta">
+            ${s.infraName || '—'} · ${formatDate(d.dateStart)} → ${formatDate(d.dateEnd)}
+            &nbsp;${statusBadge(s.status)}
+          </div>
+          ${d.location ? `<div class="sub-card-excerpt">📍 ${d.location}</div>` : ''}
+          ${d.description ? `<div class="sub-card-excerpt">${d.description.substring(0, 120)}…</div>` : ''}
+          ${s.images?.length ? `<div class="sub-card-imgs">${s.images.map(img => `<img class="sub-card-img" src="${img}" onclick="openImgZoom('${img}')" />`).join('')}</div>` : ''}
+          ${currentUser.role === 'admin' && s.status === 'pending' ? `<div class="sub-card-actions"><button class="btn-primary btn-sm" onclick="openValModal(${s.id}, 'submission')">Réviser →</button></div>` : ''}
+        </div>
+      </div>`;
+    }).join('')}</div>`;
+  }
+
+  qs('#agendaTabs').querySelectorAll('[data-atab]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeTab = btn.dataset.atab;
+      qs('#agendaTabs').querySelectorAll('.vtab').forEach(b => b.classList.toggle('active', b.dataset.atab === activeTab));
+      drawAgenda();
+    });
+  });
+  drawAgenda();
+}
+
+/* ─────────────────────────────────────────────
+   ── SIGNALEMENTS (Crowdsourcing) ──
+───────────────────────────────────────────── */
+function renderReports() {
+  setTitle('Signalements du public');
+  const reports = DB.getAll('reports');
+  const pending = reports.filter(r => r.status === 'pending');
+
+  qs('#page').innerHTML = `
+    <div class="page-head">
+      <div class="page-head-left"><h2>🚨 Signalements du public</h2><p>${pending.length} signalement(s) en attente · ${reports.length} total</p></div>
+    </div>
+    <div class="panel">
+      <div class="panel-body" style="padding:16px;">
+        ${reports.length === 0
+      ? '<div class="empty-state"><div class="empty-state-icon">✅</div><h3>Aucun signalement</h3><p>Le public n\'a signalé aucune erreur pour le moment.</p></div>'
+      : `<div class="activity-list">${reports.map(r => `
+              <div class="activity-item">
+                <div class="activity-icon">${r.status === 'pending' ? '🔴' : '✅'}</div>
+                <div class="activity-content">
+                  <div><strong>${r.infraName || 'Inconnue'}</strong> — ${r.type}</div>
+                  <div style="font-size:0.82rem; margin:4px 0; color:var(--text-mid);">${r.message}</div>
+                  <div style="display:flex; gap:12px; align-items:center; margin-top:8px;">
+                    <span class="activity-time">${formatDate(r.createdAt)}</span>
+                    ${statusBadge(r.status)}
+                    ${r.status === 'pending' && currentUser.role === 'admin' ? `
+                      <button class="btn-primary btn-sm" onclick="resolveReport(${r.id})">Marquer résolu</button>
+                      <button class="btn-ghost btn-sm" onclick="openReportEditModal(${r.id})">Voir l'infra</button>
+                    ` : ''}
+                  </div>
+                </div>
+              </div>`).join('')}
+            </div>`
+    }
+      </div>
+    </div>
+  `;
+}
+
+window.resolveReport = function (id) {
+  DB.update('reports', id, { status: 'resolved', resolvedAt: new Date().toISOString().slice(0, 10), resolvedBy: currentUser.name });
+  DB.log('Signalement résolu', `Signalement #${id} marqué comme résolu.`);
+  showToast('Signalement marqué comme résolu ✅');
+  renderReports();
+};
+
+window.openReportEditModal = function (id) {
+  const r = DB.findById('reports', id);
+  if (!r) return;
+  showToast(`Infrastructure: ${r.infraName} — cliquez Infrastructures pour modifier.`, 'info', 5000);
+};
+
+/* Fonction appelable depuis le site public pour signaler une erreur */
+window.publicReport = function (infraName, type, message) {
+  DB.push('reports', {
+    id: DB.nextId('reports'),
+    infraName, type, message,
+    status: 'pending',
+    createdAt: new Date().toISOString().slice(0, 10),
+  });
+  return true;
+};
+
+/* ─────────────────────────────────────────────
+   ── PROFIL UTILISATEUR ──
+───────────────────────────────────────────── */
+function renderProfile() {
+  setTitle('Mon profil');
+  const fullUser = DB.findById('users', currentUser.id);
+  if (!fullUser) return;
+
+  const initials = fullUser.name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+  const roleLabel = fullUser.role === 'admin' ? 'Administrateur' : 'Responsable régional';
+
+  qs('#page').innerHTML = `
+    <div class="page-head"><div class="page-head-left"><h2>👤 Mon profil</h2></div></div>
+
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+
+      <!-- Infos personnelles -->
+      <div class="form-panel">
+        <div class="form-head">
+          <div style="display:flex; align-items:center; gap:16px;">
+            <div style="width:56px; height:56px; background:var(--green-mid); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.4rem; font-weight:700;">${initials}</div>
+            <div><h3 style="margin:0;">${fullUser.name}</h3><div style="font-size:0.8rem; color:var(--text-lt);">${roleLabel} · ${fullUser.region}</div></div>
+          </div>
+        </div>
+        <div class="form-body">
+          <div class="field"><label>Prénom et Nom</label><input type="text" id="pName" value="${fullUser.name}" /></div>
+          <div class="field"><label>Email</label><input type="email" id="pEmail" value="${fullUser.email}" /></div>
+          <div class="field"><label>Téléphone</label><input type="tel" id="pPhone" value="${fullUser.phone || ''}" /></div>
+          <div class="field"><label>Infrastructure gérée</label><input type="text" id="pInfra" value="${fullUser.infraName || ''}" placeholder="Nom de votre infrastructure" /></div>
+          <div id="pError" class="error-msg hidden"></div>
+          <div style="display:flex; justify-content:flex-end; padding-top:8px;">
+            <button class="btn-primary" onclick="saveProfile()">💾 Enregistrer les modifications</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Changement de mot de passe -->
+      <div class="form-panel">
+        <div class="form-head"><h3>🔒 Changer de mot de passe</h3></div>
+        <div class="form-body">
+          <div class="field"><label>Mot de passe actuel *</label><input type="password" id="pwCurrent" placeholder="••••••••" /></div>
+          <div class="field"><label>Nouveau mot de passe *</label><input type="password" id="pwNew" placeholder="Min. 6 caractères" /></div>
+          <div class="field"><label>Confirmer le nouveau *</label><input type="password" id="pwConfirm" placeholder="Répéter le nouveau" /></div>
+          <div id="pwError" class="error-msg hidden"></div>
+          <div style="display:flex; justify-content:flex-end; padding-top:8px;">
+            <button class="btn-primary" onclick="changePassword()">🔑 Mettre à jour le mot de passe</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Mes stats -->
+    <div class="panel" style="margin-top:20px;">
+      <div class="panel-head"><span class="panel-title">📊 Mes statistiques de contribution</span></div>
+      <div class="panel-body" style="padding:20px;">
+        ${renderContribStats(fullUser)}
+      </div>
+    </div>
+  `;
+}
+
+function renderContribStats(user) {
+  const mySubs = DB.getAll('submissions').filter(s => s.userId === user.id);
+  const approved = mySubs.filter(s => s.status === 'approved').length;
+  const pending = mySubs.filter(s => s.status === 'pending').length;
+  const rejected = mySubs.filter(s => s.status === 'rejected').length;
+  const max = Math.max(1, approved, pending, rejected);
+
+  return `<div class="chart-bar-row">
+    <span class="chart-bar-label">Approuvées</span>
+    <div class="chart-bar-track"><div class="chart-bar-fill green" style="width:${Math.round(approved / max * 100)}%"></div></div>
+    <span class="chart-bar-value">${approved}</span>
+  </div>
+  <div class="chart-bar-row">
+    <span class="chart-bar-label">En attente</span>
+    <div class="chart-bar-track"><div class="chart-bar-fill gold" style="width:${Math.round(pending / max * 100)}%"></div></div>
+    <span class="chart-bar-value">${pending}</span>
+  </div>
+  <div class="chart-bar-row">
+    <span class="chart-bar-label">Rejetées</span>
+    <div class="chart-bar-track"><div class="chart-bar-fill red" style="width:${Math.round(rejected / max * 100)}%"></div></div>
+    <span class="chart-bar-value">${rejected}</span>
+  </div>
+  <div style="margin-top:12px; font-size:0.8rem; color:var(--text-lt);">Membre depuis le ${formatDate(user.createdAt)}</div>`;
+}
+
+window.saveProfile = function () {
+  const name = qs('#pName').value.trim();
+  const email = qs('#pEmail').value.trim();
+  const phone = qs('#pPhone').value.trim();
+  const infraName = qs('#pInfra').value.trim();
+
+  if (!name || !email) { showFormError('pError', 'Le nom et l\'email sont obligatoires.'); return; }
+
+  DB.update('users', currentUser.id, { name, email, phone, infraName });
+  // Update session
+  currentUser.name = name;
+  sessionStorage.setItem('adminUser', JSON.stringify(currentUser));
+
+  DB.log('Profil mis à jour', `${name} a modifié ses informations personnelles.`);
+  showToast('Profil mis à jour avec succès ✅');
+  updateTopbar();
+  buildSidebar();
+};
+
+window.changePassword = function () {
+  const current = qs('#pwCurrent').value;
+  const newPw = qs('#pwNew').value;
+  const confirm = qs('#pwConfirm').value;
+  const errEl = qs('#pwError');
+  errEl.classList.add('hidden');
+
+  const fullUser = DB.findById('users', currentUser.id);
+  if (fullUser.password !== current) {
+    errEl.textContent = 'Le mot de passe actuel est incorrect.';
+    errEl.classList.remove('hidden');
+    return;
+  }
+  if (newPw.length < 6) {
+    errEl.textContent = 'Le nouveau mot de passe doit contenir au moins 6 caractères.';
+    errEl.classList.remove('hidden');
+    return;
+  }
+  if (newPw !== confirm) {
+    errEl.textContent = 'Les deux mots de passe ne correspondent pas.';
+    errEl.classList.remove('hidden');
+    return;
+  }
+
+  DB.update('users', currentUser.id, { password: newPw });
+  DB.log('Changement de mot de passe', `${currentUser.name} a changé son mot de passe.`);
+  showToast('Mot de passe mis à jour ✅');
+  qs('#pwCurrent').value = '';
+  qs('#pwNew').value = '';
+  qs('#pwConfirm').value = '';
+};
 
 /* ─────────────────────────────────────────────
    ── INIT ──

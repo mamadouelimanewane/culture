@@ -809,47 +809,267 @@ window.navigateTo = function (id) {
 
 
 
+// ── NLP Map Search Engine ─────────────────────────────────────────────────────
+
+const NLP_TYPES = {
+  'musée': 'Musée', 'musees': 'Musée', 'musee': 'Musée',
+  'cinéma': 'Cinéma', 'cinema': 'Cinéma', 'cinemas': 'Cinéma',
+  'centre culturel': 'Centre culturel', 'centre': 'Centre culturel',
+  "centre d'animation": "Centre d'animation", 'animation': "Centre d'animation",
+  'foyer femmes': 'Foyer des femmes', 'foyer des femmes': 'Foyer des femmes',
+  'foyer femme': 'Foyer des femmes',
+  'foyer jeunes': 'Foyer des jeunes', 'foyer des jeunes': 'Foyer des jeunes',
+  'foyer jeune': 'Foyer des jeunes', 'foyer': 'Foyer des jeunes',
+  'galerie': 'Galerie', 'galeries': 'Galerie',
+  'salle fête': 'Salle des fêtes', 'salle des fêtes': 'Salle des fêtes',
+  'salle fetes': 'Salle des fêtes', 'salle': 'Salle des fêtes',
+  'village artisanal': 'Village artisanal', 'artisanal': 'Village artisanal', 'artisanat': 'Village artisanal',
+  'bibliothèque': 'Bibliothèque', 'bibliotheque': 'Bibliothèque',
+  'maison de la culture': 'Maison de la culture', 'maison culture': 'Maison de la culture',
+  'théâtre': 'Théâtre', 'theatre': 'Théâtre',
+};
+
+const NLP_REGIONS = {
+  'dakar': 'DAKAR', 'diourbel': 'DIOURBEL', 'fatick': 'FATICK',
+  'kaffrine': 'KAFFRINE', 'kaolack': 'KAOLACK', 'kedougou': 'KEDOUGOU',
+  'kédougou': 'KEDOUGOU', 'kolda': 'KOLDA', 'louga': 'LOUGA',
+  'matam': 'MATAM', 'saint-louis': 'SAINT LOUIS', 'saint louis': 'SAINT LOUIS',
+  'sedhiou': 'SEDHIOU', 'sédhiou': 'SEDHIOU',
+  'tambacounda': 'TAMBACOUNDA', 'tamba': 'TAMBACOUNDA',
+  'thies': 'THIES', 'thiès': 'THIES', 'thies': 'THIES',
+  'ziguinchor': 'ZIGUINCHOR', 'zigui': 'ZIGUINCHOR',
+};
+
+const NLP_MILIEU = {
+  'urbain': 'URBAIN', 'ville': 'URBAIN', 'urban': 'URBAIN',
+  'rural': 'RURAL', 'campagne': 'RURAL', 'village': 'RURAL',
+};
+
+// Region bounding boxes for auto-zoom [south, west, north, east]
+const REGION_BOUNDS = {
+  'DAKAR': [[14.60, -17.55], [14.87, -17.10]],
+  'THIES': [[14.50, -17.10], [15.10, -16.70]],
+  'DIOURBEL': [[14.50, -16.30], [15.00, -15.70]],
+  'SAINT LOUIS': [[15.50, -16.60], [16.65, -15.00]],
+  'LOUGA': [[15.20, -16.30], [16.00, -14.80]],
+  'MATAM': [[14.90, -13.80], [16.00, -12.20]],
+  'FATICK': [[13.90, -16.90], [14.55, -15.70]],
+  'KAOLACK': [[13.80, -16.40], [14.60, -15.60]],
+  'KAFFRINE': [[13.70, -15.50], [14.40, -14.80]],
+  'KEDOUGOU': [[12.20, -12.75], [13.10, -11.80]],
+  'KOLDA': [[12.60, -15.20], [13.40, -13.90]],
+  'SEDHIOU': [[12.40, -16.10], [13.00, -14.90]],
+  'TAMBACOUNDA': [[12.70, -14.80], [14.00, -11.50]],
+  'ZIGUINCHOR': [[12.30, -16.70], [12.75, -15.60]],
+};
+
+function parseNaturalQuery(raw) {
+  const q = raw.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')  // strip accents for matching
+    .replace(/['']/g, "'");
+
+  const intent = { types: [], regions: [], milieu: null, freeText: '' };
+
+  // Detect types (longest match first)
+  const typeKeys = Object.keys(NLP_TYPES).sort((a, b) => b.length - a.length);
+  let remaining = q;
+  for (const key of typeKeys) {
+    const kNorm = key.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    if (remaining.includes(kNorm)) {
+      const val = NLP_TYPES[key];
+      if (!intent.types.includes(val)) intent.types.push(val);
+      remaining = remaining.replace(kNorm, '').trim();
+    }
+  }
+
+  // Detect regions
+  const regionKeys = Object.keys(NLP_REGIONS).sort((a, b) => b.length - a.length);
+  for (const key of regionKeys) {
+    const kNorm = key.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    if (remaining.includes(kNorm)) {
+      const val = NLP_REGIONS[key];
+      if (!intent.regions.includes(val)) intent.regions.push(val);
+      remaining = remaining.replace(kNorm, '').trim();
+    }
+  }
+
+  // Detect milieu
+  for (const [key, val] of Object.entries(NLP_MILIEU)) {
+    const kNorm = key.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    if (remaining.includes(kNorm)) {
+      intent.milieu = val;
+      remaining = remaining.replace(kNorm, '').trim();
+      break;
+    }
+  }
+
+  // Strip prepositions and connectors, keep free text
+  intent.freeText = remaining
+    .replace(/\b(a|au|aux|à|en|de|du|des|les|le|la|sur|pour|dans|et|ou|avec|qui|que)\b/g, ' ')
+    .replace(/\s+/g, ' ').trim();
+
+  return intent;
+}
+
+function matchRecord(record, isFormation, intent) {
+  const name = (isFormation ? record.NOM_ETABLISSEMENT : record.DESIGNATION) || '';
+  const region = (record.REGION || '').toUpperCase();
+  const milieu = (record.MILIEU || '').toUpperCase();
+  const typeKey = isFormation ? record.BRANCHE : record.DESCRIPTIF;
+  const commune = (record.COMMUNE || '').toLowerCase();
+  const localite = ((isFormation ? record.LOCALITE : record.LOCALITES) || '').toLowerCase();
+
+  // Type filter
+  if (intent.types.length) {
+    const match = intent.types.some(t =>
+      (typeKey || '').toLowerCase().includes(t.toLowerCase()) ||
+      t.toLowerCase().includes((typeKey || '').toLowerCase())
+    );
+    if (!match) return false;
+  }
+
+  // Region filter
+  if (intent.regions.length) {
+    if (!intent.regions.includes(region)) return false;
+  }
+
+  // Milieu filter
+  if (intent.milieu && milieu !== intent.milieu) return false;
+
+  // Free text — commune, localité ou nom
+  if (intent.freeText.length > 1) {
+    const hay = [name, commune, localite].join(' ').toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const needle = intent.freeText.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    if (!hay.includes(needle)) return false;
+  }
+
+  return true;
+}
+
+function renderNlpChips(intent, count) {
+  const box = document.getElementById('nlpInterpret');
+  if (!box) return;
+
+  if (!intent.types.length && !intent.regions.length && !intent.milieu && !intent.freeText) {
+    box.classList.add('hidden');
+    return;
+  }
+
+  const chips = [];
+  intent.types.forEach(t =>
+    chips.push(`<span class="nlp-chip type">🏛 ${t}</span>`));
+  intent.regions.forEach(r =>
+    chips.push(`<span class="nlp-chip region">📍 ${r}</span>`));
+  if (intent.milieu)
+    chips.push(`<span class="nlp-chip milieu">🌍 ${intent.milieu}</span>`);
+  if (intent.freeText)
+    chips.push(`<span class="nlp-chip name">🔤 "${intent.freeText}"</span>`);
+
+  chips.push(`<span class="nlp-count${count === 0 ? ' zero' : ''}">${count} résultat${count > 1 ? 's' : ''}</span>`);
+
+  box.innerHTML = chips.join('');
+  box.classList.remove('hidden');
+}
+
+function autoZoomToResults(intent, hits) {
+  const map = state.maps.full;
+  if (!map || !hits.length) return;
+
+  // Zoom to region bounds if single region
+  if (intent.regions.length === 1 && REGION_BOUNDS[intent.regions[0]]) {
+    map.flyToBounds(REGION_BOUNDS[intent.regions[0]], { duration: 1.0, padding: [30, 30] });
+    return;
+  }
+
+  // Otherwise fit all result markers
+  const latlngs = hits
+    .filter(r => r.lat && r.lon)
+    .map(r => [r.lat, r.lon]);
+  if (latlngs.length) {
+    const bounds = L.latLngBounds(latlngs);
+    map.flyToBounds(bounds, { duration: 1.0, padding: [40, 40], maxZoom: 12 });
+  }
+}
+
 // ── Full map search ───────────────────────────────────────────────────────────
 function setupFullMapSearch() {
+  const input = dom.fullMapSearch;
+  const clearBtn = document.getElementById('fullMapClear');
   let timeout;
-  dom.fullMapSearch.addEventListener('input', () => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => {
-      const q = dom.fullMapSearch.value.toLowerCase().trim();
-      if (!state.maps.full) return;
 
-      state.clusters.full.clearLayers();
+  const doSearch = () => {
+    const raw = input.value.trim();
 
-      const addFiltered = (dataset, isFormation) => {
-        dataset.forEach(record => {
-          const lat = record.LATITUDE;
-          const lon = record.LONGITUDE;
+    // Show/hide clear button
+    if (clearBtn) clearBtn.classList.toggle('hidden', !raw);
+
+    if (!state.maps.full) return;
+    state.clusters.full.clearLayers();
+
+    if (!raw) {
+      // Restore all markers
+      document.getElementById('nlpInterpret')?.classList.add('hidden');
+      const layer = state.activeLayer;
+      const addAll = (dataset, isFo) => {
+        dataset.forEach(rec => {
+          const lat = rec.LATITUDE, lon = rec.LONGITUDE;
           if (!lat || !lon || isNaN(lat) || isNaN(lon)) return;
-
-          if (q) {
-            const hay = [
-              isFormation ? record.NOM_ETABLISSEMENT : record.DESIGNATION,
-              record.COMMUNE, record.REGION,
-              isFormation ? record.LOCALITE : record.LOCALITES,
-            ].filter(Boolean).join(' ').toLowerCase();
-            if (!hay.includes(q)) return;
-          }
-
-          const typeKey = isFormation ? record.BRANCHE : record.DESCRIPTIF;
+          const typeKey = isFo ? rec.BRANCHE : rec.DESCRIPTIF;
           if (state.fullMapFilter && state.fullMapFilter !== typeKey) return;
-          const cfg = typeConfig(isFormation ? 'formations' : 'infrastructures', typeKey);
-          const name = isFormation ? record.NOM_ETABLISSEMENT : record.DESIGNATION;
+          const cfg = typeConfig(isFo ? 'formations' : 'infrastructures', typeKey);
+          const name = isFo ? rec.NOM_ETABLISSEMENT : rec.DESIGNATION;
           const marker = L.marker([lat, lon], { icon: createMarkerIcon(cfg.color, cfg.icon) });
-          marker.bindPopup(buildPopup(record, isFormation, cfg, name, typeKey));
+          marker.bindPopup(buildPopup(rec, isFo, cfg, name, typeKey));
           state.clusters.full.addLayer(marker);
         });
       };
+      if (layer === 'all' || layer === 'infrastructures') addAll(state.data.infrastructures, false);
+      if (layer === 'all' || layer === 'formations') addAll(state.data.formations, true);
+      return;
+    }
 
-      const layer = state.activeLayer;
-      if (layer === 'all' || layer === 'infrastructures') addFiltered(state.data.infrastructures, false);
-      if (layer === 'all' || layer === 'formations') addFiltered(state.data.formations, true);
-    }, 300);
+    // Parse intent
+    const intent = parseNaturalQuery(raw);
+    const hits = [];
+
+    const addFiltered = (dataset, isFormation) => {
+      dataset.forEach(record => {
+        const lat = record.LATITUDE, lon = record.LONGITUDE;
+        if (!lat || !lon || isNaN(lat) || isNaN(lon)) return;
+        if (!matchRecord(record, isFormation, intent)) return;
+
+        const typeKey = isFormation ? record.BRANCHE : record.DESCRIPTIF;
+        if (state.fullMapFilter && state.fullMapFilter !== typeKey) return;
+        const cfg = typeConfig(isFormation ? 'formations' : 'infrastructures', typeKey);
+        const name = isFormation ? record.NOM_ETABLISSEMENT : record.DESIGNATION;
+        const marker = L.marker([lat, lon], { icon: createMarkerIcon(cfg.color, cfg.icon) });
+        marker.bindPopup(buildPopup(record, isFormation, cfg, name, typeKey));
+        state.clusters.full.addLayer(marker);
+        hits.push({ lat, lon });
+      });
+    };
+
+    const layer = state.activeLayer;
+    if (layer === 'all' || layer === 'infrastructures') addFiltered(state.data.infrastructures, false);
+    if (layer === 'all' || layer === 'formations') addFiltered(state.data.formations, true);
+
+    renderNlpChips(intent, hits.length);
+    autoZoomToResults(intent, hits);
+  };
+
+  input.addEventListener('input', () => {
+    clearTimeout(timeout);
+    timeout = setTimeout(doSearch, 320);
   });
+
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      input.value = '';
+      doSearch();
+      input.focus();
+    });
+  }
 }
 
 // ── Full map idle zoom logic ─────────────────────────────────────────────────

@@ -261,8 +261,11 @@
           <circle cx="11" cy="11" r="8" />
           <path d="m21 21-4.35-4.35" />
         </svg>
-        <input id="fullMapSearch" type="text" placeholder="Rechercher sur la carte…" />
+        <input id="fullMapSearch" type="text" placeholder="ex: musées à Dakar, cinémas ruraux, foyers à Ziguinchor…"
+          autocomplete="off" />
+        <button id="fullMapClear" class="fms-clear hidden" title="Effacer">✕</button>
       </div>
+      <div id="nlpInterpret" class="nlp-interpret hidden"></div>
       <div class="map-layer-btns" id="layerBtns">
         <button class="layer-btn active" data-layer="all">Tout</button>
         <button class="layer-btn" data-layer="infrastructures">🏛 Infrastructures</button>

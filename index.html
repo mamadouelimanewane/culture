@@ -245,7 +245,25 @@
           <div class="bot-avatar">🎭</div>
           <div class="bot-msg">
             Bonjour ! Je suis votre guide culturel. <b>Que souhaitez-vous découvrir au Sénégal aujourd'hui ?</b>
-            <br><small style="opacity:0.7;">(ex: "Je cherche des musées à Dakar", "où sont les cinémas ?", etc.)</small>
+            <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
+              <button class="chip"
+                onclick="document.getElementById('fullMapSearch').value='Musées à Dakar'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input'))"
+                style="font-size:11px; padding:4px 10px; cursor:pointer; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:20px;">🏛
+                Musées</button>
+              <button class="chip"
+                onclick="document.getElementById('fullMapSearch').value='Cinémas'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input'))"
+                style="font-size:11px; padding:4px 10px; cursor:pointer; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:20px;">🎬
+                Cinémas</button>
+              <button class="chip"
+                onclick="document.getElementById('fullMapSearch').value='Salles de fête'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input'))"
+                style="font-size:11px; padding:4px 10px; cursor:pointer; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:20px;">🎉
+                Salles de fête</button>
+              <button class="chip"
+                onclick="document.getElementById('fullMapSearch').value='Artisanat'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input'))"
+                style="font-size:11px; padding:4px 10px; cursor:pointer; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:20px;">🧵
+                Artisanat</button>
+            </div>
+            <br><small style="opacity:0.7;">(Tapez votre question ci-dessous)</small>
           </div>
         </div>
       </div>

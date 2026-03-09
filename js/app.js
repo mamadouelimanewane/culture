@@ -1021,13 +1021,14 @@ function autoZoomToResults(intent, hits) {
 }
 
 // ── Full map search & Bot ─────────────────────────────────────────────────────
-function addBotMessage(text) {
+function addBotMessage(text, options = []) {
   const container = document.getElementById('chatbotContainer');
   if (!container) return;
 
   // Typing indicator
   const indicator = document.createElement('div');
   indicator.className = 'chatbot-bubble';
+  indicator.id = 'typingIndicator';
   indicator.innerHTML = `
     <div class="bot-avatar">🎭</div>
     <div class="typing-indicator">
@@ -1042,9 +1043,15 @@ function addBotMessage(text) {
     bubble.className = 'chatbot-bubble';
     bubble.innerHTML = `
       <div class="bot-avatar">🎭</div>
-      <div class="bot-msg">${text}</div>`;
+      <div class="bot-msg">
+        ${text}
+        ${options.length ? `
+          <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
+            ${options.map(opt => `<button class="chip" onclick="document.getElementById('fullMapSearch').value='${opt}'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input'))" style="font-size:11px; padding:4px 10px; cursor:pointer; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:20px;">${opt}</button>`).join('')}
+          </div>
+        ` : ''}
+      </div>`;
     container.appendChild(bubble);
-    // Auto-scroll inside the bar
     container.parentElement.scrollTop = container.parentElement.scrollHeight;
   }, 600);
 }
@@ -1091,6 +1098,7 @@ function setupFullMapSearch() {
   const clearBtn = document.getElementById('fullMapClear');
   let timeout;
   let lastQuery = '';
+  let lastIntentKey = '';
 
   const doSearch = () => {
     const raw = input.value.trim();
@@ -1138,11 +1146,13 @@ function setupFullMapSearch() {
     renderNlpChips(intent, hits.length);
     autoZoomToResults(intent, hits);
 
-    // Chatbot response
-    if (raw !== lastQuery && raw.length > 2) {
+    // Chatbot response logic
+    const intentKey = JSON.stringify({ t: intent.types, r: intent.regions, m: intent.milieu, f: intent.freeText });
+    if (raw !== lastQuery && raw.length > 2 && intentKey !== lastIntentKey) {
       const response = getBotResponse(intent, hits.length, raw);
       addBotMessage(response);
       lastQuery = raw;
+      lastIntentKey = intentKey;
     }
   };
 
@@ -1171,7 +1181,8 @@ function setupFullMapSearch() {
     clearBtn.addEventListener('click', () => {
       input.value = '';
       lastQuery = '';
-      // Reset chatbot container to welcome message
+      lastIntentKey = '';
+      // Reset chatbot container to welcome message with suggestions
       const chatbotContainer = document.getElementById('chatbotContainer');
       if (chatbotContainer) {
         chatbotContainer.innerHTML = `
@@ -1179,7 +1190,13 @@ function setupFullMapSearch() {
             <div class="bot-avatar">🎭</div>
             <div class="bot-msg">
               Bonjour ! Je suis votre guide culturel. <b>Que souhaitez-vous découvrir au Sénégal aujourd'hui ?</b> 
-              <br><small style="opacity:0.7;">(ex: "Je cherche des musées à Dakar", "où sont les cinémas ?", etc.)</small>
+              <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
+                <button class="chip" onclick="document.getElementById('fullMapSearch').value='Musées à Dakar'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input'))" style="font-size:11px; padding:4px 10px; cursor:pointer; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:20px;">🏛 Musées</button>
+                <button class="chip" onclick="document.getElementById('fullMapSearch').value='Cinémas'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input'))" style="font-size:11px; padding:4px 10px; cursor:pointer; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:20px;">🎬 Cinémas</button>
+                <button class="chip" onclick="document.getElementById('fullMapSearch').value='Salles de fête'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input'))" style="font-size:11px; padding:4px 10px; cursor:pointer; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:20px;">🎉 Salles de fête</button>
+                <button class="chip" onclick="document.getElementById('fullMapSearch').value='Artisanat'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input'))" style="font-size:11px; padding:4px 10px; cursor:pointer; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:20px;">🧵 Artisanat</button>
+              </div>
+              <br><small style="opacity:0.7;">(Tapez votre question ci-dessous)</small>
             </div>
           </div>`;
       }

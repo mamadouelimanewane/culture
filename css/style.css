@@ -1018,6 +1018,10 @@ textarea {
     border-radius: 10px;
     margin: -4px auto 8px auto;
   }
+
+  .map-layer-btns {
+    display: none !important;
+  }
 }
 
 .fms-clear {

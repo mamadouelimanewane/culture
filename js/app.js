@@ -646,9 +646,9 @@ function initFullMap() {
 
   state.maps.full = L.map('fullMap', {
     center: [14.497, -14.452],
-    zoom: 6.5,
-    minZoom: 6.0,
-    maxBounds: [[11.5, -18.5], [17.5, -10.5]],
+    zoom: 7,
+    minZoom: 6.8,
+    maxBounds: [[12.2, -17.6], [16.8, -11.2]],
     maxBoundsViscosity: 1.0,
   });
 
@@ -1258,7 +1258,7 @@ function startFullMapIdleTimeout() {
         [14.8, -16.95]
       ], { duration: 1.5 });
     }
-  }, 5000);
+  }, 15000); // 15 seconds
 }
 
 function initFullMapIfVisible() {
@@ -1303,9 +1303,9 @@ function setTab(tab) {
     setTimeout(() => {
       if (state.maps.full) {
         state.maps.full.invalidateSize();
-        // Ajustement automatique pour voir tout le Sénégal
-        const senegalBounds = [[12.3, -17.6], [16.7, -11.3]];
-        state.maps.full.fitBounds(senegalBounds, { padding: [20, 20] });
+        // Ajustement automatique pour voir tout le Sénégal (cadrage serré)
+        const senegalBounds = [[12.3, -17.5], [16.7, -11.4]];
+        state.maps.full.fitBounds(senegalBounds, { padding: [10, 10] });
         startFullMapIdleTimeout();
       }
     }, 100);

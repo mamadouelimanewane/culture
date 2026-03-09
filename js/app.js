@@ -269,8 +269,8 @@ function onDataReady() {
   // First render
   applyFiltersAndRender();
 
-  // Init full map data (lazy)
-  initFullMapIfVisible();
+  // Init full map immediately (carte is the default tab)
+  initFullMap();
 }
 
 // ── Filter UI builders ───────────────────────────────────────────────────────

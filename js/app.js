@@ -833,7 +833,9 @@ const NLP_TYPES = {
   'village artisanal': 'Village artisanal', 'artisanal': 'Village artisanal', 'artisanat': 'Village artisanal', 'souvenirs': 'Village artisanal',
   'bibliothèque': 'Bibliothèque', 'bibliotheque': 'Bibliothèque', 'livre': 'Bibliothèque', 'lecture': 'Bibliothèque',
   'maison de la culture': 'Maison de la culture', 'maison culture': 'Maison de la culture',
-  'théâtre': 'Théâtre', 'theatre': 'Théâtre', 'spectacle': 'Théâtre', 'scène': 'Théâtre',
+  'théâtre': ['Centre culturel', 'Salle des fêtes'], 'theatre': ['Centre culturel', 'Salle des fêtes'],
+  'spectacle': ['Centre culturel', 'Salle des fêtes', "Centre d'animation"], 'spectacles': ['Centre culturel', 'Salle des fêtes', "Centre d'animation"],
+  'scène': ['Centre culturel', 'Salle des fêtes'],
   'foyer': 'Foyer des jeunes', 'case': 'Foyer des jeunes', 'social': 'Foyer des jeunes',
   'formation': 'formations', 'ecole': 'formations', 'etablissement': 'formations', 'cours': 'formations', 'etudes': 'formations',
 };
@@ -893,8 +895,11 @@ function parseNaturalQuery(raw) {
       const val = NLP_TYPES[key];
       if (val === 'formations') {
         state.activeLayer = 'formations';
-      } else if (!intent.types.includes(val)) {
-        intent.types.push(val);
+      } else {
+        const vals = Array.isArray(val) ? val : [val];
+        vals.forEach(v => {
+          if (!intent.types.includes(v)) intent.types.push(v);
+        });
       }
     }
   });

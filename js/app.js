@@ -650,7 +650,7 @@ function initFullMap() {
     minZoom: 6,
     zoomSnap: 0.1,    // Permet un zoom fractionnaire pour un fit parfait
     zoomDelta: 0.5,
-    maxBounds: [[12.2, -17.6], [16.7, -11.3]], // Limites strictes Sénégal
+    maxBounds: [[12.1, -17.8], [16.65, -11.2]], // Limite Nord très serrée pour cacher la Mauritanie
     maxBoundsViscosity: 1.0,
   });
 
@@ -1305,9 +1305,13 @@ function setTab(tab) {
     setTimeout(() => {
       if (state.maps.full) {
         state.maps.full.invalidateSize();
-        // Ajustement automatique pour ne voir QUE le Sénégal (cadrage ultra-serré)
+        // Ajustement pour voir le Sénégal en haut de l'écran (cache la Mauritanie sur mobile)
         const senegalBounds = [[12.25, -17.55], [16.68, -11.35]];
-        state.maps.full.fitBounds(senegalBounds, { padding: [0, 0] });
+        const isMobile = window.innerWidth <= 768;
+        state.maps.full.fitBounds(senegalBounds, {
+          paddingBottomRight: [0, isMobile ? 180 : 20], // Pousse le Sénégal vers le haut sur mobile
+          paddingTopLeft: [0, 0]
+        });
         startFullMapIdleTimeout();
       }
     }, 100);

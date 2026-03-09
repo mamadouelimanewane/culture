@@ -1438,8 +1438,8 @@ function bindEvents() {
       const touchY = e.touches[0].clientY;
       let diff = touchY - touchStartY;
 
-      // On ne permet de pousser que vers le bas (positif) ou un peu vers le haut
-      if (diff < -50) diff = -50; // Limite vers le haut
+      // On permet de glisser vers le bas ET largement vers le haut
+      if (diff < -400) diff = -400; // Limite vers le haut (beaucoup plus libre)
 
       currentTranslateY = diff;
       dom.fullMapBar.style.transform = `translateY(${currentTranslateY}px)`;

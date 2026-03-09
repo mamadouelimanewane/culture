@@ -977,7 +977,8 @@ textarea {
     border-radius: 18px;
     flex-direction: column;
     gap: 8px;
-    max-height: 180px;
+    max-height: 50vh;
+    /* Permet à la barre de s'étendre davantage */
     box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.12);
     /* Ombre vers le haut */
   }
@@ -1001,7 +1002,9 @@ textarea {
 
   .chatbot-container {
     flex: none;
-    max-height: 90px;
+    max-height: none;
+    /* Enlève la restriction pour tout voir */
+    overflow-y: auto;
   }
 
   .bot-msg {

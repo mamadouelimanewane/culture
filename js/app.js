@@ -256,9 +256,7 @@ function onDataReady() {
 
   // Update stat badges
   $('sInfra').textContent = formatNum(infraCount);
-  $('sForm').textContent = formatNum(formCount);
   $('infraBadge').textContent = formatNum(infraCount);
-  $('formBadge').textContent = formatNum(formCount);
 
   // Build filter UIs
   buildRegionOptions();

@@ -6,29 +6,29 @@
 
 // ── Type configurations ──────────────────────────────────────────────────────
 const INFRA_TYPES = {
-  'Centre culturel': { color: '#0088cc', bg: '#e0f2fe', icon: '🏛️' },
-  "Centre d'animation": { color: '#f59e0b', bg: '#fef3c7', icon: '🎭' },
-  'Cinéma': { color: '#ef4444', bg: '#fee2e2', icon: '🎬' },
-  'Foyer des femmes': { color: '#d946ef', bg: '#fdf4ff', icon: '👩' },
-  'Foyer des jeunes': { color: '#3b82f6', bg: '#eff6ff', icon: '🏠' },
-  'Galerie': { color: '#06b6d4', bg: '#ecfeff', icon: '🖼️' },
-  'Musée': { color: '#8b5cf6', bg: '#f5f3ff', icon: '🏺' },
-  'Salle des fêtes': { color: '#ec4899', bg: '#fdf2f8', icon: '🎉' },
-  'Village artisanal': { color: '#f97316', bg: '#fff7ed', icon: '🧵' },
-  '_default': { color: '#94a3b8', bg: '#f8fafc', icon: '🏢' },
+  'Centre culturel': { color: '#005580', bg: '#e0f2fe', icon: '🏛️' },
+  "Centre d'animation": { color: '#b45309', bg: '#fef3c7', icon: '🎭' },
+  'Cinéma': { color: '#b91c1c', bg: '#fee2e2', icon: '🎬' },
+  'Foyer des femmes': { color: '#a21caf', bg: '#fdf4ff', icon: '👩' },
+  'Foyer des jeunes': { color: '#1d4ed8', bg: '#eff6ff', icon: '🏠' },
+  'Galerie': { color: '#0e7490', bg: '#ecfeff', icon: '🖼️' },
+  'Musée': { color: '#6d28d9', bg: '#f5f3ff', icon: '🏺' },
+  'Salle des fêtes': { color: '#be185d', bg: '#fdf2f8', icon: '🎉' },
+  'Village artisanal': { color: '#c2410c', bg: '#fff7ed', icon: '🧵' },
+  '_default': { color: '#475569', bg: '#f8fafc', icon: '🏢' },
 };
 
 const FORMATION_TYPES = {
-  'ARTS': { color: '#a855f7', bg: '#f3e8ff', icon: '🎨' },
-  'ARTS - AUDIOVISUEL': { color: '#a855f7', bg: '#f3e8ff', icon: '🎨' },
-  'ARTS- INFOGRAPHIE': { color: '#a855f7', bg: '#f3e8ff', icon: '🎨' },
-  'AUDIOVISUEL': { color: '#ef4444', bg: '#fee2e2', icon: '📹' },
-  'INFOGRAPHIE': { color: '#0ea5e9', bg: '#e0f2fe', icon: '💻' },
-  'INFOGRAPHIE - AUDIOVISUEL': { color: '#0ea5e9', bg: '#e0f2fe', icon: '💻' },
-  'INFOGRAPHIE - SERIGRAPHIE': { color: '#0ea5e9', bg: '#e0f2fe', icon: '🖨️' },
-  'PEINTURE': { color: '#10b981', bg: '#d1fae5', icon: '🖌️' },
-  'SERIGRAPHIE': { color: '#f59e0b', bg: '#fef3c7', icon: '🖨️' },
-  '_default': { color: '#94a3b8', bg: '#f8fafc', icon: '🎓' },
+  'ARTS': { color: '#7e22ce', bg: '#f3e8ff', icon: '🎨' },
+  'ARTS - AUDIOVISUEL': { color: '#7e22ce', bg: '#f3e8ff', icon: '🎨' },
+  'ARTS- INFOGRAPHIE': { color: '#7e22ce', bg: '#f3e8ff', icon: '🎨' },
+  'AUDIOVISUEL': { color: '#b91c1c', bg: '#fee2e2', icon: '📹' },
+  'INFOGRAPHIE': { color: '#0369a1', bg: '#e0f2fe', icon: '💻' },
+  'INFOGRAPHIE - AUDIOVISUEL': { color: '#0369a1', bg: '#e0f2fe', icon: '💻' },
+  'INFOGRAPHIE - SERIGRAPHIE': { color: '#0369a1', bg: '#e0f2fe', icon: '🖨️' },
+  'PEINTURE': { color: '#047857', bg: '#d1fae5', icon: '🖌️' },
+  'SERIGRAPHIE': { color: '#b45309', bg: '#fef3c7', icon: '🖨️' },
+  '_default': { color: '#475569', bg: '#f8fafc', icon: '🎓' },
 };
 
 const REGIONS = [
@@ -152,12 +152,12 @@ function createMarkerIcon(color, icon) {
       width: 40px;
       height: 40px;
       background-color: ${color};
-      border: 3px solid #ffffff;
+      border: 2.5px solid #ffffff;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+      box-shadow: 0 0 0 1.5px rgba(0,0,0,0.85), 0 4px 12px rgba(0,0,0,0.4);
     ">
       <span style="font-size: 20px; line-height: 1;">${icon}</span>
     </div>`,

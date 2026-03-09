@@ -909,26 +909,25 @@ textarea {
   position: absolute;
   top: 20px;
   left: 20px;
-  right: 20px;
-  margin: 0 auto;
-  max-width: 600px;
+  bottom: 100px;
+  width: 340px;
   z-index: 1000;
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(12px) saturate(180%);
-  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
   border-radius: 24px;
-  padding: 16px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+  padding: 20px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.4);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .full-map-bar:hover {
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.22);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.2);
 }
 
 .full-map-search-wrap {
@@ -970,12 +969,17 @@ textarea {
     top: 10px;
     left: 10px;
     right: 10px;
+    bottom: auto;
+    width: auto;
+    max-width: none;
     padding: 12px;
     border-radius: 18px;
+    flex-direction: column;
   }
 
   .chatbot-container {
     max-height: 120px;
+    flex: none;
   }
 
   .map-layer-btns {
@@ -1060,12 +1064,14 @@ textarea {
 .chatbot-container {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   width: 100%;
-  max-height: 180px;
-  /* Slightly reduced to keep map focus */
+  flex: 1;
+  /* Take available vertical space */
+  max-height: none;
+  /* Height is now controlled by the sidebar bottom/top */
   overflow-y: auto;
-  padding-right: 4px;
+  padding-right: 6px;
   scroll-behavior: smooth;
 }
 

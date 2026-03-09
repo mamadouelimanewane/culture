@@ -39,7 +39,7 @@ const REGIONS = [
 
 // ── Application state ────────────────────────────────────────────────────────
 const state = {
-  activeTab: 'infrastructures',   // 'infrastructures' | 'formations' | 'carte'
+  activeTab: 'carte',   // 'infrastructures' | 'formations' | 'carte'
   activeView: 'grid',              // 'grid' | 'map'
   activeLayer: 'all',             // 'all' | 'infrastructures' | 'formations'
   data: { infrastructures: [], formations: [] },
@@ -599,9 +599,9 @@ function renderPanelMap() {
       maxBoundsViscosity: 1.0,
       attributionControl: true,
     });
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      maxZoom: 18,
+    L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+      attribution: '© Google Maps',
+      maxZoom: 20,
     }).addTo(state.maps.panel);
     state.clusters.panel = L.markerClusterGroup({ chunkedLoading: true, maxClusterRadius: 50 });
     state.maps.panel.addLayer(state.clusters.panel);
@@ -653,9 +653,9 @@ function initFullMap() {
     clearFullMapIdleTimeout();
   });
 
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    maxZoom: 18,
+  L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+    attribution: '© Google Maps',
+    maxZoom: 20,
   }).addTo(state.maps.full);
 
   state.clusters.full = L.markerClusterGroup({ chunkedLoading: true, maxClusterRadius: 60 });
@@ -1376,6 +1376,8 @@ function closeDrawer() {
 function init() {
   bindEvents();
   loadData();
+  // Carte par défaut
+  setTab('carte');
 }
 
 // Expose reset for empty state button

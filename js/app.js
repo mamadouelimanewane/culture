@@ -646,9 +646,9 @@ function initFullMap() {
 
   state.maps.full = L.map('fullMap', {
     center: [14.497, -14.452],
-    zoom: 7.5,
-    minZoom: 7,
-    maxBounds: [[12.1, -18.2], [16.9, -11.1]],
+    zoom: 6.5,
+    minZoom: 6.0,
+    maxBounds: [[11.5, -18.5], [17.5, -10.5]],
     maxBoundsViscosity: 1.0,
   });
 
@@ -1303,8 +1303,9 @@ function setTab(tab) {
     setTimeout(() => {
       if (state.maps.full) {
         state.maps.full.invalidateSize();
-        // Reset au panorama du Sénégal complet
-        state.maps.full.setView([14.497, -14.452], 7.5);
+        // Ajustement automatique pour voir tout le Sénégal
+        const senegalBounds = [[12.3, -17.6], [16.7, -11.3]];
+        state.maps.full.fitBounds(senegalBounds, { padding: [20, 20] });
         startFullMapIdleTimeout();
       }
     }, 100);

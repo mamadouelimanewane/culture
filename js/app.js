@@ -817,32 +817,32 @@ window.navigateTo = function (id) {
 // ── NLP Map Search Engine ─────────────────────────────────────────────────────
 
 const NLP_TYPES = {
-  'musée': 'Musée', 'musees': 'Musée', 'musee': 'Musée', 'expositions': 'Musée',
-  'cinéma': 'Cinéma', 'cinema': 'Cinéma', 'cinemas': 'Cinéma', 'film': 'Cinéma', 'ecran': 'Cinéma',
-  'centre culturel': 'Centre culturel', 'centre': 'Centre culturel', 'centres': 'Centre culturel', 'culturel': 'Centre culturel',
-  "centre d'animation": "Centre d'animation", 'animation': "Centre d'animation", 'culturelle': 'Centre culturel',
-  'foyer femmes': 'Foyer des femmes', 'foyer des femmes': 'Foyer des femmes', 'femmes': 'Foyer des femmes',
-  'foyer femme': 'Foyer des femmes', 'case des femmes': 'Foyer des femmes',
-  'foyer jeunes': 'Foyer des jeunes', 'foyer des jeunes': 'Foyer des jeunes', 'jeunes': 'Foyer des jeunes',
-  'foyer jeune': 'Foyer des jeunes', 'foyer': 'Foyer des jeunes', 'foyers': 'Foyer des jeunes',
-  'galerie': 'Galerie', 'galeries': 'Galerie', 'art': 'Galerie', 'exposition': 'Galerie',
-  'salle fête': 'Salle des fêtes', 'salle des fêtes': 'Salle des fêtes', 'salle fetes': 'Salle des fêtes',
-  'salle': 'Salle des fêtes', 'evenement': 'Salle des fêtes', 'fetes': 'Salle des fêtes',
-  'village artisanal': 'Village artisanal', 'artisanal': 'Village artisanal', 'artisanat': 'Village artisanal', 'souvenirs': 'Village artisanal',
-  'bibliothèque': 'Bibliothèque', 'bibliotheque': 'Bibliothèque', 'livre': 'Bibliothèque', 'lecture': 'Bibliothèque',
+  'musée': 'Musée', 'musees': 'Musée', 'musee': 'Musée', 'expositions': 'Musée', 'histoire': 'Musée', 'patrimoine': 'Musée', 'expo': 'Musée', 'culture': 'Musée', 'monument': 'Musée',
+  'cinéma': 'Cinéma', 'cinema': 'Cinéma', 'cinemas': 'Cinéma', 'film': 'Cinéma', 'ecran': 'Cinéma', 'projection': 'Cinéma', 'projections': 'Cinéma', 'films': 'Cinéma', 'salle obscure': 'Cinéma',
+  'centre culturel': 'Centre culturel', 'centre': 'Centre culturel', 'centres': 'Centre culturel', 'culturel': 'Centre culturel', 'maison de la culture': 'Centre culturel', 'espace culturel': 'Centre culturel',
+  "centre d'animation": "Centre d'animation", 'animation': "Centre d'animation", 'culturelle': 'Centre culturel', 'activités': "Centre d'animation", 'loisirs': "Centre d'animation",
+  'foyer femmes': 'Foyer des femmes', 'foyer des femmes': 'Foyer des femmes', 'femmes': 'Foyer des femmes', 'amazones': 'Foyer des femmes', 'case des femmes': 'Foyer des femmes',
+  'foyer femme': 'Foyer des femmes', 'femme': 'Foyer des femmes', 'atelier femme': 'Foyer des femmes',
+  'foyer jeunes': 'Foyer des jeunes', 'foyer des jeunes': 'Foyer des jeunes', 'jeunes': 'Foyer des jeunes', 'jeunesses': 'Foyer des jeunes', 'maison de quartier': 'Foyer des jeunes',
+  'foyer jeune': 'Foyer des jeunes', 'foyer': 'Foyer des jeunes', 'foyers': 'Foyer des jeunes', 'jeune': 'Foyer des jeunes', 'case des jeunes': 'Foyer des jeunes',
+  'galerie': 'Galerie', 'galeries': 'Galerie', 'art': 'Galerie', 'exposition': 'Galerie', 'tableaux': 'Galerie', 'peinture': 'Galerie', 'peintre': 'Galerie', 'artistes': 'Galerie',
+  'salle fête': 'Salle des fêtes', 'salle des fêtes': 'Salle des fêtes', 'salle fetes': 'Salle des fêtes', 'evenement': 'Salle des fêtes', 'fetes': 'Salle des fêtes', 'ceremonie': 'Salle des fêtes', 'mariage': 'Salle des fêtes', 'reunion': 'Salle des fêtes',
+  'salle': 'Salle des fêtes', 'salles': 'Salle des fêtes', 'polyvalent': 'Salle des fêtes', 'polyvalente': 'Salle des fêtes',
+  'village artisanal': 'Village artisanal', 'artisanal': 'Village artisanal', 'artisanat': 'Village artisanal', 'souvenirs': 'Village artisanal', 'marche artisanal': 'Village artisanal', 'sculpture': 'Village artisanal', 'boutique': 'Village artisanal',
+  'bibliothèque': 'Bibliothèque', 'bibliotheque': 'Bibliothèque', 'livre': 'Bibliothèque', 'lecture': 'Bibliothèque', 'lire': 'Bibliothèque', 'bouquin': 'Bibliothèque', 'mediatheque': 'Bibliothèque',
   'maison de la culture': 'Maison de la culture', 'maison culture': 'Maison de la culture',
-  'théâtre': ['Centre culturel', 'Salle des fêtes'], 'theatre': ['Centre culturel', 'Salle des fêtes'],
-  'spectacle': ['Centre culturel', 'Salle des fêtes', "Centre d'animation"], 'spectacles': ['Centre culturel', 'Salle des fêtes', "Centre d'animation"],
-  'scène': ['Centre culturel', 'Salle des fêtes'],
-  'foyer': 'Foyer des jeunes', 'case': 'Foyer des jeunes', 'social': 'Foyer des jeunes',
-  'formation': 'formations', 'ecole': 'formations', 'etablissement': 'formations', 'cours': 'formations', 'etudes': 'formations',
+  'théâtre': ['Centre culturel', 'Salle des fêtes'], 'theatre': ['Centre culturel', 'Salle des fêtes'], 'comedie': ['Centre culturel', 'Salle des fêtes'], 'piece': ['Centre culturel', 'Salle des fêtes'],
+  'spectacle': ['Centre culturel', 'Salle des fêtes', "Centre d'animation"], 'spectacles': ['Centre culturel', 'Salle des fêtes', "Centre d'animation"], 'concert': ['Centre culturel', 'Salle des fêtes'],
+  'scène': ['Centre culturel', 'Salle des fêtes'], 'podium': ['Centre culturel', 'Salle des fêtes'], 'danse': ['Centre culturel', 'Salle des fêtes'],
+  'foyer': 'Foyer des jeunes', 'case': 'Foyer des jeunes', 'social': 'Foyer des jeunes', 'communautaire': 'Foyer des jeunes',
+  'formation': 'formations', 'ecole': 'formations', 'etablissement': 'formations', 'cours': 'formations', 'etudes': 'formations', 'apprendre': 'formations', 'metier': 'formations',
 };
 
 const NLP_STOP_WORDS = [
-  'je', 'cherche', 'trouve', 'montre', 'donne', 'moi', 'les', 'des', 'un', 'une', 'le', 'la',
-  'pourriez', 'vous', 'vouloir', 'voir', 'tous', 'ceux', 'celui', 'ce', 'cette', 'est', 'sont',
-  'il', 'y', 'a', 'ou', 'se', 'trouvent', 'situés', 'ouvert', 'dans', 'sur', 'autour', 'de',
-  'du', 'au', 'aux', 'pres', 'proche', 'chez', 'avec', 'et', 'à', 'quel', 'quels', 'toutes'
+  'je', 'cherche', 'trouve', 'montre', 'donne', 'moi', 'les', 'des', 'un', 'une', 'le', 'la', 'salut', 'coucou', 'bonjour', 'bonsoir', 'hey', 'yo',
+  'pourriez', 'vous', 'vouloir', 'voir', 'tous', 'ceux', 'celui', 'ce', 'cette', 'est', 'sont', 'dis', 'parle', 'sait', 'connais', 'liste',
+  'il', 'y', 'a', 'ou', 'se', 'trouvent', 'situés', 'ouvert', 'dans', 'sur', 'autour', 'de', 'quand', 'comment', 'pourquoi', 'qui', 'quoi', 'quel', 'quelle',
+  'du', 'au', 'aux', 'pres', 'proche', 'chez', 'avec', 'et', 'à', 'quel', 'quels', 'toutes', 'mon', 'ma', 'ton', 'ta', 'son', 'sa', 'notre', 'votre', 'leur'
 ];
 
 const NLP_REGIONS = {
@@ -1017,11 +1017,65 @@ function autoZoomToResults(intent, hits) {
   }
 }
 
-// ── Full map search ───────────────────────────────────────────────────────────
+// ── Full map search & Bot ─────────────────────────────────────────────────────
+function addBotMessage(text) {
+  const container = document.getElementById('chatbotContainer');
+  if (!container) return;
+
+  // Typing indicator
+  const indicator = document.createElement('div');
+  indicator.className = 'chatbot-bubble';
+  indicator.innerHTML = `
+    <div class="bot-avatar">🎭</div>
+    <div class="typing-indicator">
+      <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+    </div>`;
+  container.appendChild(indicator);
+  container.parentElement.scrollTop = container.parentElement.scrollHeight;
+
+  setTimeout(() => {
+    indicator.remove();
+    const bubble = document.createElement('div');
+    bubble.className = 'chatbot-bubble';
+    bubble.innerHTML = `
+      <div class="bot-avatar">🎭</div>
+      <div class="bot-msg">${text}</div>`;
+    container.appendChild(bubble);
+    // Auto-scroll inside the bar
+    container.parentElement.scrollTop = container.parentElement.scrollHeight;
+  }, 600);
+}
+
+function getBotResponse(intent, count, raw) {
+  const low = raw.toLowerCase();
+
+  if (low.match(/\b(bonjour|salut|coucou|bonsoir|hey|yo)\b/)) {
+    return "Bonjour ! ✨ Je suis prêt à vous aider dans votre exploration culturelle au Sénégal. <br>Que recherchez-vous précisément ?";
+  }
+  if (low.match(/\b(aide|help|comment|marche|marche)\b/)) {
+    return "C'est simple ! Posez-moi votre question comme vous le feriez avec un ami. <br>Ex: <i>'Je cherche des musées à Dakar'</i> ou <i>'Où sont les centres culturels ?'</i>.";
+  }
+  if (low.match(/\b(qui|es|tu|application|scenews)\b/)) {
+    return "Je suis <b>Scenews</b>, votre fenêtre sur le patrimoine sénégalais. Mon but est de répertorier tous les lieux de culture pour vous ! 🎬🎨";
+  }
+
+  if (count === 0) {
+    return "Aïe, je n'ai rien trouvé de tel... ✨ <br>N'hésitez pas à varier les mots-clés ou les régions !";
+  }
+
+  let msg = `C'est parti ! J'ai déniché <b>${count} point${count > 1 ? 's' : ''}</b>`;
+  if (intent.types.length) msg += ` pour : <i>${intent.types.join(', ')}</i>`;
+  if (intent.regions.length) msg += ` en région <b>${intent.regions.join(', ')}</b>`;
+  if (intent.freeText) msg += ` lié à "<b>${intent.freeText}</b>"`;
+
+  return msg + ". Régalez-vous ! 🗺️";
+}
+
 function setupFullMapSearch() {
   const input = dom.fullMapSearch;
   const clearBtn = document.getElementById('fullMapClear');
   let timeout;
+  let lastQuery = '';
 
   const doSearch = () => {
     const raw = input.value.trim();
@@ -1068,6 +1122,13 @@ function setupFullMapSearch() {
 
     renderNlpChips(intent, hits.length);
     autoZoomToResults(intent, hits);
+
+    // Chatbot response
+    if (raw !== lastQuery && raw.length > 2) {
+      const response = getBotResponse(intent, hits.length, raw);
+      addBotMessage(response);
+      lastQuery = raw;
+    }
   };
 
   input.addEventListener('input', () => {
@@ -1094,8 +1155,21 @@ function setupFullMapSearch() {
   if (clearBtn) {
     clearBtn.addEventListener('click', () => {
       input.value = '';
+      lastQuery = '';
+      // Reset chatbot container to welcome message
+      const chatbotContainer = document.getElementById('chatbotContainer');
+      if (chatbotContainer) {
+        chatbotContainer.innerHTML = `
+          <div class="chatbot-bubble" id="botWelcome">
+            <div class="bot-avatar">🎭</div>
+            <div class="bot-msg">
+              Bonjour ! Je suis votre guide culturel. <b>Que souhaitez-vous découvrir au Sénégal aujourd'hui ?</b> 
+              <br><small style="opacity:0.7;">(ex: "Je cherche des musées à Dakar", "où sont les cinémas ?", etc.)</small>
+            </div>
+          </div>`;
+      }
       doSearch();
-      input.blur(); // Ferme le clavier après effacement aussi
+      input.blur();
     });
   }
 }

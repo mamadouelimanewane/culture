@@ -239,30 +239,40 @@
   ══════════════════════════════════════════ -->
   <div class="full-map-section hidden" id="fullMapSection">
     <div class="full-map-bar">
-      <button class="layer-btn" onclick="setTab('infrastructures')" style="padding: 8px 10px; min-width: auto;">
-        ←
-      </button>
-      <div class="full-map-search-wrap">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
-          stroke-width="2" viewBox="0 0 24 24">
-          <circle cx="11" cy="11" r="8" />
-          <path d="m21 21-4.35-4.35" />
-        </svg>
-        <input id="fullMapSearch" type="search" placeholder="ex: musées à Dakar, cinémas ruraux, foyers à Ziguinchor…"
-          autocomplete="off" enterkeyhint="search" inputmode="search" />
-        <button id="fullMapClear" class="fms-clear hidden" title="Effacer">✕</button>
+      <div class="chatbot-container" id="chatbotContainer">
+        <!-- Initial Bot Message -->
+        <div class="chatbot-bubble" id="botWelcome">
+          <div class="bot-avatar">🎭</div>
+          <div class="bot-msg">
+            Bonjour ! Je suis votre guide culturel. <b>Que souhaitez-vous découvrir au Sénégal aujourd'hui ?</b>
+            <br><small style="opacity:0.7;">(ex: "Je cherche des musées à Dakar", "où sont les cinémas ?", etc.)</small>
+          </div>
+        </div>
       </div>
-      <div id="nlpInterpret" class="nlp-interpret hidden"></div>
-      <div class="map-layer-btns" id="layerBtns">
-        <button class="layer-btn active" data-layer="all">Tout</button>
-        <button class="layer-btn" data-layer="infrastructures">🏛 Infrastructures</button>
+
+      <div class="full-map-search-row">
+        <button class="layer-btn" onclick="setTab('infrastructures')"
+          style="padding: 8px 10px; min-width: auto; border-radius: 50%;">
+          ←
+        </button>
+        <div class="full-map-search-wrap" style="border-radius: 24px;">
+          <input id="fullMapSearch" type="search" placeholder="Posez-moi votre question ici..." autocomplete="off"
+            enterkeyhint="search" inputmode="search" />
+          <button id="fullMapClear" class="fms-clear hidden" title="Effacer">✕</button>
+        </div>
       </div>
+      <div id="nlpInterpret" class="nlp-interpret hidden" style="padding-left: 52px;"></div>
     </div>
-    <div id="fullMap"></div>
-    <div class="full-legend" id="fullLegend">
-      <div class="legend-handle" id="fullLegendHandle"></div>
-      <div class="legend-list" id="fullLegendList"></div>
+    <div class="map-layer-btns" id="layerBtns">
+      <button class="layer-btn active" data-layer="all">Tout</button>
+      <button class="layer-btn" data-layer="infrastructures">🏛 Infrastructures</button>
     </div>
+  </div>
+  <div id="fullMap"></div>
+  <div class="full-legend" id="fullLegend">
+    <div class="legend-handle" id="fullLegendHandle"></div>
+    <div class="legend-list" id="fullLegendList"></div>
+  </div>
 
   </div>
 

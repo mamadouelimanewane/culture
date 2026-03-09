@@ -108,6 +108,7 @@ const dom = {
   fullLegend: $('fullLegend'),
   fullLegendList: $('fullLegendList'),
   fullLegendHandle: $('fullLegendHandle'),
+  fullMapBar: document.querySelector('.full-map-bar'),
   panelLegend: $('panelLegend'),
 
   // Drawer
@@ -1414,6 +1415,51 @@ function bindEvents() {
     applyFiltersAndRender(true);
     dom.searchInput.focus();
   });
+
+  // ── Drag logic for mobile chatbot bar ──
+  let touchStartY = 0;
+  let currentTranslateY = 0;
+  let isDragging = false;
+
+  if (dom.fullMapBar) {
+    dom.fullMapBar.addEventListener('touchstart', (e) => {
+      if (window.innerWidth > 768) return;
+      // Empêche le drag si on tape dans l'input
+      if (e.target.tagName === 'INPUT' || e.target.closest('button')) return;
+
+      touchStartY = e.touches[0].clientY;
+      isDragging = true;
+      dom.fullMapBar.style.transition = 'none';
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      if (!isDragging || window.innerWidth > 768) return;
+
+      const touchY = e.touches[0].clientY;
+      let diff = touchY - touchStartY;
+
+      // On ne permet de pousser que vers le bas (positif) ou un peu vers le haut
+      if (diff < -50) diff = -50; // Limite vers le haut
+
+      currentTranslateY = diff;
+      dom.fullMapBar.style.transform = `translateY(${currentTranslateY}px)`;
+    }, { passive: false });
+
+    window.addEventListener('touchend', () => {
+      if (!isDragging) return;
+      isDragging = false;
+      dom.fullMapBar.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+
+      // Si poussé de plus de 80px, on peut imaginer un "dock" ou juste retour
+      if (currentTranslateY > 80) {
+        // Optionnel: on pourrait le cacher ou le réduire, ici on le remet avec un effet élégant
+        dom.fullMapBar.style.transform = `translateY(0)`;
+      } else {
+        dom.fullMapBar.style.transform = `translateY(0)`;
+      }
+      currentTranslateY = 0;
+    });
+  }
 
   // Region select
   dom.regionSelect.addEventListener('change', () => {

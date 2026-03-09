@@ -1009,8 +1009,14 @@ textarea {
     padding: 8px 12px;
   }
 
-  .map-layer-btns {
-    display: none !important;
+  .chat-drag-handle {
+    display: block !important;
+    width: 30px;
+    height: 4px;
+    background: var(--primary);
+    opacity: 0.15;
+    border-radius: 10px;
+    margin: -4px auto 8px auto;
   }
 }
 

@@ -238,6 +238,8 @@
        FULL MAP TAB
   ══════════════════════════════════════════ -->
   <div class="full-map-section hidden" id="fullMapSection">
+    <div id="fullMap"></div>
+
     <div class="full-map-bar">
       <div class="chatbot-container" id="chatbotContainer">
         <!-- Initial Bot Message -->
@@ -254,49 +256,44 @@
             <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
               <button class="chip"
                 onclick="document.getElementById('fullMapSearch').value='Musées à Dakar'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input'))"
-                style="font-size:11px; padding:4px 10px; cursor:pointer; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:20px;">🏛
+                style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🏛
                 Musées</button>
               <button class="chip"
                 onclick="document.getElementById('fullMapSearch').value='Cinémas'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input'))"
-                style="font-size:11px; padding:4px 10px; cursor:pointer; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:20px;">🎬
+                style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🎬
                 Cinémas</button>
               <button class="chip"
                 onclick="document.getElementById('fullMapSearch').value='Salles de fête'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input'))"
-                style="font-size:11px; padding:4px 10px; cursor:pointer; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:20px;">🎉
-                Salles de fête</button>
+                style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🎉
+                Salles</button>
               <button class="chip"
                 onclick="document.getElementById('fullMapSearch').value='Artisanat'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input'))"
-                style="font-size:11px; padding:4px 10px; cursor:pointer; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:20px;">🧵
+                style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🧵
                 Artisanat</button>
             </div>
-            <br><small style="opacity:0.7;">(Tapez votre question ci-dessous)</small>
           </div>
         </div>
       </div>
 
       <div class="full-map-search-row">
         <button class="layer-btn" onclick="setTab('infrastructures')"
-          style="padding: 8px 10px; min-width: auto; border-radius: 50%;">
-          ←
-        </button>
-        <div class="full-map-search-wrap" style="border-radius: 24px;">
-          <input id="fullMapSearch" type="search" placeholder="Posez-moi votre question ici..." autocomplete="off"
-            enterkeyhint="search" inputmode="search" />
-          <button id="fullMapClear" class="fms-clear hidden" title="Effacer">✕</button>
+          style="padding: 8px; min-width: auto; border-radius: 50%; width: 40px; height: 40px;">←</button>
+        <div class="full-map-search-wrap">
+          <input id="fullMapSearch" type="search" placeholder="Posez-moi votre question ici..." autocomplete="off" />
+          <button id="fullMapClear" class="fms-clear hidden">✕</button>
         </div>
       </div>
-      <div id="nlpInterpret" class="nlp-interpret hidden" style="padding-left: 52px;"></div>
+      <div id="nlpInterpret" class="nlp-interpret hidden" style="padding: 0 10px 0 52px;"></div>
     </div>
+
     <div class="map-layer-btns" id="layerBtns">
       <button class="layer-btn active" data-layer="all">Tout</button>
       <button class="layer-btn" data-layer="infrastructures">🏛 Infrastructures</button>
     </div>
-  </div>
-  <div id="fullMap"></div>
-  <div class="full-legend" id="fullLegend">
-    <div class="legend-handle" id="fullLegendHandle"></div>
-    <div class="legend-list" id="fullLegendList"></div>
-  </div>
+    <div class="full-legend" id="fullLegend">
+      <div class="legend-handle" id="fullLegendHandle"></div>
+      <div class="legend-list" id="fullLegendList"></div>
+    </div>
 
   </div>
 

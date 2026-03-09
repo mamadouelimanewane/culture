@@ -1020,6 +1020,34 @@ function autoZoomToResults(intent, hits) {
   }
 }
 
+// ── Voice & Chatbot ─────────────────────────────────────────────────────────
+function speakText(text, lang = 'fr-FR') {
+  if (!window.speechSynthesis) return;
+  // Stop existing speech
+  window.speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = lang;
+  utterance.rate = 1.0;
+  utterance.pitch = 1.0;
+
+  // Find a good female voice if possible
+  const voices = window.speechSynthesis.getVoices();
+  const preferredVoice = voices.find(v => v.lang.startsWith('fr') && v.name.includes('Google'));
+  if (preferredVoice) utterance.voice = preferredVoice;
+
+  window.speechSynthesis.speak(utterance);
+}
+
+function speakWelcome() {
+  const french = "Bonjour ! Je suis votre guide Scenews. Que souhaitez-vous découvrir au Sénégal aujourd'hui ?";
+  const wolof = "Salamalekum ! Man moy sa guide culturel. Lan nga beugg guiss ci Sénégal tay ?";
+
+  speakText(french);
+  // Optional delay for Wolof
+  setTimeout(() => speakText(wolof), 6000);
+}
+
 // ── Full map search & Bot ─────────────────────────────────────────────────────
 function addBotMessage(text, options = []) {
   const container = document.getElementById('chatbotContainer');
@@ -1044,7 +1072,10 @@ function addBotMessage(text, options = []) {
     bubble.innerHTML = `
       <div class="bot-avatar">🎭</div>
       <div class="bot-msg">
-        ${text}
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
+          <span>${text}</span>
+          <button onclick="speakText('${text.replace(/'/g, "\\'").replace(/<[^>]*>/g, '')}')" style="background:none; border:none; cursor:pointer; font-size:16px; opacity:0.6;" title="Écouter">🔊</button>
+        </div>
         ${options.length ? `
           <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
             ${options.map(opt => `<button class="chip" onclick="document.getElementById('fullMapSearch').value='${opt}'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input'))" style="font-size:11px; padding:4px 10px; cursor:pointer; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:20px;">${opt}</button>`).join('')}
@@ -1059,11 +1090,11 @@ function addBotMessage(text, options = []) {
 function getBotResponse(intent, count, raw) {
   const low = raw.toLowerCase().trim();
 
-  if (low.match(/\b(bonjour|salut|coucou|bonsoir|he?y|yo)\b/)) {
+  if (low.match(/\b(bonjour|salut|coucou|bonsoir|he?y|yo|salam|amalekum)\b/)) {
     if (count > 0) {
-      return `Bonjour ! ✨ Ravi de vous aider. J'ai justement trouvé <b>${count} lieu${count > 1 ? 's' : ''}</b> pour vous. Regardez la carte !`;
+      return `Bonjour ! Salamalekum ! ✨ Ravi de vous aider. J'ai justement trouvé <b>${count} lieu${count > 1 ? 's' : ''}</b> pour vous. Regardez la carte !`;
     }
-    return "Bonjour ! ✨ Je suis prêt à vous guider. Que souhaitez-vous découvrir au Sénégal aujourd'hui ?";
+    return "Bonjour ! Salamalekum ! ✨ Je suis prêt à vous guider. Que souhaitez-vous découvrir au Sénégal aujourd'hui ?";
   }
 
   if (low.match(/\b(aide|help|comment|marche|quoi faire|utilis[er|at])\b/)) {
@@ -1189,7 +1220,11 @@ function setupFullMapSearch() {
           <div class="chatbot-bubble" id="botWelcome">
             <div class="bot-avatar">🎭</div>
             <div class="bot-msg">
-              Bonjour ! Je suis votre guide culturel. <b>Que souhaitez-vous découvrir au Sénégal aujourd'hui ?</b> 
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                <span>Bonjour ! Je suis votre guide culturel.</span>
+                <button onclick="speakWelcome()" style="background:none; border:none; cursor:pointer; font-size:18px; padding:0 5px;" title="Écouter le message">🔊</button>
+              </div>
+              <b>Que souhaitez-vous découvrir au Sénégal aujourd'hui ?</b> 
               <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
                 <button class="chip" onclick="document.getElementById('fullMapSearch').value='Musées à Dakar'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input'))" style="font-size:11px; padding:4px 10px; cursor:pointer; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:20px;">🏛 Musées</button>
                 <button class="chip" onclick="document.getElementById('fullMapSearch').value='Cinémas'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input'))" style="font-size:11px; padding:4px 10px; cursor:pointer; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:20px;">🎬 Cinémas</button>
@@ -1263,6 +1298,7 @@ function setTab(tab) {
   if (tab === 'carte') {
     initFullMap();
     setupFullMapSearch();
+    speakWelcome();
     // Force map to resize
     setTimeout(() => {
       if (state.maps.full) {

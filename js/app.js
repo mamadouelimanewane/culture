@@ -269,8 +269,13 @@ function onDataReady() {
   // First render
   applyFiltersAndRender();
 
-  // Init full map immediately (carte is the default tab)
-  initFullMap();
+  // Init or populate full map immediately
+  if (!state.maps.full) {
+    initFullMap();
+  } else {
+    populateFullMap(state.activeLayer);
+    buildFullLegend();
+  }
 }
 
 // ── Filter UI builders ───────────────────────────────────────────────────────
@@ -599,8 +604,9 @@ function renderPanelMap() {
       maxBoundsViscosity: 1.0,
       attributionControl: true,
     });
-    L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+    L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
       attribution: '© Google Maps',
+      subdomains: ['0', '1', '2', '3'],
       maxZoom: 20,
     }).addTo(state.maps.panel);
     state.clusters.panel = L.markerClusterGroup({ chunkedLoading: true, maxClusterRadius: 50 });
@@ -653,8 +659,9 @@ function initFullMap() {
     clearFullMapIdleTimeout();
   });
 
-  L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+  L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
     attribution: '© Google Maps',
+    subdomains: ['0', '1', '2', '3'],
     maxZoom: 20,
   }).addTo(state.maps.full);
 

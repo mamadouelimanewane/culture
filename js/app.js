@@ -817,32 +817,33 @@ window.navigateTo = function (id) {
 // ── NLP Map Search Engine ─────────────────────────────────────────────────────
 
 const NLP_TYPES = {
-  'musée': 'Musée', 'musees': 'Musée', 'musee': 'Musée', 'expositions': 'Musée', 'histoire': 'Musée', 'patrimoine': 'Musée', 'expo': 'Musée', 'culture': 'Musée', 'monument': 'Musée',
-  'cinéma': 'Cinéma', 'cinema': 'Cinéma', 'cinemas': 'Cinéma', 'film': 'Cinéma', 'ecran': 'Cinéma', 'projection': 'Cinéma', 'projections': 'Cinéma', 'films': 'Cinéma', 'salle obscure': 'Cinéma',
-  'centre culturel': 'Centre culturel', 'centre': 'Centre culturel', 'centres': 'Centre culturel', 'culturel': 'Centre culturel', 'maison de la culture': 'Centre culturel', 'espace culturel': 'Centre culturel',
-  "centre d'animation": "Centre d'animation", 'animation': "Centre d'animation", 'culturelle': 'Centre culturel', 'activités': "Centre d'animation", 'loisirs': "Centre d'animation",
-  'foyer femmes': 'Foyer des femmes', 'foyer des femmes': 'Foyer des femmes', 'femmes': 'Foyer des femmes', 'amazones': 'Foyer des femmes', 'case des femmes': 'Foyer des femmes',
-  'foyer femme': 'Foyer des femmes', 'femme': 'Foyer des femmes', 'atelier femme': 'Foyer des femmes',
-  'foyer jeunes': 'Foyer des jeunes', 'foyer des jeunes': 'Foyer des jeunes', 'jeunes': 'Foyer des jeunes', 'jeunesses': 'Foyer des jeunes', 'maison de quartier': 'Foyer des jeunes',
-  'foyer jeune': 'Foyer des jeunes', 'foyer': 'Foyer des jeunes', 'foyers': 'Foyer des jeunes', 'jeune': 'Foyer des jeunes', 'case des jeunes': 'Foyer des jeunes',
-  'galerie': 'Galerie', 'galeries': 'Galerie', 'art': 'Galerie', 'exposition': 'Galerie', 'tableaux': 'Galerie', 'peinture': 'Galerie', 'peintre': 'Galerie', 'artistes': 'Galerie',
-  'salle fête': 'Salle des fêtes', 'salle des fêtes': 'Salle des fêtes', 'salle fetes': 'Salle des fêtes', 'evenement': 'Salle des fêtes', 'fetes': 'Salle des fêtes', 'ceremonie': 'Salle des fêtes', 'mariage': 'Salle des fêtes', 'reunion': 'Salle des fêtes',
-  'salle': 'Salle des fêtes', 'salles': 'Salle des fêtes', 'polyvalent': 'Salle des fêtes', 'polyvalente': 'Salle des fêtes',
-  'village artisanal': 'Village artisanal', 'artisanal': 'Village artisanal', 'artisanat': 'Village artisanal', 'souvenirs': 'Village artisanal', 'marche artisanal': 'Village artisanal', 'sculpture': 'Village artisanal', 'boutique': 'Village artisanal',
-  'bibliothèque': 'Bibliothèque', 'bibliotheque': 'Bibliothèque', 'livre': 'Bibliothèque', 'lecture': 'Bibliothèque', 'lire': 'Bibliothèque', 'bouquin': 'Bibliothèque', 'mediatheque': 'Bibliothèque',
+  'musée': 'Musée', 'musees': 'Musée', 'musee': 'Musée', 'expositions': 'Musée', 'histoire': 'Musée', 'patrimoine': 'Musée', 'expo': 'Musée', 'culture': 'Musée', 'monument': 'Musée', 'tresor': 'Musée', 'antiquite': 'Musée', 'archeologie': 'Musée',
+  'cinéma': 'Cinéma', 'cinema': 'Cinéma', 'cinemas': 'Cinéma', 'film': 'Cinéma', 'ecran': 'Cinéma', 'projection': 'Cinéma', 'projections': 'Cinéma', 'films': 'Cinéma', 'salle obscure': 'Cinéma', 'cine': 'Cinéma', 'audiovisuel': 'Cinéma',
+  'centre culturel': 'Centre culturel', 'centre': 'Centre culturel', 'centres': 'Centre culturel', 'culturel': 'Centre culturel', 'maison de la culture': 'Centre culturel', 'espace culturel': 'Centre culturel', 'complexe culturel': 'Centre culturel',
+  "centre d'animation": "Centre d'animation", 'animation': "Centre d'animation", 'culturelle': 'Centre culturel', 'activités': "Centre d'animation", 'loisirs': "Centre d'animation", 'animation culturelle': "Centre d'animation",
+  'foyer femmes': 'Foyer des femmes', 'foyer des femmes': 'Foyer des femmes', 'femmes': 'Foyer des femmes', 'amazones': 'Foyer des femmes', 'case des femmes': 'Foyer des femmes', 'groupement': 'Foyer des femmes', 'cooperative': 'Foyer des femmes',
+  'foyer femme': 'Foyer des femmes', 'femme': 'Foyer des femmes', 'atelier femme': 'Foyer des femmes', 'promotion': 'Foyer des femmes',
+  'foyer jeunes': 'Foyer des jeunes', 'foyer des jeunes': 'Foyer des jeunes', 'jeunes': 'Foyer des jeunes', 'jeunesses': 'Foyer des jeunes', 'maison de quartier': 'Foyer des jeunes', 'foyer municipal': 'Foyer des jeunes',
+  'foyer jeune': 'Foyer des jeunes', 'foyer': 'Foyer des jeunes', 'foyers': 'Foyer des jeunes', 'jeune': 'Foyer des jeunes', 'case des jeunes': 'Foyer des jeunes', 'mjc': 'Foyer des jeunes',
+  'galerie': 'Galerie', 'galeries': 'Galerie', 'art': 'Galerie', 'exposition': 'Galerie', 'tableaux': 'Galerie', 'peinture': 'Galerie', 'peintre': 'Galerie', 'artistes': 'Galerie', 'plasticien': 'Galerie', 'sculpture': 'Galerie', 'visuel': 'Galerie',
+  'salle fête': 'Salle des fêtes', 'salle des fêtes': 'Salle des fêtes', 'salle fetes': 'Salle des fêtes', 'evenement': 'Salle des fêtes', 'fetes': 'Salle des fêtes', 'ceremonie': 'Salle des fêtes', 'mariage': 'Salle des fêtes', 'reunion': 'Salle des fêtes', 'reception': 'Salle des fêtes',
+  'salle': 'Salle des fêtes', 'salles': 'Salle des fêtes', 'polyvalent': 'Salle des fêtes', 'polyvalente': 'Salle des fêtes', 'auditorium': 'Salle des fêtes',
+  'village artisanal': 'Village artisanal', 'artisanal': 'Village artisanal', 'artisanat': 'Village artisanal', 'souvenirs': 'Village artisanal', 'marche artisanal': 'Village artisanal', 'sculpture': 'Village artisanal', 'boutique': 'Village artisanal', 'metier': 'Village artisanal', 'forge': 'Village artisanal', 'tissage': 'Village artisanal',
+  'bibliothèque': 'Bibliothèque', 'bibliotheque': 'Bibliothèque', 'livre': 'Bibliothèque', 'lecture': 'Bibliothèque', 'lire': 'Bibliothèque', 'bouquin': 'Bibliothèque', 'mediatheque': 'Bibliothèque', 'archives': 'Bibliothèque', 'documentation': 'Bibliothèque',
   'maison de la culture': 'Maison de la culture', 'maison culture': 'Maison de la culture',
-  'théâtre': ['Centre culturel', 'Salle des fêtes'], 'theatre': ['Centre culturel', 'Salle des fêtes'], 'comedie': ['Centre culturel', 'Salle des fêtes'], 'piece': ['Centre culturel', 'Salle des fêtes'],
-  'spectacle': ['Centre culturel', 'Salle des fêtes', "Centre d'animation"], 'spectacles': ['Centre culturel', 'Salle des fêtes', "Centre d'animation"], 'concert': ['Centre culturel', 'Salle des fêtes'],
-  'scène': ['Centre culturel', 'Salle des fêtes'], 'podium': ['Centre culturel', 'Salle des fêtes'], 'danse': ['Centre culturel', 'Salle des fêtes'],
+  'théâtre': ['Centre culturel', 'Salle des fêtes'], 'theatre': ['Centre culturel', 'Salle des fêtes'], 'comedie': ['Centre culturel', 'Salle des fêtes'], 'piece': ['Centre culturel', 'Salle des fêtes'], 'drame': ['Centre culturel', 'Salle des fêtes'],
+  'spectacle': ['Centre culturel', 'Salle des fêtes', "Centre d'animation"], 'spectacles': ['Centre culturel', 'Salle des fêtes', "Centre d'animation"], 'concert': ['Centre culturel', 'Salle des fêtes'], 'musique': ['Centre culturel', 'Salle des fêtes'], 'performance': ['Centre culturel', 'Salle des fêtes'],
+  'scène': ['Centre culturel', 'Salle des fêtes'], 'podium': ['Centre culturel', 'Salle des fêtes'], 'danse': ['Centre culturel', 'Salle des fêtes'], 'folklore': ['Centre culturel', 'Salle des fêtes'],
   'foyer': 'Foyer des jeunes', 'case': 'Foyer des jeunes', 'social': 'Foyer des jeunes', 'communautaire': 'Foyer des jeunes',
-  'formation': 'formations', 'ecole': 'formations', 'etablissement': 'formations', 'cours': 'formations', 'etudes': 'formations', 'apprendre': 'formations', 'metier': 'formations',
+  'formation': 'formations', 'ecole': 'formations', 'etablissement': 'formations', 'cours': 'formations', 'etudes': 'formations', 'apprendre': 'formations', 'metier': 'formations', 'formation professionnelle': 'formations', 'metiers du spectacle': 'formations',
 };
 
 const NLP_STOP_WORDS = [
-  'je', 'cherche', 'trouve', 'montre', 'donne', 'moi', 'les', 'des', 'un', 'une', 'le', 'la', 'salut', 'coucou', 'bonjour', 'bonsoir', 'hey', 'yo',
-  'pourriez', 'vous', 'vouloir', 'voir', 'tous', 'ceux', 'celui', 'ce', 'cette', 'est', 'sont', 'dis', 'parle', 'sait', 'connais', 'liste',
-  'il', 'y', 'a', 'ou', 'se', 'trouvent', 'situés', 'ouvert', 'dans', 'sur', 'autour', 'de', 'quand', 'comment', 'pourquoi', 'qui', 'quoi', 'quel', 'quelle',
-  'du', 'au', 'aux', 'pres', 'proche', 'chez', 'avec', 'et', 'à', 'quel', 'quels', 'toutes', 'mon', 'ma', 'ton', 'ta', 'son', 'sa', 'notre', 'votre', 'leur'
+  'je', 'cherche', 'trouve', 'montre', 'donne', 'moi', 'les', 'des', 'un', 'une', 'le', 'la', 'salut', 'coucou', 'bonjour', 'bonsoir', 'hey', 'yo', 'recherche',
+  'pourriez', 'vous', 'vouloir', 'voir', 'tous', 'ceux', 'celui', 'ce', 'cette', 'est', 'sont', 'dis', 'parle', 'sait', 'connais', 'liste', 'recapitulatif',
+  'il', 'y', 'a', 'ou', 'se', 'trouvent', 'situés', 'ouvert', 'dans', 'sur', 'autour', 'de', 'quand', 'comment', 'pourquoi', 'qui', 'quoi', 'quel', 'quelle', 'quelles',
+  'du', 'au', 'aux', 'pres', 'proche', 'chez', 'avec', 'et', 'à', 'quel', 'quels', 'toutes', 'mon', 'ma', 'ton', 'ta', 'son', 'sa', 'notre', 'votre', 'leur', 'leurs',
+  'svp', 'plait', 'merci', 'bien', 'tres', 'vraiment', 'un peu', 'beaucoup', 'quelques', 'plusieurs', 'certains', 'dites', 'indique', 'trouve-moi'
 ];
 
 const NLP_REGIONS = {
@@ -882,6 +883,8 @@ const REGION_BOUNDS = {
 function parseNaturalQuery(raw) {
   const qClean = raw.toLowerCase()
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "") // Strip punctuation
+    .replace(/\s{2,}/g, " ") // Clean double spaces
     .replace(/['']/g, "'");
 
   const intent = { types: [], regions: [], milieu: null, freeText: '' };
@@ -1047,28 +1050,40 @@ function addBotMessage(text) {
 }
 
 function getBotResponse(intent, count, raw) {
-  const low = raw.toLowerCase();
+  const low = raw.toLowerCase().trim();
 
-  if (low.match(/\b(bonjour|salut|coucou|bonsoir|hey|yo)\b/)) {
-    return "Bonjour ! ✨ Je suis prêt à vous aider dans votre exploration culturelle au Sénégal. <br>Que recherchez-vous précisément ?";
+  if (low.match(/\b(bonjour|salut|coucou|bonsoir|he?y|yo)\b/)) {
+    if (count > 0) {
+      return `Bonjour ! ✨ Ravi de vous aider. J'ai justement trouvé <b>${count} lieu${count > 1 ? 's' : ''}</b> pour vous. Regardez la carte !`;
+    }
+    return "Bonjour ! ✨ Je suis prêt à vous guider. Que souhaitez-vous découvrir au Sénégal aujourd'hui ?";
   }
-  if (low.match(/\b(aide|help|comment|marche|marche)\b/)) {
-    return "C'est simple ! Posez-moi votre question comme vous le feriez avec un ami. <br>Ex: <i>'Je cherche des musées à Dakar'</i> ou <i>'Où sont les centres culturels ?'</i>.";
+
+  if (low.match(/\b(aide|help|comment|marche|quoi faire|utilis[er|at])\b/)) {
+    return "C'est très simple ! Posez-moi une question naturelle. <br>Ex: <i>'Où sont les musées à Dakar ?'</i>, <i>'Cherche des cinémas ruraux'</i> ou même <i>'Artisanat vers Saint-Louis'</i>.";
   }
-  if (low.match(/\b(qui|es|tu|application|scenews)\b/)) {
-    return "Je suis <b>Scenews</b>, votre fenêtre sur le patrimoine sénégalais. Mon but est de répertorier tous les lieux de culture pour vous ! 🎬🎨";
+
+  if (low.match(/\b(qui|es|tu|application|scenews|concept|mission)\b/)) {
+    return "Je suis <b>Scenews</b>, une plateforme interactive dédiée au patrimoine culturel du Sénégal. Mon but est de rendre chaque infrastructure accessible en un clic ! 🎭🎬🎨";
+  }
+
+  if (low.match(/\b(merci|thx|thanks|genial|super|top|bravo)\b/)) {
+    return "Avec plaisir ! Profitez bien de votre exploration culturelle ! 🎉🗺️";
   }
 
   if (count === 0) {
-    return "Aïe, je n'ai rien trouvé de tel... ✨ <br>N'hésitez pas à varier les mots-clés ou les régions !";
+    if (intent.regions.length && intent.types.length) {
+      return `Je n'ai malheureusement pas d'infrastructures de type <i>${intent.types.join(', ')}</i> en région <b>${intent.regions.join(', ')}</b> pour le moment. 😔`;
+    }
+    return "Aïe, je n'ai pas trouvé de correspondance exacte... ✨ <br>Essayez peut-être un autre mot-clé ou demandez-moi de l'aide !";
   }
 
-  let msg = `C'est parti ! J'ai déniché <b>${count} point${count > 1 ? 's' : ''}</b>`;
+  let msg = `C'est parti ! Voici <b>${count} point${count > 1 ? 's' : ''}</b>`;
   if (intent.types.length) msg += ` pour : <i>${intent.types.join(', ')}</i>`;
   if (intent.regions.length) msg += ` en région <b>${intent.regions.join(', ')}</b>`;
-  if (intent.freeText) msg += ` lié à "<b>${intent.freeText}</b>"`;
+  if (intent.freeText && intent.freeText.length > 2) msg += ` correspondant à "<b>${intent.freeText}</b>"`;
 
-  return msg + ". Régalez-vous ! 🗺️";
+  return msg + ". Je les ai affichés sur la carte pour vous ! 📍🗺️";
 }
 
 function setupFullMapSearch() {

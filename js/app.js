@@ -819,22 +819,31 @@ window.navigateTo = function (id) {
 // ── NLP Map Search Engine ─────────────────────────────────────────────────────
 
 const NLP_TYPES = {
-  'musée': 'Musée', 'musees': 'Musée', 'musee': 'Musée',
-  'cinéma': 'Cinéma', 'cinema': 'Cinéma', 'cinemas': 'Cinéma',
-  'centre culturel': 'Centre culturel', 'centre': 'Centre culturel',
-  "centre d'animation": "Centre d'animation", 'animation': "Centre d'animation",
-  'foyer femmes': 'Foyer des femmes', 'foyer des femmes': 'Foyer des femmes',
-  'foyer femme': 'Foyer des femmes',
-  'foyer jeunes': 'Foyer des jeunes', 'foyer des jeunes': 'Foyer des jeunes',
-  'foyer jeune': 'Foyer des jeunes', 'foyer': 'Foyer des jeunes',
-  'galerie': 'Galerie', 'galeries': 'Galerie',
-  'salle fête': 'Salle des fêtes', 'salle des fêtes': 'Salle des fêtes',
-  'salle fetes': 'Salle des fêtes', 'salle': 'Salle des fêtes',
-  'village artisanal': 'Village artisanal', 'artisanal': 'Village artisanal', 'artisanat': 'Village artisanal',
-  'bibliothèque': 'Bibliothèque', 'bibliotheque': 'Bibliothèque',
+  'musée': 'Musée', 'musees': 'Musée', 'musee': 'Musée', 'expositions': 'Musée',
+  'cinéma': 'Cinéma', 'cinema': 'Cinéma', 'cinemas': 'Cinéma', 'film': 'Cinéma', 'ecran': 'Cinéma',
+  'centre culturel': 'Centre culturel', 'centre': 'Centre culturel', 'centres': 'Centre culturel', 'culturel': 'Centre culturel',
+  "centre d'animation": "Centre d'animation", 'animation': "Centre d'animation", 'culturelle': 'Centre culturel',
+  'foyer femmes': 'Foyer des femmes', 'foyer des femmes': 'Foyer des femmes', 'femmes': 'Foyer des femmes',
+  'foyer femme': 'Foyer des femmes', 'case des femmes': 'Foyer des femmes',
+  'foyer jeunes': 'Foyer des jeunes', 'foyer des jeunes': 'Foyer des jeunes', 'jeunes': 'Foyer des jeunes',
+  'foyer jeune': 'Foyer des jeunes', 'foyer': 'Foyer des jeunes', 'foyers': 'Foyer des jeunes',
+  'galerie': 'Galerie', 'galeries': 'Galerie', 'art': 'Galerie', 'exposition': 'Galerie',
+  'salle fête': 'Salle des fêtes', 'salle des fêtes': 'Salle des fêtes', 'salle fetes': 'Salle des fêtes',
+  'salle': 'Salle des fêtes', 'evenement': 'Salle des fêtes', 'fetes': 'Salle des fêtes',
+  'village artisanal': 'Village artisanal', 'artisanal': 'Village artisanal', 'artisanat': 'Village artisanal', 'souvenirs': 'Village artisanal',
+  'bibliothèque': 'Bibliothèque', 'bibliotheque': 'Bibliothèque', 'livre': 'Bibliothèque', 'lecture': 'Bibliothèque',
   'maison de la culture': 'Maison de la culture', 'maison culture': 'Maison de la culture',
-  'théâtre': 'Théâtre', 'theatre': 'Théâtre',
+  'théâtre': 'Théâtre', 'theatre': 'Théâtre', 'spectacle': 'Théâtre', 'scène': 'Théâtre',
+  'foyer': 'Foyer des jeunes', 'case': 'Foyer des jeunes', 'social': 'Foyer des jeunes',
+  'formation': 'formations', 'ecole': 'formations', 'etablissement': 'formations', 'cours': 'formations', 'etudes': 'formations',
 };
+
+const NLP_STOP_WORDS = [
+  'je', 'cherche', 'trouve', 'montre', 'donne', 'moi', 'les', 'des', 'un', 'une', 'le', 'la',
+  'pourriez', 'vous', 'vouloir', 'voir', 'tous', 'ceux', 'celui', 'ce', 'cette', 'est', 'sont',
+  'il', 'y', 'a', 'ou', 'se', 'trouvent', 'situés', 'ouvert', 'dans', 'sur', 'autour', 'de',
+  'du', 'au', 'aux', 'pres', 'proche', 'chez', 'avec', 'et', 'à', 'quel', 'quels', 'toutes'
+];
 
 const NLP_REGIONS = {
   'dakar': 'DAKAR', 'diourbel': 'DIOURBEL', 'fatick': 'FATICK',
@@ -871,49 +880,52 @@ const REGION_BOUNDS = {
 };
 
 function parseNaturalQuery(raw) {
-  const q = raw.toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')  // strip accents for matching
+  const qClean = raw.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
     .replace(/['']/g, "'");
 
   const intent = { types: [], regions: [], milieu: null, freeText: '' };
 
-  // Detect types (longest match first)
-  const typeKeys = Object.keys(NLP_TYPES).sort((a, b) => b.length - a.length);
-  let remaining = q;
-  for (const key of typeKeys) {
+  // Detect types (can match multiple)
+  Object.keys(NLP_TYPES).forEach(key => {
     const kNorm = key.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    if (remaining.includes(kNorm)) {
+    if (new RegExp(`\\b${kNorm}\\b`).test(qClean)) {
       const val = NLP_TYPES[key];
-      if (!intent.types.includes(val)) intent.types.push(val);
-      remaining = remaining.replace(kNorm, '').trim();
+      if (val === 'formations') {
+        state.activeLayer = 'formations';
+      } else if (!intent.types.includes(val)) {
+        intent.types.push(val);
+      }
     }
-  }
+  });
 
   // Detect regions
-  const regionKeys = Object.keys(NLP_REGIONS).sort((a, b) => b.length - a.length);
-  for (const key of regionKeys) {
+  Object.keys(NLP_REGIONS).forEach(key => {
     const kNorm = key.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    if (remaining.includes(kNorm)) {
+    if (new RegExp(`\\b${kNorm}\\b`).test(qClean)) {
       const val = NLP_REGIONS[key];
       if (!intent.regions.includes(val)) intent.regions.push(val);
-      remaining = remaining.replace(kNorm, '').trim();
     }
-  }
+  });
 
   // Detect milieu
   for (const [key, val] of Object.entries(NLP_MILIEU)) {
     const kNorm = key.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    if (remaining.includes(kNorm)) {
+    if (new RegExp(`\\b${kNorm}\\b`).test(qClean)) {
       intent.milieu = val;
-      remaining = remaining.replace(kNorm, '').trim();
       break;
     }
   }
 
-  // Strip prepositions and connectors, keep free text
-  intent.freeText = remaining
-    .replace(/\b(a|au|aux|à|en|de|du|des|les|le|la|sur|pour|dans|et|ou|avec|qui|que)\b/g, ' ')
-    .replace(/\s+/g, ' ').trim();
+  // Final cleanup for free text
+  let words = qClean.split(/\s+/);
+  intent.freeText = words
+    .filter(w => !NLP_STOP_WORDS.includes(w))
+    .filter(w => !Object.keys(NLP_TYPES).some(k => k.normalize('NFD').replace(/[\u0300-\u036f]/g, '') === w))
+    .filter(w => !Object.keys(NLP_REGIONS).some(k => k.normalize('NFD').replace(/[\u0300-\u036f]/g, '') === w))
+    .filter(w => !Object.keys(NLP_MILIEU).some(k => k.normalize('NFD').replace(/[\u0300-\u036f]/g, '') === w))
+    .join(' ')
+    .trim();
 
   return intent;
 }
@@ -943,12 +955,15 @@ function matchRecord(record, isFormation, intent) {
   // Milieu filter
   if (intent.milieu && milieu !== intent.milieu) return false;
 
-  // Free text — commune, localité ou nom
+  // Free text — matching all words in keywords
   if (intent.freeText.length > 1) {
     const hay = [name, commune, localite].join(' ').toLowerCase()
       .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    const needle = intent.freeText.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    if (!hay.includes(needle)) return false;
+    const needles = intent.freeText.normalize('NFD').replace(/[\u0300-\u036f]/g, '').split(/\s+/);
+
+    // Each word in the freeText must be found in the record fields
+    const allMatch = needles.every(word => hay.includes(word));
+    if (!allMatch) return false;
   }
 
   return true;
@@ -1007,59 +1022,46 @@ function setupFullMapSearch() {
 
   const doSearch = () => {
     const raw = input.value.trim();
-
-    // Show/hide clear button
     if (clearBtn) clearBtn.classList.toggle('hidden', !raw);
 
     if (!state.maps.full) return;
     state.clusters.full.clearLayers();
 
     if (!raw) {
-      // Restore all markers
       document.getElementById('nlpInterpret')?.classList.add('hidden');
-      const layer = state.activeLayer;
-      const addAll = (dataset, isFo) => {
-        dataset.forEach(rec => {
-          const lat = rec.LATITUDE, lon = rec.LONGITUDE;
-          if (!lat || !lon || isNaN(lat) || isNaN(lon)) return;
-          const typeKey = isFo ? rec.BRANCHE : rec.DESCRIPTIF;
-          if (state.fullMapFilter && state.fullMapFilter !== typeKey) return;
-          const cfg = typeConfig(isFo ? 'formations' : 'infrastructures', typeKey);
-          const name = isFo ? rec.NOM_ETABLISSEMENT : rec.DESIGNATION;
-          const marker = L.marker([lat, lon], { icon: createMarkerIcon(cfg.color, cfg.icon) });
-          marker.bindPopup(buildPopup(rec, isFo, cfg, name, typeKey));
-          state.clusters.full.addLayer(marker);
-        });
-      };
-      if (layer === 'all' || layer === 'infrastructures') addAll(state.data.infrastructures, false);
-      if (layer === 'all' || layer === 'formations') addAll(state.data.formations, true);
+      populateFullMap(state.activeLayer);
       return;
     }
 
-    // Parse intent
     const intent = parseNaturalQuery(raw);
     const hits = [];
 
-    const addFiltered = (dataset, isFormation) => {
-      dataset.forEach(record => {
-        const lat = record.LATITUDE, lon = record.LONGITUDE;
-        if (!lat || !lon || isNaN(lat) || isNaN(lon)) return;
-        if (!matchRecord(record, isFormation, intent)) return;
+    const processData = (dataset, isFo) => {
+      dataset.forEach(rec => {
+        if (!matchRecord(rec, isFo, intent)) return;
 
-        const typeKey = isFormation ? record.BRANCHE : record.DESCRIPTIF;
-        if (state.fullMapFilter && state.fullMapFilter !== typeKey) return;
-        const cfg = typeConfig(isFormation ? 'formations' : 'infrastructures', typeKey);
-        const name = isFormation ? record.NOM_ETABLISSEMENT : record.DESIGNATION;
+        const lat = rec.LATITUDE;
+        const lon = rec.LONGITUDE;
+        if (!lat || !lon || isNaN(lat) || isNaN(lon)) return;
+
+        const typeKey = isFo ? rec.BRANCHE : rec.DESCRIPTIF;
+        const cfg = typeConfig(isFo ? 'formations' : 'infrastructures', typeKey);
+        const name = isFo ? rec.NOM_ETABLISSEMENT : rec.DESIGNATION;
+
         const marker = L.marker([lat, lon], { icon: createMarkerIcon(cfg.color, cfg.icon) });
-        marker.bindPopup(buildPopup(record, isFormation, cfg, name, typeKey));
+        marker.bindPopup(buildPopup(rec, isFo, cfg, name, typeKey));
         state.clusters.full.addLayer(marker);
+
         hits.push({ lat, lon });
       });
     };
 
-    const layer = state.activeLayer;
-    if (layer === 'all' || layer === 'infrastructures') addFiltered(state.data.infrastructures, false);
-    if (layer === 'all' || layer === 'formations') addFiltered(state.data.formations, true);
+    if (state.activeLayer === 'all' || state.activeLayer === 'infrastructures') {
+      processData(state.data.infrastructures, false);
+    }
+    if (state.activeLayer === 'all' || state.activeLayer === 'formations') {
+      processData(state.data.formations, true);
+    }
 
     renderNlpChips(intent, hits.length);
     autoZoomToResults(intent, hits);

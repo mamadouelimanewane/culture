@@ -1332,8 +1332,8 @@ function setTab(tab) {
         const senegalBounds = [[12.25, -17.55], [16.68, -11.35]];
         const isMobile = window.innerWidth <= 768;
         state.maps.full.fitBounds(senegalBounds, {
-          paddingBottomRight: [0, isMobile ? 180 : 20], // Pousse le Sénégal vers le haut sur mobile
-          paddingTopLeft: [0, 0]
+          paddingBottomRight: [0, isMobile ? 160 : 20],
+          paddingTopLeft: [0, isMobile ? 70 : 0]
         });
         startFullMapIdleTimeout();
       }

@@ -967,24 +967,41 @@ textarea {
 @media (max-width: 768px) {
   .full-map-bar {
     top: auto;
-    /* Dégage le haut */
     left: 10px;
     right: 10px;
-    bottom: 95px;
-    /* Juste au-dessus de la barre des types */
+    bottom: 15px;
+    /* Tout en bas pour accessibilité au pouce */
     width: auto;
     height: auto;
     padding: 12px;
     border-radius: 18px;
     flex-direction: column;
     gap: 8px;
-    max-height: 200px;
-    /* Limite l'encombrement vertical */
+    max-height: 180px;
+    box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.12);
+    /* Ombre vers le haut */
+  }
+
+  .full-map-section .full-legend {
+    bottom: auto;
+    top: 0;
+    border-top: none;
+    border-bottom: 1px solid var(--border-lt);
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    /* Ombre vers le bas */
+    padding: 10px 15px 30px 15px;
+    /* Plus d'espace en bas pour la poignée */
+  }
+
+  .full-map-section .full-legend .legend-handle {
+    top: auto;
+    bottom: 0;
   }
 
   .chatbot-container {
     flex: none;
-    max-height: 100px;
+    max-height: 90px;
   }
 
   .bot-msg {
@@ -994,7 +1011,6 @@ textarea {
 
   .map-layer-btns {
     display: none !important;
-    /* Suppression pour libérer la carte */
   }
 }
 

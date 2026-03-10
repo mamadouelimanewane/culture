@@ -674,6 +674,22 @@ function initFullMap() {
 
   populateFullMap(state.activeLayer);
   buildFullLegend();
+
+  // Injecter le bouton Reset directement dans fullMapSection (position:absolute correcte)
+  const fullMapSection = document.getElementById('fullMapSection');
+  if (fullMapSection && !document.getElementById('mapResetBtn')) {
+    const resetBtn = document.createElement('button');
+    resetBtn.id = 'mapResetBtn';
+    resetBtn.title = 'Réinitialiser la carte';
+    resetBtn.className = 'map-action-btn';
+    resetBtn.style.cssText = 'bottom: 120px; top: auto; right: 15px; z-index: 2001;';
+    resetBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+      <path d="M3 3v5h5"/>
+    </svg>`;
+    resetBtn.addEventListener('click', window.resetFullMap);
+    fullMapSection.appendChild(resetBtn);
+  }
 }
 
 window.resetFullMap = function () {

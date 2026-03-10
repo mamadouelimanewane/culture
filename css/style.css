@@ -930,7 +930,8 @@ textarea {
   position: absolute;
   top: 15px;
   right: 15px;
-  z-index: 1000;
+  z-index: 2000;
+  /* Plus élevé que les autres éléments flottants */
   width: 44px;
   height: 44px;
   display: flex;
@@ -956,7 +957,8 @@ textarea {
 @media (max-width: 768px) {
   .map-action-btn {
     top: auto;
-    bottom: 90px;
+    bottom: 150px;
+    /* Plus haut pour éviter l'ombre / chevauchement du chatbot */
     right: 15px;
   }
 }
@@ -982,6 +984,13 @@ textarea {
   width: 100vw;
   height: 100vh;
   background: var(--primary-dk);
+}
+
+.pseudo-fullscreen .full-map-bar,
+.pseudo-fullscreen .full-legend {
+  opacity: 0;
+  pointer-events: none;
+  display: none !important;
 }
 
 .full-map-search-wrap:focus-within {

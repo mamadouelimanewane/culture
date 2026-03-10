@@ -669,7 +669,7 @@ function initFullMap() {
 
   state.clusters.full = L.markerClusterGroup({ chunkedLoading: true, maxClusterRadius: 60 });
   state.maps.full.addLayer(state.clusters.full);
-  createFullscreenControl('.full-map-section').addTo(state.maps.full);
+  // On utilise désormais le bouton personnalisé fullscreenBtn défini dans dom
 
   populateFullMap(state.activeLayer);
   buildFullLegend();
@@ -1463,26 +1463,41 @@ function bindEvents() {
   }
 
   // ── Fullscreen Map Logic ──
+  let isPseudoFullscreen = false;
   if (dom.fullscreenBtn) {
     dom.fullscreenBtn.addEventListener('click', () => {
       const section = $('fullMapSection');
-      if (!document.fullscreenElement) {
-        if (section.requestFullscreen) {
-          section.requestFullscreen();
-        } else if (section.webkitRequestFullscreen) { /* Safari */
-          section.webkitRequestFullscreen();
-        } else if (section.msRequestFullscreen) { /* IE11 */
-          section.msRequestFullscreen();
-        }
+      const isNativeFS = document.fullscreenElement || document.webkitIsFullScreen || document.mozFullScreen || false;
+
+      if (!isPseudoFullscreen && !isNativeFS) {
+        // Entrer en plein écran
+        isPseudoFullscreen = true;
+        section.classList.add('pseudo-fullscreen');
+
+        try {
+          if (section.requestFullscreen) {
+            section.requestFullscreen();
+          } else if (section.webkitRequestFullscreen) { /* Safari */
+            section.webkitRequestFullscreen();
+          } else if (section.msRequestFullscreen) { /* IE11 */
+            section.msRequestFullscreen();
+          }
+        } catch (e) { }
         dom.fullscreenBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>';
       } else {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) { /* Safari */
-          document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) { /* IE11 */
-          document.msExitFullscreen();
-        }
+        // Quitter plein écran
+        isPseudoFullscreen = false;
+        section.classList.remove('pseudo-fullscreen');
+
+        try {
+          if (document.exitFullscreen) {
+            document.exitFullscreen();
+          } else if (document.webkitExitFullscreen) { /* Safari */
+            document.webkitExitFullscreen();
+          } else if (document.msExitFullscreen) { /* IE11 */
+            document.msExitFullscreen();
+          }
+        } catch (e) { }
         dom.fullscreenBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>';
       }
     });
@@ -1490,6 +1505,8 @@ function bindEvents() {
     // Écouter le changement d'état via la touche Echap
     document.addEventListener('fullscreenchange', () => {
       if (!document.fullscreenElement) {
+        isPseudoFullscreen = false;
+        $('fullMapSection').classList.remove('pseudo-fullscreen');
         dom.fullscreenBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>';
       }
     });

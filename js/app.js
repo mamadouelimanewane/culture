@@ -1286,7 +1286,6 @@ function setupFullMapSearch() {
             <div class="bot-avatar">🎭</div>
             <div class="bot-msg">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
-                <span>Bonjour ! Je suis votre guide culturel.</span>
                 <button onclick="speakWelcome()" style="background:none; border:none; cursor:pointer; font-size:18px; padding:0 5px;" title="Écouter le message">🔊</button>
               </div>
               <b>Que souhaitez-vous découvrir au Sénégal aujourd'hui ?</b> 
@@ -1496,14 +1495,19 @@ function bindEvents() {
       isDragging = false;
       dom.fullMapBar.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
 
-      // Si poussé de plus de 80px, on peut imaginer un "dock" ou juste retour
-      if (currentTranslateY > 80) {
-        // Optionnel: on pourrait le cacher ou le réduire, ici on le remet avec un effet élégant
+      // Drag vers le bas (dock)
+      if (currentTranslateY > 100) {
+        // "Dégager la visibilité" : On le pousse vers le bas (mais on laisse un petit morceau ou on le remet à 0 ?) 
+        // User says "faire descendre la fenetre jusque en bas"
+        // On va le docker de façon à ne voir que l'input
+        dom.fullMapBar.style.transform = `translateY(160px)`;
+      } else if (currentTranslateY < -80) {
+        // Tiré vers le haut, on le remet à 0 (position normale)
         dom.fullMapBar.style.transform = `translateY(0)`;
       } else {
         dom.fullMapBar.style.transform = `translateY(0)`;
+        currentTranslateY = 0;
       }
-      currentTranslateY = 0;
     });
   }
 

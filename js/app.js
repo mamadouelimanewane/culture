@@ -1328,28 +1328,19 @@ function setupFullMapSearch() {
         dom.fullMapBar.classList.add('expanded');
         chatbotContainer.innerHTML = `
           <div class="chatbot-bubble" id="botWelcome">
-            <div class="bot-avatar" style="background:var(--primary); color:white; font-size:14px; display:flex; align-items:center; justify-content:center;">
-               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <rect x="3" y="3" width="7" height="7" />
-                <rect x="14" y="3" width="7" height="7" />
-                <rect x="3" y="14" width="7" height="7" />
-                <rect x="14" y="14" width="7" height="7" />
-              </svg>
-            </div>
             <div class="bot-msg">
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
-                <button onclick="speakWelcome()" style="background:none; border:none; cursor:pointer; font-size:18px; padding:0 5px;" title="Écouter le message">🔊</button>
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                <b style="font-size:13px;">Que cherchez-vous ?</b>
+                <button onclick="speakWelcome()" style="background:none; border:none; cursor:pointer; font-size:16px; padding:0; line-height:1; flex-shrink:0;" title="Écouter">🎤</button>
               </div>
-              <b>Que souhaitez-vous découvrir au Sénégal aujourd'hui ?</b> 
-              <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
+              <div style="display:flex; gap:6px; flex-wrap:wrap;">
                 <button class="chip" onclick="document.getElementById('fullMapSearch').value='Musées à Dakar'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input')); dockFullMapBar();" style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🏛 Musées</button>
                 <button class="chip" onclick="document.getElementById('fullMapSearch').value='Cinémas'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input')); dockFullMapBar();" style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🎬 Cinémas</button>
-                <button class="chip" onclick="document.getElementById('fullMapSearch').value='Galeries d\'art'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input')); dockFullMapBar();" style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🖼 Galeries</button>
+                <button class="chip" onclick="document.getElementById('fullMapSearch').value='Galeries d\\'art'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input')); dockFullMapBar();" style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🖼 Galeries</button>
                 <button class="chip" onclick="document.getElementById('fullMapSearch').value='Centres culturels'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input')); dockFullMapBar();" style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🎭 Centres</button>
                 <button class="chip" onclick="document.getElementById('fullMapSearch').value='Artisanat'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input')); dockFullMapBar();" style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🧵 Artisanat</button>
                 <button class="chip" onclick="document.getElementById('fullMapSearch').value='Autres infrastructures'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input')); dockFullMapBar();" style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🏢 Autres</button>
               </div>
-              <br><small style="opacity:0.7;">(Tapez votre question ci-dessous)</small>
             </div>
           </div>`;
       }

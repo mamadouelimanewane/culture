@@ -676,6 +676,61 @@ function initFullMap() {
   buildFullLegend();
 }
 
+window.resetFullMap = function () {
+  // 1. Réinitialiser la vue de la carte
+  if (state.maps.full) {
+    state.maps.full.flyTo([14.497, -14.452], 7, { animate: true, duration: 1.2 });
+  }
+
+  // 2. Vider le champ de recherche
+  const searchInput = document.getElementById('fullMapSearch');
+  if (searchInput) {
+    searchInput.value = '';
+    searchInput.dispatchEvent(new Event('input'));
+  }
+  const clearBtn = document.getElementById('fullMapClear');
+  if (clearBtn) clearBtn.classList.add('hidden');
+  const nlpInterpret = document.getElementById('nlpInterpret');
+  if (nlpInterpret) nlpInterpret.classList.add('hidden');
+
+  // 3. Restaurer la fenêtre de recherche si elle était cachée
+  if (dom.fullMapBar) {
+    dom.fullMapBar.classList.remove('collapsed', 'expanded');
+  }
+  const restoreBtn = document.getElementById('restoreBarBtn');
+  if (restoreBtn) restoreBtn.style.display = 'none';
+
+  // 4. Remettre le message d'accueil
+  const chatbotContainer = document.getElementById('chatbotContainer');
+  if (chatbotContainer) {
+    chatbotContainer.innerHTML = `
+      <div class="chatbot-bubble" id="botWelcome">
+        <div class="bot-msg">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+            <b style="font-size:13px;">Que cherchez-vous ?</b>
+            <button onclick="speakWelcome()" style="background:none; border:none; cursor:pointer; font-size:16px; padding:0; line-height:1; flex-shrink:0;" title="Écouter">🎤</button>
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <button class="chip" onclick="document.getElementById('fullMapSearch').value='Musées à Dakar'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input')); dockFullMapBar();" style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🏛 Musées</button>
+            <button class="chip" onclick="document.getElementById('fullMapSearch').value='Cinémas'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input')); dockFullMapBar();" style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🎬 Cinémas</button>
+            <button class="chip" onclick="document.getElementById('fullMapSearch').value='Galeries d\\'art'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input')); dockFullMapBar();" style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🖼 Galeries</button>
+            <button class="chip" onclick="document.getElementById('fullMapSearch').value='Centres culturels'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input')); dockFullMapBar();" style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🎭 Centres</button>
+            <button class="chip" onclick="document.getElementById('fullMapSearch').value='Artisanat'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input')); dockFullMapBar();" style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🧵 Artisanat</button>
+            <button class="chip" onclick="document.getElementById('fullMapSearch').value='Autres infrastructures'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input')); dockFullMapBar();" style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🏢 Autres</button>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  // 5. Animation du bouton reset pour feedback visuel
+  const resetBtn = document.getElementById('mapResetBtn');
+  if (resetBtn) {
+    resetBtn.style.transform = 'rotate(360deg)';
+    resetBtn.style.transition = 'transform 0.6s ease';
+    setTimeout(() => { resetBtn.style.transform = ''; resetBtn.style.transition = ''; }, 700);
+  }
+};
+
 function populateFullMap(layer) {
   if (!state.maps.full) return;
   state.clusters.full.clearLayers();

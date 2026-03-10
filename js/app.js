@@ -1247,13 +1247,9 @@ function setupFullMapSearch() {
     if (raw !== lastQuery && raw.length > 2 && intentKey !== lastIntentKey) {
       const response = getBotResponse(intent, hits.length, raw);
       addBotMessage(response);
-      lastQuery = raw;
-      lastIntentKey = intentKey;
-
-      // Si on est sur mobile et qu'une recherche est lancée via un chip, on dock la barre
+      // Si on est sur mobile et qu'une recherche est lancée via un chip, on dock la barre immédiatement
       if (window.innerWidth <= 768 && raw.length > 0) {
-        // Optionnel: on peut ajouter un petit délai pour laisser l'utilisateur voir le début de la réponse
-        setTimeout(dockFullMapBar, 1500);
+        setTimeout(dockFullMapBar, 400); // Délai réduit pour plus de réactivité
       }
     }
   };
@@ -1261,8 +1257,11 @@ function setupFullMapSearch() {
   window.dockFullMapBar = function () {
     if (!dom.fullMapBar || window.innerWidth > 768) return;
     dom.fullMapBar.classList.remove('expanded');
-    dom.fullMapBar.style.transition = 'transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+    dom.fullMapBar.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
     dom.fullMapBar.style.transform = `translateY(0)`; // Collapsed is 0 now with CSS hidden
+    // On peut aussi flouter le champ pour fermer le clavier
+    const input = document.getElementById('fullMapSearch');
+    if (input) input.blur();
   };
 
   // Extension au clic

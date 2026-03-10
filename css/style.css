@@ -2010,3 +2010,57 @@ textarea {
     padding: 6px 8px;
   }
 }
+
+/* ── MAJ ESTHETIQUE: CLUSTERS NETS ───────────────── */
+.marker-cluster-small {
+  background-color: rgba(10, 37, 64, 0.25) !important;
+}
+
+.marker-cluster-small div {
+  background-color: var(--primary) !important;
+  color: white !important;
+  font-weight: 700 !important;
+  border: 3px solid #ffffff !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5) !important;
+}
+
+.marker-cluster-medium {
+  background-color: rgba(0, 198, 255, 0.25) !important;
+}
+
+.marker-cluster-medium div {
+  background-color: var(--secondary) !important;
+  color: white !important;
+  font-weight: 700 !important;
+  border: 3px solid #ffffff !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5) !important;
+}
+
+.marker-cluster-large {
+  background-color: rgba(255, 107, 74, 0.25) !important;
+}
+
+.marker-cluster-large div {
+  background-color: var(--accent) !important;
+  color: white !important;
+  font-weight: 700 !important;
+  border: 3px solid #ffffff !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5) !important;
+}
+
+.marker-cluster div {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-family: 'Outfit', system-ui, sans-serif !important;
+  font-size: 13px !important;
+  /* Centrer par rapport au conteneur de base (40px) avec une marge pour la bordure */
+  margin: 4px !important;
+}
+
+.marker-cluster span {
+  line-height: 1 !important;
+}

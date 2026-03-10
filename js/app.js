@@ -841,6 +841,7 @@ const NLP_TYPES = {
   'scène': ['Centre culturel', 'Salle des fêtes'], 'podium': ['Centre culturel', 'Salle des fêtes'], 'danse': ['Centre culturel', 'Salle des fêtes'], 'folklore': ['Centre culturel', 'Salle des fêtes'], 'ballet': ['Centre culturel', 'Salle des fêtes'],
   'foyer': 'Foyer des jeunes', 'case': 'Foyer des jeunes', 'social': 'Foyer des jeunes', 'communautaire': 'Foyer des jeunes',
   'formation': 'formations', 'ecole': 'formations', 'etablissement': 'formations', 'cours': 'formations', 'etudes': 'formations', 'apprendre': 'formations', 'metier': 'formations', 'formation professionnelle': 'formations', 'metiers du spectacle': 'formations',
+  'autres': 'AUTRES', 'reste': 'AUTRES', 'infrastructures': 'AUTRES',
 };
 
 const NLP_STOP_WORDS = [
@@ -951,10 +952,17 @@ function matchRecord(record, isFormation, intent) {
 
   // Type filter
   if (intent.types.length) {
-    const match = intent.types.some(t =>
-      (typeKey || '').toLowerCase().includes(t.toLowerCase()) ||
-      t.toLowerCase().includes((typeKey || '').toLowerCase())
-    );
+    const match = intent.types.some(t => {
+      // Logic spéciale pour "Autres" : n'appartient pas aux 5 catégories principales des boutons
+      if (t === 'AUTRES') {
+        const primaryTags = ['musée', 'cinéma', 'galerie', 'centre culturel', 'village artisanal', 'artisanat'];
+        const currentType = (typeKey || '').toLowerCase();
+        return !primaryTags.some(pt => currentType.includes(pt));
+      }
+
+      return (typeKey || '').toLowerCase().includes(t.toLowerCase()) ||
+        t.toLowerCase().includes((typeKey || '').toLowerCase());
+    });
     if (!match) return false;
   }
 
@@ -990,8 +998,10 @@ function renderNlpChips(intent, count) {
   }
 
   const chips = [];
-  intent.types.forEach(t =>
-    chips.push(`<span class="nlp-chip type">🏛 ${t}</span>`));
+  intent.types.forEach(t => {
+    const label = t === 'AUTRES' ? 'Autres infrastructures' : t;
+    chips.push(`<span class="nlp-chip type">🏛 ${label}</span>`);
+  });
   intent.regions.forEach(r =>
     chips.push(`<span class="nlp-chip region">📍 ${r}</span>`));
   if (intent.milieu)
@@ -1133,7 +1143,7 @@ function getBotResponse(intent, count, raw) {
   // Réponses structurées et riches
   let msg = `Parfait ! J'ai sélectionné <b>${count} point${count > 1 ? 's' : ''}</b> remarquable${count > 1 ? 's' : ''}`;
 
-  const typeStr = intent.types.length ? ` de type <i>${intent.types.join(', ')}</i>` : "";
+  const typeStr = intent.types.length ? ` de type <i style="color:var(--primary); font-weight:600;">${intent.types.map(t => t === 'AUTRES' ? 'Autres infrastructures' : t).join(', ')}</i>` : "";
   const regStr = intent.regions.length ? ` en région <b>${intent.regions.join(', ')}</b>` : "";
   const searchStr = (intent.freeText && intent.freeText.length > 2) ? ` correspondant à votre recherche "<b>${intent.freeText}</b>"` : "";
 
@@ -1253,10 +1263,12 @@ function setupFullMapSearch() {
               </div>
               <b>Que souhaitez-vous découvrir au Sénégal aujourd'hui ?</b> 
               <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
-                <button class="chip" onclick="document.getElementById('fullMapSearch').value='Musées à Dakar'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input'))" style="font-size:11px; padding:4px 10px; cursor:pointer; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:20px;">🏛 Musées</button>
-                <button class="chip" onclick="document.getElementById('fullMapSearch').value='Cinémas'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input'))" style="font-size:11px; padding:4px 10px; cursor:pointer; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:20px;">🎬 Cinémas</button>
-                <button class="chip" onclick="document.getElementById('fullMapSearch').value='Salles de fête'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input'))" style="font-size:11px; padding:4px 10px; cursor:pointer; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:20px;">🎉 Salles de fête</button>
-                <button class="chip" onclick="document.getElementById('fullMapSearch').value='Artisanat'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input'))" style="font-size:11px; padding:4px 10px; cursor:pointer; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:20px;">🧵 Artisanat</button>
+                <button class="chip" onclick="document.getElementById('fullMapSearch').value='Musées à Dakar'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input'))" style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🏛 Musées</button>
+                <button class="chip" onclick="document.getElementById('fullMapSearch').value='Cinémas'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input'))" style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🎬 Cinémas</button>
+                <button class="chip" onclick="document.getElementById('fullMapSearch').value='Galeries d\'art'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input'))" style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🖼 Galeries</button>
+                <button class="chip" onclick="document.getElementById('fullMapSearch').value='Centres culturels'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input'))" style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🎭 Centres</button>
+                <button class="chip" onclick="document.getElementById('fullMapSearch').value='Artisanat'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input'))" style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🧵 Artisanat</button>
+                <button class="chip" onclick="document.getElementById('fullMapSearch').value='Autres infrastructures'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input'))" style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🏢 Autres</button>
               </div>
               <br><small style="opacity:0.7;">(Tapez votre question ci-dessous)</small>
             </div>

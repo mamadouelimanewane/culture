@@ -1249,7 +1249,19 @@ function setupFullMapSearch() {
       addBotMessage(response);
       lastQuery = raw;
       lastIntentKey = intentKey;
+
+      // Si on est sur mobile et qu'une recherche est lancée via un chip, on dock la barre
+      if (window.innerWidth <= 768 && raw.length > 0) {
+        // Optionnel: on peut ajouter un petit délai pour laisser l'utilisateur voir le début de la réponse
+        setTimeout(dockFullMapBar, 1500);
+      }
     }
+  };
+
+  window.dockFullMapBar = function () {
+    if (!dom.fullMapBar || window.innerWidth > 768) return;
+    dom.fullMapBar.style.transition = 'transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+    dom.fullMapBar.style.transform = `translateY(160px)`;
   };
 
   input.addEventListener('input', () => {
@@ -1290,12 +1302,12 @@ function setupFullMapSearch() {
               </div>
               <b>Que souhaitez-vous découvrir au Sénégal aujourd'hui ?</b> 
               <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
-                <button class="chip" onclick="document.getElementById('fullMapSearch').value='Musées à Dakar'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input'))" style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🏛 Musées</button>
-                <button class="chip" onclick="document.getElementById('fullMapSearch').value='Cinémas'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input'))" style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🎬 Cinémas</button>
-                <button class="chip" onclick="document.getElementById('fullMapSearch').value='Galeries d\'art'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input'))" style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🖼 Galeries</button>
-                <button class="chip" onclick="document.getElementById('fullMapSearch').value='Centres culturels'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input'))" style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🎭 Centres</button>
-                <button class="chip" onclick="document.getElementById('fullMapSearch').value='Artisanat'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input'))" style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🧵 Artisanat</button>
-                <button class="chip" onclick="document.getElementById('fullMapSearch').value='Autres infrastructures'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input'))" style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🏢 Autres</button>
+                <button class="chip" onclick="document.getElementById('fullMapSearch').value='Musées à Dakar'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input')); dockFullMapBar();" style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🏛 Musées</button>
+                <button class="chip" onclick="document.getElementById('fullMapSearch').value='Cinémas'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input')); dockFullMapBar();" style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🎬 Cinémas</button>
+                <button class="chip" onclick="document.getElementById('fullMapSearch').value='Galeries d\'art'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input')); dockFullMapBar();" style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🖼 Galeries</button>
+                <button class="chip" onclick="document.getElementById('fullMapSearch').value='Centres culturels'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input')); dockFullMapBar();" style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🎭 Centres</button>
+                <button class="chip" onclick="document.getElementById('fullMapSearch').value='Artisanat'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input')); dockFullMapBar();" style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🧵 Artisanat</button>
+                <button class="chip" onclick="document.getElementById('fullMapSearch').value='Autres infrastructures'; document.getElementById('fullMapSearch').dispatchEvent(new Event('input')); dockFullMapBar();" style="font-size:11px; padding:4px 10px; cursor:pointer; background:rgba(10,37,64,0.05); border:1px solid rgba(10,37,64,0.1); border-radius:20px;">🏢 Autres</button>
               </div>
               <br><small style="opacity:0.7;">(Tapez votre question ci-dessous)</small>
             </div>

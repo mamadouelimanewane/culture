@@ -296,7 +296,20 @@
 
       <div class="full-map-search-row">
         <button class="layer-btn" onclick="setTab('infrastructures')"
-          style="padding: 8px; min-width: auto; border-radius: 50%; width: 40px; height: 40px;">←</button>
+          style="padding: 8px; min-width: auto; border-radius: 50%; width: 40px; height: 40px;"
+          title="Retour à la liste">←</button>
+
+        <button id="fullMapToGridBtn" class="layer-btn" title="Voir en grille"
+          style="padding: 8px; min-width: auto; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
+            stroke-width="2" viewBox="0 0 24 24">
+            <rect x="3" y="3" width="7" height="7" />
+            <rect x="14" y="3" width="7" height="7" />
+            <rect x="3" y="14" width="7" height="7" />
+            <rect x="14" y="14" width="7" height="7" />
+          </svg>
+        </button>
+
         <div class="full-map-search-wrap">
           <input id="fullMapSearch" type="search" placeholder="Posez-moi votre question ici..." autocomplete="off" />
           <button id="fullMapClear" class="fms-clear hidden">✕</button>

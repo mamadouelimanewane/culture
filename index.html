@@ -252,10 +252,37 @@
       <!-- Drag handle pour mobile -->
       <div style="display:none;" id="chatDragHandle" class="chat-drag-handle"></div>
 
+      <div class="full-map-search-row">
+        <button id="fullMapToGridBtn" class="layer-btn" title="Voir en grille"
+          style="padding: 8px; min-width: auto; border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: var(--primary); color: white;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor"
+            stroke-width="2" viewBox="0 0 24 24">
+            <rect x="3" y="3" width="7" height="7" />
+            <rect x="14" y="3" width="7" height="7" />
+            <rect x="3" y="14" width="7" height="7" />
+            <rect x="14" y="14" width="7" height="7" />
+          </svg>
+        </button>
+
+        <div class="full-map-search-wrap">
+          <input id="fullMapSearch" type="search" placeholder="Posez-moi votre question ici..." autocomplete="off" />
+          <button id="fullMapClear" class="fms-clear hidden">✕</button>
+        </div>
+      </div>
+
       <div class="chatbot-container" id="chatbotContainer">
         <!-- Initial Bot Message -->
         <div class="chatbot-bubble" id="botWelcome">
-          <div class="bot-avatar">🎭</div>
+          <div class="bot-avatar"
+            style="background:var(--primary); color:white; font-size:14px; display:flex; align-items:center; justify-content:center;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
+              stroke-width="2" viewBox="0 0 24 24">
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+            </svg>
+          </div>
           <div class="bot-msg">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
               <button onclick="speakWelcome()"
@@ -293,22 +320,6 @@
         </div>
       </div>
 
-      <div class="full-map-search-row">
-        <button id="fullMapToGridBtn" class="layer-btn" title="Voir en grille"
-          style="padding: 8px; min-width: auto; border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: var(--primary); color: white;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor"
-            stroke-width="2" viewBox="0 0 24 24">
-            <rect x="3" y="3" width="7" height="7" />
-            <rect x="14" y="3" width="7" height="7" />
-            <rect x="3" y="14" width="7" height="7" />
-            <rect x="14" y="14" width="7" height="7" />
-          </svg>
-        </button>
-        <div class="full-map-search-wrap">
-          <input id="fullMapSearch" type="search" placeholder="Posez-moi votre question ici..." autocomplete="off" />
-          <button id="fullMapClear" class="fms-clear hidden">✕</button>
-        </div>
-      </div>
       <div id="nlpInterpret" class="nlp-interpret hidden" style="padding: 0 10px 0 52px;"></div>
     </div>
 

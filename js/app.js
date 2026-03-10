@@ -1260,9 +1260,21 @@ function setupFullMapSearch() {
 
   window.dockFullMapBar = function () {
     if (!dom.fullMapBar || window.innerWidth > 768) return;
-    dom.fullMapBar.style.transition = 'transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-    dom.fullMapBar.style.transform = `translateY(160px)`;
+    dom.fullMapBar.classList.remove('expanded');
+    dom.fullMapBar.style.transition = 'transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+    dom.fullMapBar.style.transform = `translateY(0)`; // Collapsed is 0 now with CSS hidden
   };
+
+  // Extension au clic
+  const searchRow = document.querySelector('.full-map-search-row');
+  if (searchRow) {
+    searchRow.addEventListener('click', (e) => {
+      if (window.innerWidth > 768) return;
+      // Ne pas étendre si on clique sur un bouton (ex: grille)
+      if (e.target.closest('button') && e.target.closest('button').id !== 'fullMapSearch') return;
+      dom.fullMapBar.classList.toggle('expanded');
+    });
+  }
 
   input.addEventListener('input', () => {
     clearTimeout(timeout);
@@ -1293,9 +1305,17 @@ function setupFullMapSearch() {
       // Reset chatbot container to welcome message with suggestions
       const chatbotContainer = document.getElementById('chatbotContainer');
       if (chatbotContainer) {
+        dom.fullMapBar.classList.add('expanded');
         chatbotContainer.innerHTML = `
           <div class="chatbot-bubble" id="botWelcome">
-            <div class="bot-avatar">🎭</div>
+            <div class="bot-avatar" style="background:var(--primary); color:white; font-size:14px; display:flex; align-items:center; justify-content:center;">
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <rect x="3" y="3" width="7" height="7" />
+                <rect x="14" y="3" width="7" height="7" />
+                <rect x="3" y="14" width="7" height="7" />
+                <rect x="14" y="14" width="7" height="7" />
+              </svg>
+            </div>
             <div class="bot-msg">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
                 <button onclick="speakWelcome()" style="background:none; border:none; cursor:pointer; font-size:18px; padding:0 5px;" title="Écouter le message">🔊</button>
@@ -1495,8 +1515,8 @@ function bindEvents() {
       const touchY = e.touches[0].clientY;
       let diff = touchY - touchStartY;
 
-      // On permet de glisser vers le bas ET largement vers le haut
-      if (diff < -400) diff = -400; // Limite vers le haut (beaucoup plus libre)
+      // Top drawer logic: Expand down (positive), Collapse up (negative)
+      if (diff > 400) diff = 400;
 
       currentTranslateY = diff;
       dom.fullMapBar.style.transform = `translateY(${currentTranslateY}px)`;
@@ -1507,19 +1527,18 @@ function bindEvents() {
       isDragging = false;
       dom.fullMapBar.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
 
-      // Drag vers le bas (dock)
-      if (currentTranslateY > 100) {
-        // "Dégager la visibilité" : On le pousse vers le bas (mais on laisse un petit morceau ou on le remet à 0 ?) 
-        // User says "faire descendre la fenetre jusque en bas"
-        // On va le docker de façon à ne voir que l'input
-        dom.fullMapBar.style.transform = `translateY(160px)`;
-      } else if (currentTranslateY < -80) {
-        // Tiré vers le haut, on le remet à 0 (position normale)
+      // Drag vers le bas -> Expand
+      if (currentTranslateY > 50) {
+        dom.fullMapBar.classList.add('expanded');
+        dom.fullMapBar.style.transform = `translateY(0)`;
+      } else if (currentTranslateY < -30) {
+        // Drag vers le haut -> Collapse
+        dom.fullMapBar.classList.remove('expanded');
         dom.fullMapBar.style.transform = `translateY(0)`;
       } else {
         dom.fullMapBar.style.transform = `translateY(0)`;
-        currentTranslateY = 0;
       }
+      currentTranslateY = 0;
     });
   }
 

@@ -1037,31 +1037,57 @@ function autoZoomToResults(intent, hits) {
 }
 
 // ── Voice & Chatbot ─────────────────────────────────────────────────────────
+let speechUnlocked = false;
+function unlockSpeech() {
+  if (speechUnlocked || !window.speechSynthesis) return;
+  const dummy = new SpeechSynthesisUtterance('');
+  window.speechSynthesis.speak(dummy);
+  speechUnlocked = true;
+}
+
 function speakText(text, lang = 'fr-FR') {
   if (!window.speechSynthesis) return;
-  // Stop existing speech
+
+  // On mobile, speech must be triggered by direct user click
+  // This function is usually called from an onclick attribute or direct event
+
   window.speechSynthesis.cancel();
 
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = lang;
-  utterance.rate = 1.0;
+  utterance.rate = 1.05; // Slightly faster for responsiveness
   utterance.pitch = 1.0;
 
-  // Find a good female voice if possible
-  const voices = window.speechSynthesis.getVoices();
-  const preferredVoice = voices.find(v => v.lang.startsWith('fr') && v.name.includes('Google'));
-  if (preferredVoice) utterance.voice = preferredVoice;
+  // Find a good voice
+  let voices = window.speechSynthesis.getVoices();
+  const selectVoice = () => {
+    const preferredVoice = voices.find(v => v.lang.startsWith('fr') && (v.name.includes('Google') || v.name.includes('Premium')));
+    if (preferredVoice) utterance.voice = preferredVoice;
+    window.speechSynthesis.speak(utterance);
+  };
 
-  window.speechSynthesis.speak(utterance);
+  if (!voices.length) {
+    window.speechSynthesis.onvoiceschanged = () => {
+      voices = window.speechSynthesis.getVoices();
+      selectVoice();
+    };
+  } else {
+    selectVoice();
+  }
 }
 
 function speakWelcome() {
+  unlockSpeech();
   const french = "Bonjour ! Je suis votre guide Scenews. Que souhaitez-vous découvrir au Sénégal aujourd'hui ?";
   const wolof = "Salamalekum ! Man moy sa guide culturel. Lan nga beugg guiss ci Sénégal tay ?";
 
   speakText(french);
-  // Optional delay for Wolof
-  setTimeout(() => speakText(wolof), 6000);
+
+  // Sur mobile, les delais asynchrones bloquent souvent le son. 
+  // On ne joue le Wolof automatiquement que sur desktop, ou on laisse l'utilisateur cliquer sur le bouton haut parleur.
+  if (window.innerWidth > 768) {
+    setTimeout(() => speakText(wolof), 6000);
+  }
 }
 
 // ── Full map search & Bot ─────────────────────────────────────────────────────
@@ -1336,6 +1362,7 @@ function setTab(tab) {
   }
 
   if (tab === 'carte') {
+    unlockSpeech();
     initFullMap();
     setupFullMapSearch();
     speakWelcome();

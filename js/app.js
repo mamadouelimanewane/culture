@@ -824,7 +824,7 @@ window.navigateTo = function (id) {
 const NLP_TYPES = {
   'musée': 'Musée', 'musees': 'Musée', 'musee': 'Musée', 'expositions': 'Musée', 'histoire': 'Musée', 'patrimoine': 'Musée', 'expo': 'Musée', 'culture': 'Musée', 'monument': 'Musée', 'tresor': 'Musée', 'antiquite': 'Musée', 'archeologie': 'Musée', 'archives': 'Musée', 'historique': 'Musée',
   'cinéma': 'Cinéma', 'cinema': 'Cinéma', 'cinemas': 'Cinéma', 'film': 'Cinéma', 'ecran': 'Cinéma', 'projection': 'Cinéma', 'projections': 'Cinéma', 'films': 'Cinéma', 'salle obscure': 'Cinéma', 'cine': 'Cinéma', 'audiovisuel': 'Cinéma', '7eme art': 'Cinéma', 'septieme art': 'Cinéma',
-  'centre culturel': 'Centre culturel', 'centre': 'Centre culturel', 'centres': 'Centre culturel', 'culturel': 'Centre culturel', 'maison de la culture': 'Centre culturel', 'espace culturel': 'Centre culturel', 'complexe culturel': 'Centre culturel', 'institut': 'Centre culturel', 'alliance': 'Centre culturel',
+  'centre culturel': 'Centre culturel', 'centre': 'Centre culturel', 'centres': 'Centre culturel', 'culturel': 'Centre culturel', 'culturels': 'Centre culturel', 'culturelle': 'Centre culturel', 'culturelles': 'Centre culturel', 'maison de la culture': 'Centre culturel', 'espace culturel': 'Centre culturel', 'complexe culturel': 'Centre culturel', 'institut': 'Centre culturel', 'alliance': 'Centre culturel',
   "centre d'animation": "Centre d'animation", 'animation': "Centre d'animation", 'culturelle': 'Centre culturel', 'activités': "Centre d'animation", 'loisirs': "Centre d'animation", 'animation culturelle': "Centre d'animation", 'jeunesse': "Centre d'animation", 'socio-culturel': "Centre d'animation",
   'foyer femmes': 'Foyer des femmes', 'foyer des femmes': 'Foyer des femmes', 'femmes': 'Foyer des femmes', 'amazones': 'Foyer des femmes', 'case des femmes': 'Foyer des femmes', 'groupement': 'Foyer des femmes', 'cooperative': 'Foyer des femmes', 'association': 'Foyer des femmes',
   'foyer femme': 'Foyer des femmes', 'femme': 'Foyer des femmes', 'atelier femme': 'Foyer des femmes', 'promotion': 'Foyer des femmes',
@@ -849,7 +849,8 @@ const NLP_STOP_WORDS = [
   'pourriez', 'vous', 'vouloir', 'voir', 'tous', 'ceux', 'celui', 'ce', 'cette', 'est', 'sont', 'dis', 'parle', 'sait', 'connais', 'liste', 'recapitulatif',
   'il', 'y', 'a', 'ou', 'se', 'trouvent', 'situés', 'ouvert', 'dans', 'sur', 'autour', 'de', 'quand', 'comment', 'pourquoi', 'qui', 'quoi', 'quel', 'quelle', 'quelles',
   'du', 'au', 'aux', 'pres', 'proche', 'chez', 'avec', 'et', 'à', 'quel', 'quels', 'toutes', 'mon', 'ma', 'ton', 'ta', 'son', 'sa', 'notre', 'votre', 'leur', 'leurs',
-  'svp', 'plait', 'merci', 'bien', 'tres', 'vraiment', 'un peu', 'beaucoup', 'quelques', 'plusieurs', 'certains', 'dites', 'indique', 'trouve-moi'
+  'svp', 'plait', 'merci', 'bien', 'tres', 'vraiment', 'un peu', 'beaucoup', 'quelques', 'plusieurs', 'certains', 'dites', 'indique', 'trouve-moi',
+  'd', 'l', 's', 't', 'n', 'm', 'c'
 ];
 
 const NLP_REGIONS = {

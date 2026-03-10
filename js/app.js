@@ -1257,14 +1257,32 @@ function setupFullMapSearch() {
   window.dockFullMapBar = function () {
     if (!dom.fullMapBar || window.innerWidth > 768) return;
     dom.fullMapBar.classList.remove('expanded');
-    dom.fullMapBar.classList.add('parked');
+    dom.fullMapBar.classList.add('collapsed');
 
-    dom.fullMapBar.style.transition = 'transform 0.5s ease-out, opacity 0.5s';
-    dom.fullMapBar.style.transform = `translateY(-85%)`; // Only a sliver remains
-    dom.fullMapBar.style.opacity = '0.4';
+    // Afficher un petit bouton flottant pour que l'utilisateur puisse rappeler la barre
+    let restoreBtn = document.getElementById('restoreBarBtn');
+    if (!restoreBtn) {
+      restoreBtn = document.createElement('button');
+      restoreBtn.id = 'restoreBarBtn';
+      restoreBtn.innerHTML = '🔍 Rechercher';
+      restoreBtn.style.cssText = [
+        'position:fixed', 'top:12px', 'left:50%', 'transform:translateX(-50%)',
+        'z-index:1100', 'background:var(--primary)', 'color:white',
+        'border:none', 'border-radius:25px', 'padding:8px 20px',
+        'font-size:14px', 'font-weight:600',
+        'box-shadow:0 4px 15px rgba(0,0,0,0.3)', 'cursor:pointer'
+      ].join(';');
+      restoreBtn.addEventListener('click', window.restoreFullMapBar);
+      document.body.appendChild(restoreBtn);
+    }
+    restoreBtn.style.display = 'block';
+  };
 
-    const input = document.getElementById('fullMapSearch');
-    if (input) input.blur();
+  window.restoreFullMapBar = function () {
+    if (!dom.fullMapBar) return;
+    dom.fullMapBar.classList.remove('collapsed');
+    const restoreBtn = document.getElementById('restoreBarBtn');
+    if (restoreBtn) restoreBtn.style.display = 'none';
   };
 
   // Extension au clic
@@ -1272,15 +1290,6 @@ function setupFullMapSearch() {
   if (searchRow) {
     searchRow.addEventListener('click', (e) => {
       if (window.innerWidth > 768) return;
-
-      // Si elle est "parkée" (montée tout en haut), on la redescend d'abord
-      if (dom.fullMapBar.classList.contains('parked')) {
-        dom.fullMapBar.classList.remove('parked');
-        dom.fullMapBar.style.transform = `translateY(0)`;
-        dom.fullMapBar.style.opacity = '1';
-        return;
-      }
-
       // Ne pas étendre si on clique sur un bouton (ex: grille)
       if (e.target.closest('button') && e.target.closest('button').id !== 'fullMapSearch') return;
       dom.fullMapBar.classList.toggle('expanded');

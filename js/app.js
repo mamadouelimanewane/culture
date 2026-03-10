@@ -1247,9 +1247,9 @@ function setupFullMapSearch() {
     if (raw !== lastQuery && raw.length > 2 && intentKey !== lastIntentKey) {
       const response = getBotResponse(intent, hits.length, raw);
       addBotMessage(response);
-      // Si on est sur mobile et qu'une recherche est lancée via un chip, on dock la barre immédiatement
-      if (window.innerWidth <= 768 && raw.length > 0) {
-        setTimeout(dockFullMapBar, 400); // Délai réduit pour plus de réactivité
+      // Si on est sur mobile et qu'une recherche est lancée via un chip, on cache la barre pour laisser place à la carte
+      if (window.innerWidth <= 768 && raw.length > 0 && document.activeElement !== input) {
+        setTimeout(dockFullMapBar, 200);
       }
     }
   };
@@ -1257,9 +1257,12 @@ function setupFullMapSearch() {
   window.dockFullMapBar = function () {
     if (!dom.fullMapBar || window.innerWidth > 768) return;
     dom.fullMapBar.classList.remove('expanded');
-    dom.fullMapBar.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-    dom.fullMapBar.style.transform = `translateY(0)`; // Collapsed is 0 now with CSS hidden
-    // On peut aussi flouter le champ pour fermer le clavier
+    dom.fullMapBar.classList.add('parked');
+
+    dom.fullMapBar.style.transition = 'transform 0.5s ease-out, opacity 0.5s';
+    dom.fullMapBar.style.transform = `translateY(-85%)`; // Only a sliver remains
+    dom.fullMapBar.style.opacity = '0.4';
+
     const input = document.getElementById('fullMapSearch');
     if (input) input.blur();
   };
@@ -1269,6 +1272,15 @@ function setupFullMapSearch() {
   if (searchRow) {
     searchRow.addEventListener('click', (e) => {
       if (window.innerWidth > 768) return;
+
+      // Si elle est "parkée" (montée tout en haut), on la redescend d'abord
+      if (dom.fullMapBar.classList.contains('parked')) {
+        dom.fullMapBar.classList.remove('parked');
+        dom.fullMapBar.style.transform = `translateY(0)`;
+        dom.fullMapBar.style.opacity = '1';
+        return;
+      }
+
       // Ne pas étendre si on clique sur un bouton (ex: grille)
       if (e.target.closest('button') && e.target.closest('button').id !== 'fullMapSearch') return;
       dom.fullMapBar.classList.toggle('expanded');

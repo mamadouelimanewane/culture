@@ -1039,6 +1039,23 @@ textarea {
     display: flex;
   }
 
+  .full-map-bar.parked {
+    pointer-events: auto;
+    /* Handle still clickable */
+    opacity: 0.4;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .full-map-bar.parked * {
+    pointer-events: none;
+    /* Children not clickable to avoid zoom issues */
+  }
+
+  .full-map-bar.parked .full-map-search-row {
+    pointer-events: auto;
+    /* Row itself remains entry point */
+  }
+
 
   .full-map-section .full-legend {
     bottom: 15px;

@@ -1096,7 +1096,11 @@ function addBotMessage(text, options = []) {
   const container = document.getElementById('chatbotContainer');
   if (!container) return;
 
-  // Typing indicator
+  // Supprimer les anciennes réponses du bot (mais pas #botWelcome qu'on gardera)
+  const prevBubbles = container.querySelectorAll('.chatbot-bubble:not(#botWelcome)');
+  prevBubbles.forEach(b => b.remove());
+
+  // Typing indicator (remplace le welcome ou s'ajoute)
   const indicator = document.createElement('div');
   indicator.className = 'chatbot-bubble';
   indicator.id = 'typingIndicator';
@@ -1106,10 +1110,13 @@ function addBotMessage(text, options = []) {
       <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
     </div>`;
   container.appendChild(indicator);
-  container.parentElement.scrollTop = container.parentElement.scrollHeight;
 
   setTimeout(() => {
     indicator.remove();
+    // Remplacer la bulle de bienvenue par la vraie réponse
+    const welcome = document.getElementById('botWelcome');
+    if (welcome) welcome.remove();
+
     const bubble = document.createElement('div');
     bubble.className = 'chatbot-bubble';
     bubble.innerHTML = `
@@ -1117,7 +1124,7 @@ function addBotMessage(text, options = []) {
       <div class="bot-msg">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
           <span>${text}</span>
-          <button onclick="speakText('${text.replace(/'/g, "\\'").replace(/<[^>]*>/g, '')}')" style="background:none; border:none; cursor:pointer; font-size:16px; opacity:0.6;" title="Écouter">🔊</button>
+          <button onclick="speakText('${text.replace(/'/g, "\\'").replace(/<[^>]*>/g, '')}');" style="background:none; border:none; cursor:pointer; font-size:16px; opacity:0.6;" title="Écouter">🔊</button>
         </div>
         ${options.length ? `
           <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
